@@ -13,7 +13,7 @@ from typing import Dict, List, Optional
 class AcervoDS:
     """
     Gerencia o acervo documental DS usando catalog.json como índice.
-    Equivale ao RAG do BPO, mas opera sobre o Materiais_DS local.
+    Gerencia o acervo documental DS com busca por relevância.
     """
 
     # Categorias prioritárias para DS (§2.3)

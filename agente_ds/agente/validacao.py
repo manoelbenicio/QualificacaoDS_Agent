@@ -9,7 +9,7 @@ import re
 from datetime import datetime
 
 
-# Setores/Verticais aceitos (§2.1.1 — mesmos do BPO)
+# Setores/Verticais aceitos (§2.1.1)
 SETORES_VALIDOS = [
     "Energia & Utilities",
     "Telecomunicações",

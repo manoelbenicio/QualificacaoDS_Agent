@@ -80,7 +80,6 @@ Para cada narrativa, produza 3-5 frases executivas contextualizadas:
   - Data&AI: se houver BI/analytics/ML
   - SGE: se houver SAP
   - Cyber: se houver segurança avançada
-  - BPO: se houver processos operacionais
 - Estimativa de ACV adicional por cross-sell
 
 ## FORMATO DO OUTPUT

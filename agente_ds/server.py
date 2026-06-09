@@ -40,8 +40,8 @@ app = Flask(__name__, static_folder="frontend")
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
 CORS(app)
 
-# Instâncias globais — Cenário 1 (monolítico) + Cenário 2 (multi-agente)
-agente = AgenteDS()
+# Instância global — Multi-Agente (Maestro + 5 Sub-Agentes)
+agente = AgenteDS()  # usado para acervo/validação
 maestro = Maestro()
 
 # Diretório para uploads temporários
@@ -59,10 +59,9 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 @app.route("/api/health", methods=["GET"])
 def health():
-    """Health check — mostra status de ambos os cenários."""
+    """Health check — status do sistema."""
     return jsonify({
-        "cenario_1_monolitico": agente.health_check(),
-        "cenario_2_multi_agente": maestro.health_check(),
+        "multi_agente": maestro.health_check(),
     })
 
 
@@ -107,16 +106,11 @@ def qualificar():
         except json.JSONDecodeError:
             return jsonify({"status": "erro", "mensagem": "Campo 'dados' deve ser JSON válido."}), 400
 
-        # ── Escolher cenário ──
-        cenario = dados.get("cenario", request.form.get("cenario", "2"))
-        
-        if str(cenario) == "1":
-            resultado = agente.qualificar(dados, str(upload_path))
-        else:
-            resultado = maestro.qualificar(dados, str(upload_path))
+        # ── Executar qualificação (Multi-Agente) ──
+        resultado = maestro.qualificar(dados, str(upload_path))
 
         # ── Salvar output ──
-        output_file = OUTPUT_DIR / f"qualificacao_{timestamp}_C{cenario}.json"
+        output_file = OUTPUT_DIR / f"qualificacao_{timestamp}.json"
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(resultado, f, ensure_ascii=False, indent=2)
 
@@ -189,13 +183,9 @@ def qualificar_start():
 
         def _run_job():
             try:
-                cenario = dados.get("cenario", "2")
-                if str(cenario) == "1":
-                    resultado = agente.qualificar(dados, str(upload_path))
-                else:
-                    resultado = maestro.qualificar(dados, str(upload_path), on_progress=_on_progress)
+                resultado = maestro.qualificar(dados, str(upload_path), on_progress=_on_progress)
 
-                output_file = OUTPUT_DIR / f"qualificacao_{timestamp}_C{cenario}.json"
+                output_file = OUTPUT_DIR / f"qualificacao_{timestamp}.json"
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(resultado, f, ensure_ascii=False, indent=2)
                 resultado["output_salvo"] = str(output_file)
@@ -204,7 +194,7 @@ def qualificar_start():
                 try:
                     from agente.gerar_html import gerar_html
                     html_content = gerar_html(str(output_file))
-                    html_file = OUTPUT_DIR / f"qualificacao_{timestamp}_C{cenario}.html"
+                    html_file = OUTPUT_DIR / f"qualificacao_{timestamp}.html"
                     with open(html_file, "w", encoding="utf-8") as hf:
                         hf.write(html_content)
                     resultado["html_salvo"] = str(html_file)
@@ -215,7 +205,7 @@ def qualificar_start():
                 try:
                     from agente.gerar_painel import gerar_painel
                     painel_content = gerar_painel(str(output_file))
-                    painel_file = OUTPUT_DIR / f"qualificacao_{timestamp}_C{cenario}_painel.html"
+                    painel_file = OUTPUT_DIR / f"qualificacao_{timestamp}_painel.html"
                     with open(painel_file, "w", encoding="utf-8") as pf:
                         pf.write(painel_content)
                     resultado["painel_salvo"] = str(painel_file)

@@ -122,7 +122,7 @@ Se houver componentes fora do escopo DS, sinalize:
 ```
 
 ## REGRAS
-1. Dimensione APENAS com perfis DS (dev, QA, UX, DevOps, Scrum). NÃO use perfis BPO.
+1. Dimensione APENAS com perfis DS (dev, QA, UX, DevOps, Scrum).
 2. Sempre inclua pelo menos 1 Tech Lead e 1 QA.
 3. Se a RFP pede perfis genéricos, mapeie para perfis DS equivalentes.
 4. Story Points: use escala Fibonacci (1,2,3,5,8,13,21).
