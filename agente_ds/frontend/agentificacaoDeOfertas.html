@@ -1,0 +1,3491 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Agentificação de Ofertas — Gestão inteligente de ofertas técnicas com pipeline de 3 agentes de IA | Indra Minsait">
+  <title>Agentificação de Ofertas — Indra Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('in-iframe');
+      document.addEventListener('DOMContentLoaded', () => document.body.classList.add('in-iframe'));
+    }
+  </script>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       INDRA INTELLIGENCE · DESIGN SYSTEM v2.0 — Agentificação
+       Premium self-contained monolith · Fortune 500 quality
+       ═══════════════════════════════════════════════════════════ */
+
+    /* ─── 1. DESIGN TOKENS ─── */
+    :root {
+      --font-sans: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --sidebar-w: 260px;
+      --topbar-h: 54px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #001B26;
+      --bg-surface: #002B3A;
+      --bg-card: rgba(0, 62, 80, 0.4);
+      --bg-input: rgba(0, 43, 58, 0.5);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-accent: rgba(0, 176, 189, 0.25);
+      --text: #FFFFFF;
+      --text-secondary: #B3C1DA;
+      --text-muted: #7A9CAE;
+      --cyan: #00B0BD;
+      --teal: #3F96AE;
+      --success: #27AE60;
+      --warning: #FF9800;
+      --error: #E91E63;
+      --gold: #FFC107;
+      --purple: #8B5CF6;
+      --glow: rgba(0, 176, 189, 0.12);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      color-scheme: dark;
+    }
+
+    [data-theme="light"] {
+      --bg: #F4F7F9;
+      --bg-surface: #FFFFFF;
+      --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-input: #FFFFFF;
+      --border: rgba(0, 0, 0, 0.1);
+      --border-subtle: rgba(0, 0, 0, 0.05);
+      --border-accent: rgba(0, 176, 189, 0.3);
+      --text: #1A2B3C;
+      --text-secondary: #4A5B6C;
+      --text-muted: #7A8B9C;
+      --cyan: #0097A3;
+      --teal: #2D7A8E;
+      --success: #1E8449;
+      --warning: #E68900;
+      --error: #C2185B;
+      --gold: #D4A000;
+      --purple: #7C3AED;
+      --glow: rgba(0, 176, 189, 0.06);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      color-scheme: light;
+    }
+
+    /* ─── 2. RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.4s, color 0.3s;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.in-iframe .app-topbar,
+    body.in-iframe .sidebar,
+    body.in-iframe .sidebar-overlay { display: none !important; }
+    body.in-iframe .main-area { margin-left: 0 !important; }
+
+    ::selection { background: rgba(0, 176, 189, 0.30); color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ─── 3. APP SHELL ─── */
+    .app-shell { display: flex; min-height: 100vh; }
+
+    .main-area {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: margin-left 0.4s var(--ease-out);
+    }
+
+    /* ─── 4. TOPBAR ─── */
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--topbar-h);
+      background: rgba(0, 27, 38, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      transition: background 0.3s;
+    }
+    [data-theme="light"] .app-topbar { background: rgba(255, 255, 255, 0.92); }
+
+    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .topbar-brand-logo {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .topbar-brand-logo span {
+      font-weight: 400;
+      font-size: 0.6rem;
+      opacity: 0.6;
+      margin-left: 4px;
+      letter-spacing: 0.04em;
+    }
+    .topbar-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+    }
+    .topbar-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .topbar-subtitle {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+    .topbar-badge {
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: var(--glow);
+      color: var(--cyan);
+      border: 1px solid var(--border-accent);
+      font-family: var(--font-mono);
+    }
+
+    .topbar-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .topbar-btn:hover { color: var(--text); border-color: var(--border-accent); background: var(--glow); }
+    .topbar-btn svg { width: 15px; height: 15px; }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glow);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 12px 3px 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 600;
+      position: relative;
+    }
+    .topbar-user:hover { border-color: var(--border-accent); }
+    .topbar-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--teal));
+      display: grid;
+      place-items: center;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--bg);
+      flex-shrink: 0;
+    }
+    .topbar-user .arrow { font-size: 0.5rem; opacity: 0.5; }
+
+    /* User dropdown */
+    .user-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      min-width: 200px;
+      z-index: 200;
+      overflow: hidden;
+    }
+    .user-dropdown.show { display: block; animation: fadeIn 0.2s ease; }
+    .user-dropdown-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .user-dropdown-header .name { font-size: 0.8rem; font-weight: 700; }
+    .user-dropdown-header .email { font-size: 0.64rem; color: var(--text-muted); margin-top: 2px; }
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      color: var(--text);
+    }
+    .user-dropdown-item:hover { background: var(--glow); }
+    .user-dropdown-item.danger { color: var(--error); }
+    .user-dropdown-item.danger:hover { background: rgba(233, 30, 99, 0.06); }
+    .user-dropdown-divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+    /* ─── 5. SIDEBAR ─── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      transition: transform 0.4s var(--ease-out);
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .sidebar-brand {
+      padding: 16px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-brand svg { width: 26px; height: 26px; color: var(--cyan); }
+    .sidebar-brand-name { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; }
+    .sidebar-brand-sub { font-size: 8px; font-weight: 600; letter-spacing: 0.14em; color: var(--cyan); }
+
+    .sidebar-section { padding: 14px 0 4px; }
+    .sidebar-section-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 0 18px 8px;
+      font-family: var(--font-mono);
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .sidebar-nav-item:hover { background: var(--glow); color: var(--text); }
+    .sidebar-nav-item.active {
+      background: var(--glow);
+      border-left-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .sidebar-nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .sidebar-nav-item.active .sidebar-nav-icon { background: rgba(0, 176, 189, 0.15); }
+
+    .sidebar-nav-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .sidebar-nav-text .label { line-height: 1.2; }
+    .sidebar-nav-text .sub { font-size: 0.58rem; color: var(--text-muted); font-weight: 400; }
+    .sidebar-nav-item.active .sidebar-nav-text .sub { color: var(--teal); }
+
+    .sidebar-badge {
+      margin-left: auto;
+      background: var(--cyan);
+      color: var(--bg);
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 8px;
+      min-width: 18px;
+      text-align: center;
+    }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 6px 18px; }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 190; }
+    .sidebar-overlay.active { display: block; }
+
+    /* ─── 6. CONTENT AREA ─── */
+    .content-area { flex: 1; overflow-y: auto; padding: 0; }
+    .content-container { max-width: 100%; margin: 0; padding: 28px 32px 60px; }
+
+    .page-view { display: none; }
+    .page-view.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── 7. AGENT PANEL ─── */
+    .agent-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: 0 2px 16px rgba(0, 66, 84, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .agent-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+    .agent-panel-icon {
+      background: linear-gradient(135deg, var(--teal), var(--cyan));
+      color: #fff;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 176, 189, 0.25);
+    }
+    .agent-panel-header h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
+    .agent-panel-header p { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+
+    /* Split layout — inputs | outputs */
+    .agent-split {
+      display: flex;
+      gap: 28px;
+      align-items: stretch;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .agent-split > .agent-section:first-child {
+      flex: 1;
+      min-width: 0;
+      opacity: 1;
+      max-width: 48%;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .agent-split > .agent-section:last-child {
+      flex: 1.2;
+      min-width: 0;
+      max-width: 100%;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Expanded layout when running or success is active */
+    .agent-split.expanded > .agent-section:first-child {
+      max-width: 0% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .agent-split.expanded > .agent-section:last-child {
+      flex: 2;
+      max-width: 100% !important;
+    }
+
+    .agent-section {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      background: rgba(0, 43, 58, 0.2);
+    }
+    [data-theme="light"] .agent-section { background: rgba(0, 0, 0, 0.02); }
+
+    .agent-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agent-section-title .icon { font-size: 1.05rem; }
+
+    /* ─── 8. FORMS ─── */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-secondary);
+    }
+    .form-group label .required { color: var(--cyan); font-weight: 700; }
+
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
+      width: 100%;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--bg-input);
+      color: var(--text);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
+    select { color: var(--text); }
+    select option { background: var(--bg-surface); color: var(--text); }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(0, 176, 189, 0.12);
+    }
+    textarea { resize: vertical; min-height: 70px; }
+
+    /* File drop zone */
+    .file-drop {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(0, 43, 58, 0.2);
+    }
+    .file-drop:hover, .file-drop.dragover { border-color: var(--cyan); background: rgba(0, 176, 189, 0.04); }
+    .file-drop .icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .file-drop p { font-size: 0.72rem; color: var(--text-muted); }
+    .file-drop .hint { font-size: 0.62rem; color: var(--text-muted); margin-top: 4px; opacity: 0.7; }
+    .file-list { margin-top: 8px; font-size: 0.7rem; color: var(--cyan); }
+    .file-list-item { display: flex; align-items: center; gap: 5px; padding: 3px 0; border-bottom: 1px solid var(--border-subtle); }
+
+    .lgpd-consent {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ─── 9. BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--cyan));
+      color: #fff;
+      box-shadow: 0 3px 14px rgba(0, 66, 84, 0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 5px 20px rgba(0, 66, 84, 0.4); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #22c55e);
+      color: #fff;
+      box-shadow: 0 3px 14px rgba(22, 163, 74, 0.25);
+    }
+    .btn-success:hover { box-shadow: 0 5px 20px rgba(22, 163, 74, 0.35); transform: translateY(-1px); }
+    .btn-success:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: var(--border-subtle); color: var(--text); }
+    .btn-secondary:hover { background: var(--border); }
+
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
+      background: rgba(0, 31, 38, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(0, 176, 189, 0.25);
+      margin: 20px -32px -32px -32px;
+      padding: 16px 32px;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ─── 10. OUTPUT AREA ─── */
+    .output-area {
+      min-height: 120px;
+      background: rgba(0, 43, 58, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      position: relative;
+    }
+    [data-theme="light"] .output-area { background: rgba(0, 0, 0, 0.02); }
+
+    .output-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
+      gap: 8px;
+      color: var(--border);
+    }
+    .output-placeholder .icon { font-size: 2rem; }
+
+    .processing-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 43, 58, 0.92);
+      border-radius: var(--radius-sm);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    .processing-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .processing-text { font-size: 0.76rem; color: var(--cyan); font-weight: 600; }
+
+    .output-content { display: none; }
+    .output-content.show { display: block; animation: fadeIn 0.4s ease; }
+
+    .output-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .output-item:last-child { border-bottom: none; }
+
+    .output-item-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(0, 176, 189, 0.1);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .output-item-label { font-weight: 600; font-size: 0.76rem; color: var(--cyan); }
+    .output-item-value { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; line-height: 1.6; }
+
+    /* Score meter */
+    .score-meter { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+    .score-bar { flex: 1; height: 8px; background: var(--border-subtle); border-radius: 4px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+    .score-value { font-size: 1.2rem; font-weight: 800; color: var(--cyan); min-width: 40px; text-align: right; }
+
+    /* Tags */
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag {
+      padding: 3px 10px;
+      background: rgba(0, 176, 189, 0.06);
+      border: 1px solid rgba(0, 176, 189, 0.18);
+      border-radius: 10px;
+      font-size: 0.66rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Mini table */
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; margin-top: 10px; }
+    .mini-table th {
+      background: var(--teal);
+      color: #fff;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.64rem;
+    }
+    .mini-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); }
+    .mini-table tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.66rem;
+      font-weight: 600;
+    }
+    .badge-success { background: rgba(39, 174, 96, 0.12); color: var(--success); }
+    .badge-warning { background: rgba(255, 152, 0, 0.12); color: var(--warning); }
+    .badge-info { background: rgba(0, 176, 189, 0.12); color: var(--cyan); }
+
+    /* ─── 11. CHAT ─── */
+    .chat-panel {
+      margin-top: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card);
+      overflow: hidden;
+      display: none;
+    }
+    .chat-panel.visible { display: block; }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(0, 176, 189, 0.04);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--cyan);
+    }
+    .chat-header .hint {
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: auto;
+      font-size: 0.64rem;
+    }
+
+    .chat-messages {
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-msg { display: flex; gap: 10px; align-items: flex-start; }
+    .chat-msg.user { flex-direction: row-reverse; }
+    .chat-msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .chat-msg.agent .chat-msg-avatar { background: linear-gradient(135deg, var(--cyan), var(--teal)); color: #fff; }
+    .chat-msg.user .chat-msg-avatar { background: var(--bg); color: #fff; }
+    .chat-msg-bubble {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      line-height: 1.6;
+      max-width: 80%;
+    }
+    .chat-msg.agent .chat-msg-bubble { background: rgba(0, 176, 189, 0.06); border: 1px solid rgba(0, 176, 189, 0.1); color: var(--text); }
+    .chat-msg.user .chat-msg-bubble { background: var(--bg); color: #fff; border: 1px solid transparent; }
+    .chat-msg-time { font-size: 0.56rem; color: var(--text-muted); margin-top: 4px; }
+
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 66, 84, 0.02);
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      outline: none;
+      background: var(--bg-card);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .chat-input-area input:focus { border-color: var(--cyan); }
+    .chat-input-area input::placeholder { color: var(--text-muted); }
+
+    .chat-send-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: var(--cyan);
+      color: #fff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .chat-send-btn:hover { background: var(--teal); transform: scale(1.05); }
+    .chat-send-btn:active { transform: scale(0.95); }
+
+    /* ─── 12. OFFERS LIST ─── */
+    .page-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.01em; }
+    .page-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px; }
+
+    .offer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+    .offer-card:hover { border-color: var(--cyan); box-shadow: 0 4px 16px rgba(0, 66, 84, 0.08); transform: translateY(-1px); }
+
+    .offer-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .offer-name { font-weight: 700; font-size: 0.84rem; }
+    .offer-meta { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 12px; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-step1 { background: rgba(0, 176, 189, 0.12); color: var(--cyan); }
+    .status-step2 { background: rgba(255, 152, 0, 0.12); color: var(--warning); }
+    .status-step3 { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+    .status-done { background: rgba(39, 174, 96, 0.12); color: var(--success); }
+
+    .offer-date { font-size: 0.64rem; color: var(--text-muted); margin-left: auto; }
+    .offer-actions { display: flex; gap: 6px; }
+    .offer-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.66rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .offer-btn-primary { background: linear-gradient(135deg, var(--teal), var(--cyan)); color: #fff; }
+    .offer-btn-primary:hover { opacity: 0.9; }
+    .offer-btn-secondary { background: var(--border-subtle); color: var(--text); }
+    .offer-btn-secondary:hover { background: var(--border); }
+
+    /* ─── 13. KNOWLEDGE BASE ─── */
+    .kb-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+    .kb-search {
+      padding: 8px 14px 8px 32px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      width: 260px;
+      background: var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A9CAE' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 10px center no-repeat;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .kb-search:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0, 176, 189, 0.1); }
+
+    .kb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .kb-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      transition: all 0.2s;
+    }
+    .kb-card:hover { border-color: var(--cyan); box-shadow: 0 4px 16px rgba(0, 66, 84, 0.06); }
+    .kb-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+    }
+    .kb-card-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; }
+    .kb-card-desc { font-size: 0.7rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .kb-card-stats {
+      display: flex;
+      gap: 14px;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .kb-card-stats strong { color: var(--cyan); font-weight: 700; }
+
+    /* ─── 14. SETTINGS ─── */
+    .config-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .config-card:hover { box-shadow: 0 2px 12px rgba(0, 66, 84, 0.06); }
+
+    .config-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .config-card-header:hover { background: rgba(0, 176, 189, 0.02); }
+
+    .config-card-info { display: flex; align-items: center; gap: 14px; }
+    .config-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .config-card-info h3 { font-size: 0.88rem; font-weight: 700; }
+    .config-card-info p { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+    .config-toggle { font-size: 0.8rem; color: var(--text-muted); transition: transform 0.3s; }
+
+    .config-card-body {
+      display: none;
+      padding: 0 22px 22px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .config-card-body.show { display: block; animation: fadeIn 0.3s ease; }
+
+    .config-section {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .config-section:last-child { border-bottom: none; }
+    .config-section-title { font-size: 0.78rem; font-weight: 700; margin-bottom: 14px; }
+
+    .config-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+
+    .config-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+    .config-tag {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      border: 1.5px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .config-tag:hover { border-color: var(--cyan); color: var(--cyan); }
+    .config-tag.active {
+      background: rgba(0, 176, 189, 0.06);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    /* ─── 15. FLOATING ACTIONS ─── */
+    .floating-actions {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      gap: 8px;
+      z-index: 9999;
+    }
+    .floating-btn {
+      background: var(--cyan);
+      color: var(--bg);
+      border: 1px solid rgba(0, 176, 189, 0.3);
+      padding: 9px 18px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 176, 189, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+    }
+    .floating-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 176, 189, 0.4); }
+    .floating-btn.alt {
+      background: var(--bg-surface);
+      color: var(--text);
+      border-color: var(--border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    .floating-btn.alt:hover { background: var(--teal); color: #fff; border-color: var(--cyan); }
+
+    /* ─── 16. TOAST ─── */
+    .toast {
+      position: fixed;
+      bottom: 70px;
+      right: 24px;
+      background: var(--bg-surface);
+      color: var(--cyan);
+      border: 1px solid var(--border-accent);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      z-index: 10000;
+      transition: all 0.3s;
+    }
+    .toast.removing { opacity: 0; transform: translateY(8px); }
+
+    /* ─── 17. RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-area { margin-left: 0; }
+    }
+    @media (max-width: 768px) {
+      .agent-split { grid-template-columns: 1fr; }
+      .kb-grid { grid-template-columns: 1fr; }
+      .content-container { padding: 20px 16px 60px; }
+      .agent-panel { padding: 20px; }
+      .kb-toolbar { flex-direction: column; align-items: stretch; }
+    }
+    @media (max-width: 600px) {
+      .config-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── 18. PRINT ─── */
+    @media print {
+      .sidebar, .app-topbar, .floating-actions, .sidebar-overlay { display: none !important; }
+      .main-area { margin-left: 0 !important; }
+      .app-shell { display: block; }
+      body { background: #fff !important; color: #000 !important; }
+      @page { margin: 1.5cm; }
+    }
+
+    /* ─── 19. REPORT PANEL & C-LEVEL DASHBOARD ─── */
+    .exec-report-panel {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      animation: fadeIn 0.4s ease;
+    }
+    .report-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    @media (max-width: 768px) {
+      .report-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+    .report-type-badge {
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      background: rgba(0, 176, 189, 0.08);
+      border: 1px solid rgba(0, 176, 189, 0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+    }
+    .report-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em; /* Negativo letter-spacing */
+      line-height: 1.2;
+    }
+    .report-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .report-header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .report-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .report-btn:hover {
+      background: var(--glow);
+      color: var(--cyan);
+      border-color: var(--border-accent);
+    }
+    .report-btn.primary {
+      background: linear-gradient(135deg, var(--teal), var(--cyan));
+      color: #ffffff;
+      border: none;
+    }
+    .report-btn.primary:hover {
+      box-shadow: 0 0 10px rgba(0, 176, 189, 0.4);
+    }
+
+    /* Widget de Recomendação Final */
+    .rec-card {
+      background: rgba(0, 80, 100, 0.15); /* Fundo ligeiramente mais claro */
+      border: 2px solid var(--cyan); /* Borda destacada */
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .rec-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+    }
+    .rec-card.rec-go { border-color: #27AE60; background: rgba(39, 174, 96, 0.08); box-shadow: 0 12px 40px rgba(39, 174, 96, 0.15); }
+    .rec-card.rec-go::before { background: #27AE60; }
+    .rec-card.rec-no-go { border-color: #E91E63; background: rgba(233, 30, 99, 0.08); box-shadow: 0 12px 40px rgba(233, 30, 99, 0.15); }
+    .rec-card.rec-no-go::before { background: #E91E63; }
+    .rec-card.rec-go-condicionado,
+    .rec-card.rec-go-cond { border-color: #FF9800; background: rgba(255, 152, 0, 0.08); box-shadow: 0 12px 40px rgba(255, 152, 0, 0.15); }
+    .rec-card.rec-go-condicionado::before,
+    .rec-card.rec-go-cond::before { background: #FF9800; }
+
+    .rec-flex {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+    @media (max-width: 768px) {
+      .rec-flex { flex-direction: column; align-items: center; }
+    }
+    .rec-badge-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      min-width: 170px;
+    }
+    .rec-decision-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .rec-badge-val {
+      font-size: 1.3rem;
+      font-weight: 800; /* Status "GO / NO-GO" em fonte 800 */
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-align: center;
+      width: 100%;
+      letter-spacing: 0.02em;
+    }
+    .rec-go .rec-badge-val { background: rgba(39, 174, 96, 0.15); color: #27AE60; border: 1px solid rgba(39, 174, 96, 0.3); }
+    .rec-no-go .rec-badge-val { background: rgba(233, 30, 99, 0.15); color: #E91E63; border: 1px solid rgba(233, 30, 99, 0.3); }
+    .rec-go-condicionado .rec-badge-val,
+    .rec-go-cond .rec-badge-val { background: rgba(255, 152, 0, 0.15); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+
+    .rec-score-circle {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rec-score-svg {
+      transform: rotate(-90deg);
+      width: 90px;
+      height: 90px;
+    }
+    .rec-score-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 8;
+    }
+    .rec-score-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+    .rec-go .rec-score-fill { stroke: #27AE60; }
+    .rec-no-go .rec-score-fill { stroke: #E91E63; }
+    .rec-go-condicionado .rec-score-fill,
+    .rec-go-cond .rec-score-fill { stroke: #FF9800; }
+    .rec-score-val {
+      position: absolute;
+      font-size: 1.4rem;
+      font-weight: 850;
+      color: #ffffff;
+    }
+    .rec-info-col {
+      flex: 1;
+      min-width: 0;
+    }
+    .rec-justif {
+      font-size: 0.84rem;
+      color: #ffffff;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+    .rec-section-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rec-cond-title { color: #27AE60; }
+    .rec-risks-title { color: #E91E63; }
+    .rec-list {
+      padding-left: 18px;
+      margin-bottom: 12px;
+    }
+    .rec-list li {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    /* Grid de Critérios Ponderados */
+    .crit-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .crit-cols { grid-template-columns: 1fr; }
+    }
+    .crit-col {
+      background: rgba(0, 62, 80, 0.4); /* Cards e Superfícies */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08); /* Bordas com 1px solid */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* Sombras profundas */
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .crit-col-header {
+      font-size: 0.8rem;
+      font-weight: 750;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .crit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .crit-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s;
+    }
+    .crit-item:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
+    }
+    .crit-item-name {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .crit-item-body {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .crit-item-desc {
+      font-size: 13px; /* Garanta que o texto use font-size: 13px */
+      line-height: 1.5; /* e line-height: 1.5 */
+      color: var(--text-secondary);
+    }
+
+    /* Best Story Wins Layout */
+    .bsw-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+    .agent-split.expanded .bsw-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1200px) {
+      .agent-split.expanded .bsw-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .bsw-grid, .agent-split.expanded .bsw-grid { grid-template-columns: 1fr; }
+    }
+    .bsw-card {
+      background: rgba(0, 62, 80, 0.4); /* Cards e Superfícies */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08); /* Bordas com 1px solid */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* Sombras profundas */
+      border-radius: 12px; /* Bordas arredondadas de 12px */
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .bsw-card:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 176, 189, 0.03);
+      transform: translateY(-2px);
+    }
+    .bsw-card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .bsw-card-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--cyan); /* Teal / Cyan */
+      letter-spacing: 0.04em;
+    }
+    .bsw-card-subtitle {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .bsw-card-content {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Pills for level */
+    .lvl-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.6rem;
+      font-weight: 750;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      height: 18px;
+      margin-top: 2px;
+    }
+    .lvl-pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .lvl-alto { background: rgba(39, 174, 96, 0.12); color: #27AE60; border-color: rgba(39, 174, 96, 0.25); }
+    .lvl-alto .dot { background: #27AE60; box-shadow: 0 0 6px #27AE60; }
+    .lvl-medio-alto { background: rgba(39, 174, 96, 0.08); color: #27AE60; border-color: rgba(39, 174, 96, 0.2); }
+    .lvl-medio-alto .dot { background: #27AE60; box-shadow: 0 0 6px #27AE60; }
+    .lvl-medio { background: rgba(255, 152, 0, 0.12); color: #FF9800; border-color: rgba(255, 152, 0, 0.25); }
+    .lvl-medio .dot { background: #FF9800; box-shadow: 0 0 6px #FF9800; }
+    .lvl-medio-baixo { background: rgba(255, 152, 0, 0.12); color: #FF9800; border-color: rgba(255, 152, 0, 0.25); }
+    .lvl-medio-baixo .dot { background: #FF9800; box-shadow: 0 0 6px #FF9800; }
+    .lvl-baixo { background: rgba(233, 30, 99, 0.12); color: #E91E63; border-color: rgba(233, 30, 99, 0.25); }
+    .lvl-baixo .dot { background: #E91E63; box-shadow: 0 0 6px #E91E63; }
+
+    /* Accordion native details */
+    details.tech-details-accordion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(0, 62, 80, 0.2);
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    details.tech-details-accordion summary {
+      padding: 12px 16px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      list-style: none;
+      outline: none;
+      user-select: none;
+    }
+    details.tech-details-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+    details.tech-details-accordion summary:hover {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text);
+    }
+    details.tech-details-accordion[open] summary {
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Toggle button style */
+    .toggle-params-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(0, 176, 189, 0.08);
+      border: 1px solid rgba(0, 176, 189, 0.35);
+      color: var(--cyan);
+      border-radius: var(--radius-sm);
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .toggle-params-btn:hover {
+      background: var(--glow);
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 176, 189, 0.2);
+    }
+
+    /* Upload success card design */
+    .upload-success-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(39, 174, 96, 0.08);
+      border: 1.5px dashed var(--success);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      text-align: left;
+      margin-top: 8px;
+      animation: fadeIn 0.25s ease;
+    }
+    .upload-success-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--success);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
+    }
+    .upload-success-details {
+      flex: 1;
+      min-width: 0;
+    }
+    .upload-success-name {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .upload-success-meta {
+      font-size: 0.64rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .upload-status-lbl {
+      color: var(--success);
+      font-weight: 700;
+    }
+    .upload-local-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .upload-local-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--success);
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.1, 0.8, 0.1, 1);
+    }
+
+    /* Progress Dashboard Card */
+    .progress-dashboard-container {
+      margin-bottom: 24px;
+      background: rgba(0, 43, 58, 0.4);
+      border: 1.5px solid rgba(0, 176, 189, 0.25);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      animation: fadeIn 0.4s ease;
+    }
+    .progress-dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .progress-dashboard-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .progress-dashboard {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    @media (max-width: 900px) {
+      .progress-dashboard { flex-direction: column; gap: 24px; }
+    }
+
+    .progress-gauge-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-gauge-svg {
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+    .progress-gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.04);
+      stroke-width: 8;
+    }
+    .progress-gauge-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke: url(#gaugeGradient);
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.1, 0.8, 0.1, 1);
+    }
+    .progress-gauge-text {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-gauge-pct {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(0, 176, 189, 0.4);
+    }
+    .progress-gauge-status {
+      font-size: 0.58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .progress-steps-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+      padding-left: 24px;
+    }
+    .progress-step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      opacity: 0.25;
+      transition: all 0.4s ease;
+    }
+    .progress-step-item.active {
+      opacity: 1;
+    }
+    .progress-step-item.completed {
+      opacity: 0.85;
+    }
+
+    .step-indicator {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.4s ease;
+    }
+    .progress-step-item.active .step-dot {
+      background: var(--cyan);
+      width: 8px;
+      height: 8px;
+      box-shadow: 0 0 10px var(--cyan);
+      animation: breathingGlow 2s infinite ease-in-out;
+    }
+    .progress-step-item.completed .step-dot {
+      background: var(--success);
+      width: 8px;
+      height: 8px;
+      box-shadow: 0 0 6px var(--success);
+    }
+    .step-indicator::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid transparent;
+      border-radius: 50%;
+      transition: all 0.4s ease;
+    }
+    .progress-step-item.active .step-indicator::before {
+      border-top-color: var(--cyan);
+      animation: spin 1s linear infinite;
+    }
+
+    .step-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .step-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #ffffff;
+      transition: color 0.4s;
+    }
+    .progress-step-item.active .step-title {
+      color: var(--cyan);
+    }
+    .progress-step-item.completed .step-title {
+      color: var(--success);
+    }
+    .step-desc {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+      line-height: 1.3;
+    }
+
+    @keyframes breathingGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 6px var(--cyan); }
+      50% { transform: scale(1.2); box-shadow: 0 0 12px var(--cyan); }
+    }
+
+    .ag1-step-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: .7rem;
+      padding: 7px 10px;
+      border-left: 2px solid var(--cyan);
+      background: rgba(0, 176, 189, 0.05);
+      border-radius: 5px;
+      animation: fadeIn .2s ease;
+    }
+    .ag1-step-row.is-error {
+      border-left-color: var(--error);
+      background: rgba(239, 68, 68, 0.08);
+    }
+    .ag1-step-text {
+      flex: 1;
+      color: var(--text);
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .ag1-step-time {
+      color: var(--text-muted);
+      font-size: .6rem;
+      white-space: nowrap;
+    }
+
+    /* ─── ARCHITECTURE PAGE ─── */
+    .arch-block { background: rgba(255,255,255,0.04); border: 1px solid var(--c, var(--border)); border-radius: 14px; padding: 20px; text-align: center; transition: all .3s var(--ease-out); }
+    .arch-block:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-color: var(--c); }
+    .arch-icon { font-size: 2rem; margin-bottom: 8px; }
+    .arch-label { font-weight: 700; color: var(--text); font-size: .95rem; }
+    .arch-sub { color: var(--text-muted); font-size: .75rem; margin-top: 4px; }
+    .arch-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--cyan); font-weight: 700; }
+    .arch-comp { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 10px 14px; font-size: .82rem; color: var(--text-secondary); }
+    .arch-comp strong { color: var(--cyan); }
+    .arch-flow-detail { display: flex; flex-direction: column; gap: 0; }
+    .arch-stage { display: flex; gap: 16px; align-items: flex-start; position: relative; padding: 20px 0; }
+    .arch-stage:not(:last-child)::after { content: ''; position: absolute; left: 21px; top: 56px; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--cyan), transparent); }
+    .arch-stage-num { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--teal)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; z-index: 1; }
+    .arch-stage-content { flex: 1; }
+    .arch-stage-content h3 { color: var(--text); margin-bottom: 6px; font-size: 1rem; }
+    .arch-stage-content p { color: var(--text-secondary); font-size: .85rem; margin-bottom: 8px; }
+    .arch-stage-content ul { list-style: none; padding: 0; }
+    .arch-stage-content li { color: var(--text-muted); font-size: .82rem; padding: 3px 0; padding-left: 16px; position: relative; }
+    .arch-stage-content li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); }
+    .arch-stage-content code { background: rgba(0,176,189,0.1); color: var(--cyan); padding: 2px 6px; border-radius: 4px; font-size: .8rem; }
+    .arch-subcard { background: rgba(0,176,189,0.06); border: 1px solid rgba(0,176,189,0.15); border-radius: 10px; padding: 12px; font-size: .82rem; color: var(--text-secondary); }
+    .arch-subcard strong { color: var(--cyan); display: block; margin-bottom: 4px; }
+
+    /* ─── FLOW CANVAS ─── */
+    .flow-canvas { position: relative; width: 100%; height: 420px; background: radial-gradient(ellipse at center, rgba(0,176,189,0.03) 0%, transparent 70%); border-radius: 12px; border: 1px solid var(--border-subtle); overflow: hidden; }
+    .flow-node { position: absolute; width: 80px; text-align: center; transition: all .5s var(--ease-out); opacity: 0.35; cursor: default; }
+    .flow-node.active { opacity: 1; transform: scale(1.15); }
+    .flow-node.done { opacity: 0.7; }
+    .flow-node-icon { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg-surface); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 6px; transition: all .4s var(--ease-out); }
+    .flow-node.active .flow-node-icon { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,176,189,0.5), 0 0 40px rgba(0,176,189,0.2); animation: pulse-glow 1.5s infinite; }
+    .flow-node.done .flow-node-icon { border-color: var(--success); }
+    .flow-node-label { font-size: .65rem; color: var(--text-muted); line-height: 1.3; }
+    .flow-node.active .flow-node-label { color: var(--text); font-weight: 600; }
+    .flow-phase-badge { position: absolute; bottom: 12px; right: 16px; background: linear-gradient(135deg, rgba(0,176,189,0.2), rgba(139,92,246,0.2)); border: 1px solid var(--cyan); border-radius: 8px; padding: 8px 16px; font-size: .8rem; font-weight: 600; color: var(--cyan); font-family: monospace; }
+    @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 20px rgba(0,176,189,0.5); } 50% { box-shadow: 0 0 35px rgba(0,176,189,0.8), 0 0 60px rgba(0,176,189,0.3); } }
+
+    /* ─── TRACE VIEWER ─── */
+    .trace-toggle { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; }
+    .trace-switch { width: 44px; height: 24px; border-radius: 12px; background: var(--border); position: relative; cursor: pointer; transition: background .3s; }
+    .trace-switch.on { background: var(--cyan); }
+    .trace-switch::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform .3s; }
+    .trace-switch.on::after { transform: translateX(20px); }
+    .diag-step { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+    .diag-step:last-child { border-bottom: none; }
+    .diag-badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .85rem; font-weight: 700; flex-shrink: 0; }
+    .diag-badge.ok { background: rgba(34,197,94,0.15); color: var(--success); }
+    .diag-badge.missing { background: rgba(239,68,68,0.15); color: var(--error); }
+    .diag-badge.warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .diag-content { flex: 1; }
+    .diag-content h4 { font-size: .85rem; color: var(--text); margin-bottom: 2px; }
+    .diag-content p { font-size: .78rem; color: var(--text-muted); }
+    .diag-issue { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 8px; margin-top: 6px; font-size: .78rem; }
+    .diag-issue.CRITICO { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: var(--error); }
+    .diag-issue.ALTO { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--warning); }
+    .diag-issue.MEDIO { background: rgba(0,176,189,0.08); border: 1px solid rgba(0,176,189,0.15); color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ═══ SIDEBAR ═══ -->
+    <nav class="sidebar" id="sidebar" aria-label="Navigation">
+      <div class="sidebar-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg>
+        <div>
+          <div class="sidebar-brand-name">INDRA</div>
+          <div class="sidebar-brand-sub">INTELLIGENCE</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Agentes</div>
+        <div class="sidebar-nav-item active" data-page="agent-1" onclick="navigateTo('agent-1')">
+          <div class="sidebar-nav-icon" style="background:rgba(0,176,189,0.15);">📋</div>
+          <div class="sidebar-nav-text"><span class="label">Qualificação</span><span class="sub">Agente 1 — Scoring</span></div>
+        </div>
+        <div class="sidebar-nav-item" data-page="agent-2" onclick="navigateTo('agent-2')">
+          <div class="sidebar-nav-icon" style="background:rgba(245,158,11,0.12);">📝</div>
+          <div class="sidebar-nav-text"><span class="label">Kickoff Template</span><span class="sub">Agente 2 — S2S</span></div>
+        </div>
+        <div class="sidebar-nav-item" data-page="agent-3" onclick="navigateTo('agent-3')">
+          <div class="sidebar-nav-icon" style="background:rgba(22,163,74,0.12);">💰</div>
+          <div class="sidebar-nav-text"><span class="label">Ballpark</span><span class="sub">Agente 3 — Precificação</span></div>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Gestão</div>
+        <div class="sidebar-nav-item" data-page="offers-list" onclick="navigateTo('offers-list')">
+          <div class="sidebar-nav-icon">📂</div>
+          <div class="sidebar-nav-text"><span class="label">Ofertas em Andamento</span><span class="sub">Pipeline de ofertas</span></div>
+          <span class="sidebar-badge">5</span>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Base de Conhecimento</div>
+        <div class="sidebar-nav-item" data-page="knowledge-base" onclick="navigateTo('knowledge-base')">
+          <div class="sidebar-nav-icon">🧠</div>
+          <div class="sidebar-nav-text"><span class="label">Bases de Conhecimento</span><span class="sub">Curadoria e gestão</span></div>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Plataforma</div>
+        <div class="sidebar-nav-item" data-page="architecture" onclick="navigateTo('architecture')">
+          <div class="sidebar-nav-icon" style="background:rgba(139,92,246,0.15);">🏗️</div>
+          <div class="sidebar-nav-text"><span class="label">Arquitetura</span><span class="sub">Fluxo e componentes</span></div>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Configurações</div>
+        <div class="sidebar-nav-item" data-page="settings" onclick="navigateTo('settings')">
+          <div class="sidebar-nav-icon">⚙️</div>
+          <div class="sidebar-nav-text"><span class="label">Configurações</span><span class="sub">Parâmetros gerais</span></div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- ═══ MAIN AREA ═══ -->
+    <div class="main-area" id="mainArea">
+      <!-- TOPBAR -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button class="topbar-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div class="topbar-brand">
+            <div class="topbar-brand-logo">indra<span>group</span></div>
+            <div class="topbar-divider"></div>
+            <div>
+              <div class="topbar-title">Agentificação de Ofertas</div>
+              <div class="topbar-subtitle">Gestão inteligente de ofertas técnicas</div>
+            </div>
+          </div>
+          <span class="topbar-badge">AI-POWERED</span>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()" title="Alternar tema">
+            <svg id="themeIconDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            <svg id="themeIconLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </button>
+          <button class="topbar-btn" onclick="toggleNotifications()" title="Notificações">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </button>
+          <div style="position:relative;">
+            <div class="topbar-user" onclick="toggleUserMenu()">
+              <div class="topbar-avatar">AD</div>
+              <span>Alberto D.</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="user-dropdown-header">
+                <div class="name">Alberto da Silva</div>
+                <div class="email">alberto.silva@minsait.com</div>
+              </div>
+              <div class="user-dropdown-item" onclick="alert('Meu Perfil')">👤 Meu Perfil</div>
+              <div class="user-dropdown-item" onclick="navigateTo('settings')">⚙️ Configurações</div>
+              <div class="user-dropdown-item">📊 Meus Relatórios</div>
+              <div class="user-dropdown-divider"></div>
+              <div class="user-dropdown-item danger" onclick="alert('Logout realizado!')">🚪 Sair</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content-area">
+        <!-- ════════ PAGE: AGENT 1 — QUALIFICAÇÃO ════════ -->
+        <div class="page-view active" id="page-agent-1"><div class="content-container">
+          <div class="agent-panel">
+            <div class="agent-panel-header">
+              <div class="agent-panel-icon">📋</div>
+              <div>
+                <h2>Agente 1 — Qualificação de Ofertas</h2>
+                <p>Análise inteligente de RFPs/RFIs para qualificação e scoring de oportunidades</p>
+              </div>
+            </div>
+
+            <div class="agent-split">
+              <!-- INPUTS -->
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📥</span> Inputs</div>
+                <div class="form-group">
+                  <label>Documento da Oportunidade (RFP/RFI/Edital) <span class="required">*</span></label>
+                  <div class="file-drop" id="drop-rfp" onclick="document.getElementById('file-rfp').click()">
+                    <div class="icon">📄</div>
+                    <p>Arraste o documento ou clique para selecionar</p>
+                    <div class="hint">PDF, DOCX, XLSX — máx. 100MB</div>
+                    <input type="file" id="file-rfp" hidden accept=".eml,.pdf,.docx,.xlsx,.txt,.md,.html,.htm,.csv,.zip" onchange="handleFile(this,'drop-rfp')">
+                  </div>
+                  <div class="file-list" id="list-rfp"></div>
+                  <label class="lgpd-consent"><input type="checkbox" id="lgpd-consent-1" required> Concordo com o processamento conforme LGPD</label>
+                </div>
+                <div class="form-group"><label>Nome da Oportunidade <span class="required">*</span></label><input type="text" id="opp-name" placeholder="Ex: Modernização de sistemas legados - Cliente XYZ"></div>
+                <div class="form-group"><label>Cliente <span class="required">*</span></label><input type="text" id="opp-client" placeholder="Nome do cliente"></div>
+                <div class="form-group"><label>Segmento / Vertical <span class="required">*</span></label><select id="opp-segment"><option value="">Selecione...</option><option>Energia & Utilities</option><option>Telecomunicações</option><option>Indústria & Consumo</option><option>Serviços Financeiros</option><option>Administração Pública</option><option>Saúde</option><option>Varejo</option><option>Logística & Transporte</option><option>Educação</option><option>Oil & Gas</option><option>Seguros</option><option>Outros</option></select></div>
+                <div class="form-group"><label>Tipo de Serviço <span class="required">*</span></label><select id="opp-service"><option value="">Selecione...</option><option>Desenvolvimento de Software (Projeto/Escopo Fechado)</option><option>Fábrica de Software (Demanda Contínua)</option><option>Sustentação / AMS (Application Management Services)</option><option>Squad Dedicado (Outsourcing Ágil)</option><option>Body Shop (Alocação de Profissionais)</option><option>Consultoria Técnica / Assessment</option><option>Modernização / Migração de Legado</option><option>Multi-serviço (combinação)</option></select></div>
+                <div class="form-group"><label>Prazo de Resposta <span class="required">*</span></label><input type="date" id="opp-deadline"></div>
+                <div class="form-group"><label>Valor Estimado (R$)</label><input type="number" id="opp-estimated-value" placeholder="Ex: 3000000" min="0" step="10000"></div>
+                <div class="form-group"><label>Idioma da Proposta</label><select id="opp-language"><option value="pt-BR" selected>Português (BR)</option><option value="es">Espanhol</option><option value="en">Inglês</option></select></div>
+                <div class="form-group"><label>Nível de Confidencialidade</label><select id="opp-confidentiality"><option value="">Selecione...</option><option>Público</option><option>Interno</option><option>Confidencial</option><option>Restrito</option></select></div>
+                <div class="form-group"><label>Observações adicionais</label><textarea id="opp-notes" placeholder="Informações complementares sobre a oportunidade..."></textarea></div>
+              </div>
+
+              <!-- OUTPUTS -->
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📤</span> Outputs do Agente</div>
+                <div class="output-area" id="output-1">
+                  <div class="output-placeholder" id="placeholder-1"><div class="icon">⏳</div><p>Execute o agente para ver os resultados</p></div>
+                  <div class="processing-overlay" id="processing-1"><div class="spinner"></div><div class="processing-text">Agente analisando oportunidade...</div></div>
+                  <div class="output-content" id="content-1"></div>
+                </div>
+                <div class="chat-panel" id="chat-1">
+                  <div class="chat-header"><span>💬</span> Refinar com o Agente<span class="hint">Peça novos insights ou ajustes</span></div>
+                  <div class="chat-messages" id="chat-messages-1"></div>
+                  <div class="chat-input-area"><input type="text" id="chat-input-1" placeholder="Ex: Detalhe mais os riscos técnicos..." onkeydown="if(event.key==='Enter')sendChatMessage(1)"><button class="chat-send-btn" onclick="sendChatMessage(1)" title="Enviar">➤</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-bar">
+              <div></div>
+              <div style="display:flex;gap:10px;">
+                <button class="btn btn-primary" onclick="runAgent(1)">🤖 Executar Qualificação</button>
+                <button class="btn btn-success" id="export-1" disabled onclick="exportAgentResult(1)">📥 Exportar Resultado</button>
+              </div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- ════════ PAGE: AGENT 2 — KICKOFF ════════ -->
+        <div class="page-view" id="page-agent-2"><div class="content-container">
+          <div class="agent-panel">
+            <div class="agent-panel-header">
+              <div class="agent-panel-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">📝</div>
+              <div>
+                <h2>Agente 2 — Template Kickoff Meeting (S2S)</h2>
+                <p>Gera o template estruturado para a reunião de kickoff com o cliente</p>
+              </div>
+            </div>
+            <div class="agent-split">
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📥</span> Inputs</div>
+                <div class="form-group"><label>Materiais de Referência <span class="required">*</span></label><div class="file-drop" id="drop-s2s" onclick="document.getElementById('file-s2s').click()"><div class="icon">📎</div><p>Arraste documentos complementares</p><div class="hint">PDF, DOCX, PPTX — múltiplos arquivos</div><input type="file" id="file-s2s" hidden accept=".pdf,.docx,.pptx,.xlsx" multiple onchange="handleFileMulti(this,'drop-s2s','list-s2s')"></div><div class="file-list" id="list-s2s"></div><label class="lgpd-consent"><input type="checkbox" id="lgpd-consent-2" required> Concordo com o processamento conforme LGPD</label></div>
+                <div class="form-group"><label>Contexto da Qualificação</label><select id="kickoff-qualification-link"><option value="">Nenhum — inserir manualmente</option><option value="last">Último resultado do Agente 1</option></select><span style="font-size:.62rem;color:var(--text-muted);margin-top:4px;display:block;">Vincule o output do Agente 1</span></div>
+                <div class="form-group"><label>Nome do Projeto <span class="required">*</span></label><input type="text" id="kickoff-project-name" placeholder="Ex: Modernização ERP - Cliente ABC"></div>
+                <div class="form-group"><label>Cliente <span class="required">*</span></label><input type="text" id="kickoff-client" placeholder="Nome do cliente"></div>
+                <div class="form-group"><label>Data do Kickoff <span class="required">*</span></label><input type="date" id="kickoff-date"></div>
+                <div class="form-group"><label>Formato</label><select id="kickoff-format"><option value="">Selecione...</option><option>Presencial</option><option>Virtual (Teams/Zoom)</option><option>Híbrido</option></select></div>
+                <div class="form-group"><label>Participantes Indra <span class="required">*</span></label><textarea id="kickoff-participants" placeholder="Nome e papel (um por linha)"></textarea></div>
+                <div class="form-group"><label>Stakeholders do Cliente</label><textarea id="kickoff-stakeholders-client" placeholder="Nome, cargo e papel (um por linha)"></textarea></div>
+                <div class="form-group"><label>Objetivos do Kickoff</label><textarea id="kickoff-objectives" placeholder="Pontos a serem endereçados..."></textarea></div>
+                <div class="form-group"><label>Riscos ou pontos de atenção</label><textarea id="kickoff-risks" placeholder="Riscos técnicos, comerciais ou de timeline..."></textarea></div>
+                <div class="form-group"><label>Idioma</label><select id="kickoff-language"><option value="pt-BR" selected>Português (BR)</option><option value="es">Espanhol</option><option value="en">Inglês</option></select></div>
+              </div>
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📤</span> Outputs do Agente</div>
+                <div class="output-area" id="output-2"><div class="output-placeholder" id="placeholder-2"><div class="icon">⏳</div><p>Execute o agente para gerar o template</p></div><div class="processing-overlay" id="processing-2"><div class="spinner"></div><div class="processing-text">Agente gerando template de kickoff...</div></div><div class="output-content" id="content-2"></div></div>
+                <div class="chat-panel" id="chat-2"><div class="chat-header"><span>💬</span> Refinar com o Agente<span class="hint">Peça ajustes no template</span></div><div class="chat-messages" id="chat-messages-2"></div><div class="chat-input-area"><input type="text" id="chat-input-2" placeholder="Ex: Adicione item sobre compliance..." onkeydown="if(event.key==='Enter')sendChatMessage(2)"><button class="chat-send-btn" onclick="sendChatMessage(2)" title="Enviar">➤</button></div></div>
+              </div>
+            </div>
+            <div class="action-bar"><div></div><div style="display:flex;gap:10px;"><button class="btn btn-primary" onclick="runAgent(2)">📝 Gerar Template Kickoff</button><button class="btn btn-success" id="export-2" disabled onclick="exportAgentResult(2)">📥 Exportar Resultado</button></div></div>
+          </div>
+        </div></div>
+
+        <!-- ════════ PAGE: AGENT 3 — BALLPARK ════════ -->
+        <div class="page-view" id="page-agent-3"><div class="content-container">
+          <div class="agent-panel">
+            <div class="agent-panel-header">
+              <div class="agent-panel-icon" style="background:linear-gradient(135deg,#16a34a,#4ade80);">💰</div>
+              <div>
+                <h2>Agente 3 — Gerador de Ofertas Ballpark</h2>
+                <p>Dimensionamento de time, estimativa de custos e precificação</p>
+              </div>
+            </div>
+            <div class="agent-split">
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📥</span> Inputs</div>
+                <div class="form-group"><label>Tabela de Preços / Rates <span class="required">*</span></label><div class="file-drop" id="drop-rates" onclick="document.getElementById('file-rates').click()"><div class="icon">📊</div><p>Upload da tabela de rates</p><div class="hint">XLSX, CSV — tabela de preços por perfil</div><input type="file" id="file-rates" hidden accept=".xlsx,.csv" onchange="handleFile(this,'drop-rates')"></div><div class="file-list" id="list-rates"></div><label class="lgpd-consent"><input type="checkbox" id="lgpd-consent-3" required> Concordo com o processamento conforme LGPD</label></div>
+                <div class="form-group"><label>Contexto dos Agentes anteriores</label><select id="bp-context-link"><option value="">Nenhum</option><option value="qual">Agente 1 (Qualificação)</option><option value="kick">Agente 2 (Kickoff)</option><option value="both">Ambos (1+2)</option></select></div>
+                <div class="form-group"><label>Nome do Projeto <span class="required">*</span></label><input type="text" id="bp-project-name" placeholder="Ex: Sustentação SAP S/4HANA"></div>
+                <div class="form-group"><label>Cliente <span class="required">*</span></label><input type="text" id="bp-client" placeholder="Nome do cliente"></div>
+                <div class="form-group"><label>Duração (meses) <span class="required">*</span></label><input type="number" id="bp-duration" placeholder="Ex: 12" min="1"></div>
+                <div class="form-group"><label>Modelo de Contratação <span class="required">*</span></label><select id="bp-model"><option value="">Selecione...</option><option>Time &amp; Materials</option><option>Preço Fixo</option><option>Outcome-Based</option><option>Híbrido</option><option>Body Shop / Alocação</option><option>Managed Services</option></select></div>
+                <div class="form-group"><label>Delivery</label><select id="bp-delivery"><option value="">Selecione...</option><option>100% Remoto</option><option>Híbrido</option><option>100% Presencial</option><option>Nearshore</option><option>Offshore</option></select></div>
+                <div class="form-group"><label>Stack</label><textarea id="bp-stack" placeholder="Java, Spring Boot, React, AWS..."></textarea></div>
+                <div class="form-group"><label>FTEs Estimados</label><input type="number" id="bp-ftes" placeholder="Ex: 8" min="1"></div>
+                <div class="form-group"><label>Complexidade</label><select id="bp-complexity"><option value="">Selecione...</option><option>Baixa</option><option>Média</option><option>Alta</option><option>Muito Alta</option></select></div>
+                <div class="form-group"><label>SLA</label><select id="bp-sla"><option value="">Selecione...</option><option>Standard (8x5)</option><option>Extended (12x5)</option><option>Premium (24x7)</option><option>Mission Critical</option></select></div>
+                <div class="form-group"><label>Moeda</label><select id="bp-currency"><option value="BRL" selected>BRL (R$)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option></select></div>
+                <div class="form-group"><label>Margem alvo (%)</label><input type="number" id="bp-margin" placeholder="Ex: 25" min="0" max="100"></div>
+                <div class="form-group"><label>Restrições comerciais</label><textarea id="bp-constraints" placeholder="Limitações orçamentárias, concorrência..."></textarea></div>
+              </div>
+              <div class="agent-section">
+                <div class="agent-section-title"><span class="icon">📤</span> Outputs do Agente</div>
+                <div class="output-area" id="output-3" style="min-height:200px;"><div class="output-placeholder" id="placeholder-3"><div class="icon">⏳</div><p>Execute o agente para gerar a oferta ballpark</p></div><div class="processing-overlay" id="processing-3"><div class="spinner"></div><div class="processing-text">Agente dimensionando time e precificação...</div></div><div class="output-content" id="content-3"></div></div>
+                <div class="chat-panel" id="chat-3"><div class="chat-header"><span>💬</span> Refinar com o Agente<span class="hint">Solicite ajustes na precificação</span></div><div class="chat-messages" id="chat-messages-3"></div><div class="chat-input-area"><input type="text" id="chat-input-3" placeholder="Ex: Reduza para 6 FTEs..." onkeydown="if(event.key==='Enter')sendChatMessage(3)"><button class="chat-send-btn" onclick="sendChatMessage(3)" title="Enviar">➤</button></div></div>
+              </div>
+            </div>
+            <div class="action-bar"><div></div><div style="display:flex;gap:10px;"><button class="btn btn-primary" onclick="runAgent(3)">💰 Gerar Oferta Ballpark</button><button class="btn btn-success" id="export-3" disabled onclick="exportAgentResult(3)">📥 Exportar Resultado</button></div></div>
+          </div>
+        </div></div>
+
+        <!-- ════════ PAGE: OFFERS LIST ════════ -->
+        <div class="page-view" id="page-offers-list"><div class="content-container">
+          <h1 class="page-title">📂 Ofertas em Andamento</h1>
+          <p class="page-subtitle">Acompanhe o progresso de cada oferta no pipeline</p>
+          <div class="offer-card" onclick="navigateTo('agent-1')"><div class="offer-icon" style="background:rgba(245,158,11,0.1);">📋</div><div style="flex:1;"><div class="offer-name">Modernização Legado — Banco ABC</div><div class="offer-meta"><span class="status-badge status-step2">⏳ Step 2 — Kickoff</span><span>Financeiro &amp; Seguros</span></div></div><div class="offer-date">10/05/2026</div><div class="offer-actions"><button class="offer-btn offer-btn-primary">Continuar</button></div></div>
+          <div class="offer-card"><div class="offer-icon" style="background:rgba(0,176,189,0.1);">📋</div><div style="flex:1;"><div class="offer-name">Plataforma Data Analytics — Telecom XYZ</div><div class="offer-meta"><span class="status-badge status-step1">⏳ Step 1 — Qualificação</span><span>Telecom &amp; Mídia</span></div></div><div class="offer-date">08/05/2026</div><div class="offer-actions"><button class="offer-btn offer-btn-primary">Continuar</button></div></div>
+          <div class="offer-card"><div class="offer-icon" style="background:rgba(22,163,74,0.1);">📋</div><div style="flex:1;"><div class="offer-name">Sustentação SAP S/4HANA — Energia Sul</div><div class="offer-meta"><span class="status-badge status-step3">⏳ Step 3 — Ballpark</span><span>Energia &amp; Utilities</span></div></div><div class="offer-date">05/05/2026</div><div class="offer-actions"><button class="offer-btn offer-btn-primary">Continuar</button></div></div>
+          <div class="offer-card"><div class="offer-icon" style="background:rgba(22,163,74,0.1);">📋</div><div style="flex:1;"><div class="offer-name">DS Portal de Autoatendimento — Energisa</div><div class="offer-meta"><span class="status-badge status-done">✓ Concluída</span><span>Financeiro &amp; Seguros</span></div></div><div class="offer-date">28/04/2026</div><div class="offer-actions"><button class="offer-btn offer-btn-secondary">Visualizar</button></div></div>
+          <div class="offer-card"><div class="offer-icon" style="background:rgba(22,163,74,0.1);">📋</div><div style="flex:1;"><div class="offer-name">Cloud Migration — Governo Federal</div><div class="offer-meta"><span class="status-badge status-done">✓ Concluída</span><span>Governo &amp; Setor Público</span></div></div><div class="offer-date">20/04/2026</div><div class="offer-actions"><button class="offer-btn offer-btn-secondary">Visualizar</button></div></div>
+        </div></div>
+
+        <!-- ════════ PAGE: KNOWLEDGE BASE ════════ -->
+        <div class="page-view" id="page-knowledge-base"><div class="content-container">
+          <h1 class="page-title">🧠 Bases de Conhecimento</h1>
+          <p class="page-subtitle">Gerencie os acervos que alimentam os agentes de IA</p>
+          <div class="kb-toolbar"><input type="text" class="kb-search" placeholder="Buscar nas bases..."><button class="btn btn-primary" onclick="alert('Upload de documentos')">➕ Adicionar Documentos</button></div>
+          <div class="kb-grid">
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(0,176,189,0.1);">📄</div><div class="kb-card-title">RFPs & Editais Anteriores</div><div class="kb-card-desc">Histórico de RFPs e editais analisados. Usado pelo Agente de Qualificação.</div><div class="kb-card-stats"><span>📁 <strong>142</strong> docs</span><span>📅 12/05/2026</span><span>💾 2.3 GB</span></div></div>
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(245,158,11,0.1);">📝</div><div class="kb-card-title">Templates & Propostas Modelo</div><div class="kb-card-desc">Templates de propostas, SOWs, apresentações de kickoff e materiais de referência.</div><div class="kb-card-stats"><span>📁 <strong>67</strong> docs</span><span>📅 09/05/2026</span><span>💾 890 MB</span></div></div>
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(22,163,74,0.1);">💰</div><div class="kb-card-title">Tabelas de Rates & Custos</div><div class="kb-card-desc">Tabelas de preços por perfil, região e modelo. Base para precificação Ballpark.</div><div class="kb-card-stats"><span>📁 <strong>23</strong> docs</span><span>📅 01/05/2026</span><span>💾 45 MB</span></div></div>
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(139,92,246,0.1);">🏢</div><div class="kb-card-title">Portfólio & Capacidades Indra</div><div class="kb-card-desc">Catálogo de serviços, competências técnicas, certificações e áreas de atuação.</div><div class="kb-card-stats"><span>📁 <strong>38</strong> docs</span><span>📅 06/05/2026</span><span>💾 320 MB</span></div></div>
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(220,38,38,0.06);">🏆</div><div class="kb-card-title">Cases de Sucesso & Referências</div><div class="kb-card-desc">Projetos entregues, resultados e depoimentos. Enriquece propostas.</div><div class="kb-card-stats"><span>📁 <strong>89</strong> docs</span><span>📅 03/05/2026</span><span>💾 1.1 GB</span></div></div>
+            <div class="kb-card"><div class="kb-card-icon" style="background:rgba(0,66,84,0.06);">📊</div><div class="kb-card-title">Dimensionamentos Históricos</div><div class="kb-card-desc">Estimativas anteriores de time/custos para calibração do Agente Ballpark.</div><div class="kb-card-stats"><span>📁 <strong>56</strong> docs</span><span>📅 11/05/2026</span><span>💾 180 MB</span></div></div>
+          </div>
+        </div></div>
+
+        <!-- ════════ PAGE: SETTINGS ════════ -->
+        <div class="page-view" id="page-settings"><div class="content-container">
+          <h1 class="page-title">⚙️ Configurações dos Agentes</h1>
+          <p class="page-subtitle">Parametrize skills e comportamentos de cada agente</p>
+
+          <!-- Agent 1 Config -->
+          <div class="config-card"><div class="config-card-header" onclick="toggleAgentConfig(1)"><div class="config-card-info"><div class="config-card-icon" style="background:rgba(0,176,189,0.12);">📋</div><div><h3>Agente 1 — Qualificação de Ofertas</h3><p>Análise e scoring de oportunidades</p></div></div><div class="config-toggle">▼</div></div>
+            <div class="config-card-body show" id="config-body-1">
+              <div class="config-section"><div class="config-section-title">🤖 Modelo de IA</div><div class="config-grid"><div class="form-group"><label>Modelo LLM</label><select><option>GPT-4o (OpenAI)</option><option>GPT-4o-mini (OpenAI)</option><option selected>Claude 3.5 Sonnet (Anthropic)</option><option>Gemini 1.5 Pro (Google)</option><option>Llama 3.1 70B (Meta)</option></select></div><div class="form-group"><label>Temperatura</label><input type="number" value="0.3" min="0" max="1" step="0.1"></div><div class="form-group"><label>Max Tokens</label><input type="number" value="4096" min="256" max="16384" step="256"></div></div></div>
+              <div class="config-section"><div class="config-section-title">📊 Critérios de Scoring</div><div class="config-grid"><div class="form-group"><label>Peso — Aderência Portfólio (%)</label><input type="number" value="30" min="0" max="100"></div><div class="form-group"><label>Peso — Equipe (%)</label><input type="number" value="20" min="0" max="100"></div><div class="form-group"><label>Peso — Fit Comercial (%)</label><input type="number" value="25" min="0" max="100"></div><div class="form-group"><label>Peso — Risco (%)</label><input type="number" value="15" min="0" max="100"></div><div class="form-group"><label>Peso — Referências (%)</label><input type="number" value="10" min="0" max="100"></div><div class="form-group"><label>Threshold Go/No-Go</label><input type="number" value="60" min="0" max="100"></div></div></div>
+              <div class="config-section"><div class="config-section-title">📝 Skill / Prompt</div><div class="form-group"><label>System Prompt</label><textarea style="min-height:120px;font-family:var(--font-mono);font-size:.72rem;">Você é um analista sênior de pré-vendas da Indra Minsait Brasil. Sua função é avaliar oportunidades comerciais (RFPs, RFIs, Editais) e produzir um scoring de qualificação.
+
+Para cada oportunidade, analise:
+1. Aderência ao portfólio de serviços e competências da Indra
+2. Disponibilidade e capacidade da equipe técnica
+3. Viabilidade comercial (margem, prazo, modelo de contratação)
+4. Nível de risco e complexidade técnica
+5. Existência de cases/referências similares
+
+Produza um score de 0 a 100 e uma recomendação Go/No-Go com justificativa.</textarea></div><div class="form-group"><label>KBs Vinculadas</label><div class="config-tags"><span class="config-tag active">📄 RFPs & Editais</span><span class="config-tag active">🏢 Portfólio</span><span class="config-tag active">🏆 Cases</span><span class="config-tag">📊 Dimensionamentos</span><span class="config-tag">💰 Rates</span><span class="config-tag">📝 Templates</span></div></div></div>
+            </div>
+          </div>
+
+          <!-- Agent 2 Config -->
+          <div class="config-card"><div class="config-card-header" onclick="toggleAgentConfig(2)"><div class="config-card-info"><div class="config-card-icon" style="background:rgba(245,158,11,0.1);">📝</div><div><h3>Agente 2 — Template Kickoff (S2S)</h3><p>Materiais para reunião de kickoff Sell-to-Serve</p></div></div><div class="config-toggle">▼</div></div>
+            <div class="config-card-body" id="config-body-2">
+              <div class="config-section"><div class="config-section-title">🤖 Modelo de IA</div><div class="config-grid"><div class="form-group"><label>Modelo LLM</label><select><option selected>GPT-4o (OpenAI)</option><option>GPT-4o-mini (OpenAI)</option><option>Claude 3.5 Sonnet (Anthropic)</option><option>Gemini 1.5 Pro (Google)</option></select></div><div class="form-group"><label>Temperatura</label><input type="number" value="0.4" min="0" max="1" step="0.1"></div><div class="form-group"><label>Max Tokens</label><input type="number" value="8192" min="256" max="16384" step="256"></div></div></div>
+              <div class="config-section"><div class="config-section-title">📝 Skill / Prompt</div><div class="form-group"><label>System Prompt</label><textarea style="min-height:120px;font-family:var(--font-mono);font-size:.72rem;">Você é um especialista em gestão de projetos da Indra Minsait. Gere templates de kickoff meeting S2S (Sell-to-Serve).
+
+Inclua:
+1. Agenda estruturada com tempos por item
+2. Papéis e responsabilidades sugeridos
+3. Checklist pré-kickoff
+4. Pontos de atenção e riscos
+5. Próximos passos e milestones iniciais</textarea></div><div class="form-group"><label>KBs Vinculadas</label><div class="config-tags"><span class="config-tag">📄 RFPs</span><span class="config-tag active">📝 Templates</span><span class="config-tag active">🏢 Portfólio</span><span class="config-tag active">🏆 Cases</span><span class="config-tag">📊 Dimensionamentos</span><span class="config-tag">💰 Rates</span></div></div></div>
+            </div>
+          </div>
+
+          <!-- Agent 3 Config -->
+          <div class="config-card"><div class="config-card-header" onclick="toggleAgentConfig(3)"><div class="config-card-info"><div class="config-card-icon" style="background:rgba(22,163,74,0.1);">💰</div><div><h3>Agente 3 — Ofertas Ballpark</h3><p>Dimensionamento, custos e precificação</p></div></div><div class="config-toggle">▼</div></div>
+            <div class="config-card-body" id="config-body-3">
+              <div class="config-section"><div class="config-section-title">🤖 Modelo de IA</div><div class="config-grid"><div class="form-group"><label>Modelo LLM</label><select><option>GPT-4o</option><option>GPT-4o-mini</option><option selected>Claude 3.5 Sonnet</option><option>Gemini 1.5 Pro</option></select></div><div class="form-group"><label>Temperatura</label><input type="number" value="0.2" min="0" max="1" step="0.1"></div><div class="form-group"><label>Max Tokens</label><input type="number" value="8192" min="256" max="16384" step="256"></div></div></div>
+              <div class="config-section"><div class="config-section-title">💰 Precificação</div><div class="config-grid"><div class="form-group"><label>Margem Mínima (%)</label><input type="number" value="15" min="0" max="100"></div><div class="form-group"><label>Margem Padrão (%)</label><input type="number" value="25" min="0" max="100"></div><div class="form-group"><label>Margem Máxima (%)</label><input type="number" value="35" min="0" max="100"></div><div class="form-group"><label>Contingência (%)</label><input type="number" value="10" min="0" max="30"></div><div class="form-group"><label>Overhead Gerencial (%)</label><input type="number" value="12" min="0" max="30"></div><div class="form-group"><label>Moeda</label><select><option selected>BRL (R$)</option><option>USD ($)</option><option>EUR (€)</option></select></div></div></div>
+              <div class="config-section"><div class="config-section-title">👥 Dimensionamento</div><div class="config-grid"><div class="form-group"><label>Horas/Mês por FTE</label><input type="number" value="168" min="100" max="200"></div><div class="form-group"><label>Produtividade (%)</label><input type="number" value="85" min="50" max="100"></div><div class="form-group"><label>Ramp-up (semanas)</label><input type="number" value="4" min="1" max="12"></div><div class="form-group"><label>Ratio Sr/Pl/Jr (%)</label><input type="text" value="30/50/20"></div><div class="form-group"><label>Scrum Master</label><select><option>A partir de 5 FTEs</option><option selected>A partir de 8 FTEs</option><option>Sempre</option><option>Nunca (parcial)</option></select></div><div class="form-group"><label>Tech Lead</label><select><option selected>A partir de 4 FTEs</option><option>A partir de 6 FTEs</option><option>Sempre</option></select></div></div></div>
+              <div class="config-section"><div class="config-section-title">📝 Skill / Prompt</div><div class="form-group"><label>System Prompt</label><textarea style="min-height:120px;font-family:var(--font-mono);font-size:.72rem;">Você é um especialista em estimativas e precificação da Indra Minsait Brasil. Gere ofertas ballpark com dimensionamento e custos.
+
+Com base nos dados:
+1. Dimensione o time (perfis, senioridades, quantidades)
+2. Calcule custo mensal e total
+3. Aplique overhead e contingência
+4. Apresente 3 cenários (conservador, recomendado, agressivo)
+5. Inclua indicadores-chave
+
+Use dimensionamentos históricos como referência.</textarea></div><div class="form-group"><label>KBs Vinculadas</label><div class="config-tags"><span class="config-tag">📄 RFPs</span><span class="config-tag">🏢 Portfólio</span><span class="config-tag">📝 Templates</span><span class="config-tag">🏆 Cases</span><span class="config-tag active">📊 Dimensionamentos</span><span class="config-tag active">💰 Rates</span></div></div></div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+            <button class="btn btn-secondary" onclick="alert('Configurações revertidas')">↺ Restaurar Padrão</button>
+            <button class="btn btn-primary" onclick="alert('✅ Configurações salvas!')">💾 Salvar Configurações</button>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- ═══ PAGE: ARCHITECTURE ═══ -->
+      <div class="page-view" id="page-architecture">
+        <div class="page-header"><div class="page-header-icon" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">🏗️</div><div><h1>Arquitetura do Sistema</h1><p>Fluxo completo de qualificação — do upload à decisão GO/NO-GO</p></div></div>
+
+        <!-- Level Switcher -->
+        <div style="display:flex;gap:8px;margin:20px 0;flex-wrap:wrap;">
+          <button class="btn btn-primary arch-level-btn active" onclick="switchArchLevel('macro')" id="btn-macro">🔍 Visão Macro</button>
+          <button class="btn btn-secondary arch-level-btn" onclick="switchArchLevel('low')" id="btn-low">📐 Baixo Nível</button>
+          <button class="btn btn-secondary arch-level-btn" onclick="switchArchLevel('flow')" id="btn-flow">🎬 Fluxo Animado</button>
+        </div>
+
+        <!-- MACRO VIEW -->
+        <div class="arch-panel" id="arch-macro" style="display:block;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;">
+            <h2 style="margin-bottom:20px;color:var(--cyan);">Visão Macro — Pipeline de Qualificação DS</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:24px 0;">
+              <div class="arch-block" style="--c:#00B0BD;"><div class="arch-icon">👤</div><div class="arch-label">Usuário BizDev</div><div class="arch-sub">Upload RFP + Formulário</div></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-block" style="--c:#f59e0b;"><div class="arch-icon">📄</div><div class="arch-label">Extrator</div><div class="arch-sub">PDF/DOCX/EML → Texto</div></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-block" style="--c:#8B5CF6;"><div class="arch-icon">🎯</div><div class="arch-label">Maestro DS</div><div class="arch-sub">Orquestrador</div></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-block" style="--c:#22c55e;"><div class="arch-icon">📊</div><div class="arch-label">Resultado</div><div class="arch-sub">GO / NO-GO / CONDICIONADO</div></div>
+            </div>
+            <div style="margin-top:24px;padding:20px;background:rgba(139,92,246,0.08);border-radius:12px;border:1px solid rgba(139,92,246,0.2);">
+              <h3 style="color:var(--purple);margin-bottom:12px;">Componentes do Pipeline</h3>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;">
+                <div class="arch-comp"><strong>server.py</strong> — API HTTP Flask (porta 8006)</div>
+                <div class="arch-comp"><strong>extracao.py</strong> — Extrator multi-formato (11 tipos)</div>
+                <div class="arch-comp"><strong>validacao.py</strong> — Validador de inputs (enums)</div>
+                <div class="arch-comp"><strong>acervo.py</strong> — Catálogo de 2.042 documentos</div>
+                <div class="arch-comp"><strong>maestro.py</strong> — Orquestrador SA1→SA5</div>
+                <div class="arch-comp"><strong>adk_robo.py</strong> — Motor ADK (sem API)</div>
+                <div class="arch-comp"><strong>trace_logger.py</strong> — Audit trail completo</div>
+                <div class="arch-comp"><strong>sa1-sa5.py</strong> — Configs p/ modo LLM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOW LEVEL VIEW -->
+        <div class="arch-panel" id="arch-low" style="display:none;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;">
+            <h2 style="margin-bottom:20px;color:var(--cyan);">Baixo Nível — Fluxo de Dados Interno</h2>
+            <div class="arch-flow-detail">
+              <div class="arch-stage">
+                <div class="arch-stage-num">1</div>
+                <div class="arch-stage-content">
+                  <h3>Upload & Validação</h3>
+                  <p><code>server.py /api/qualificar</code> recebe multipart/form-data</p>
+                  <ul><li>Valida extensão (.pdf, .docx, .eml, .xlsx, .txt, etc.)</li><li>Salva em /tmp</li><li>Parseia JSON <code>dados</code> do formulário</li><li><code>ValidadorInput.validar()</code> — checa enums de setor/tipo</li></ul>
+                </div>
+              </div>
+              <div class="arch-stage">
+                <div class="arch-stage-num">2</div>
+                <div class="arch-stage-content">
+                  <h3>Extração Documental</h3>
+                  <p><code>ExtratorDocumental.extrair()</code></p>
+                  <ul><li>Router por extensão → parser específico</li><li>PDF: pdfplumber → texto por página</li><li>EML: email.parser → body + attachments</li><li>DOCX: python-docx → parágrafos + tabelas</li><li>Retorna <code>texto_consolidado</code></li></ul>
+                </div>
+              </div>
+              <div class="arch-stage">
+                <div class="arch-stage-num">3</div>
+                <div class="arch-stage-content">
+                  <h3>SA1 — Extrator Estruturado</h3>
+                  <p><code>adk_robo.sa1_extrair()</code></p>
+                  <ul><li>Tokeniza texto (regex word boundary)</li><li>Detecta tecnologias (48 keywords com pesos)</li><li>Parseia valores monetários (R$, USD)</li><li>Identifica escopo principal (10 categorias)</li><li>Estima complexidade: BAIXA → MUITO_ALTA</li></ul>
+                </div>
+              </div>
+              <div class="arch-stage">
+                <div class="arch-stage-num">4</div>
+                <div class="arch-stage-content">
+                  <h3>Acervo DS — Confronto com KB</h3>
+                  <p><code>adk_robo._confrontar_acervo()</code></p>
+                  <ul><li>Busca em <strong>2.042 documentos</strong> do catalog.json</li><li>Classifica por: Atestados, Cases, Capacidades, Propostas, Soluções, Templates</li><li>Calcula <code>cobertura_score</code> (0-10)</li><li>Retorna top 30 docs mais relevantes</li></ul>
+                </div>
+              </div>
+              <div class="arch-stage">
+                <div class="arch-stage-num">5</div>
+                <div class="arch-stage-content">
+                  <h3>SA2+SA3+SA4 — Análise Paralela</h3>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px;">
+                    <div class="arch-subcard"><strong>SA2 Técnico</strong><br>Tech score + aderência DS + dimensionamento FTEs + perfis + gaps</div>
+                    <div class="arch-subcard"><strong>SA3 Riscos</strong><br>26 patterns → severidade ALTO/MEDIO/BAIXO + mitigações + risk_score</div>
+                    <div class="arch-subcard"><strong>SA4 Comercial</strong><br>8 Faróis (peso %) + Best Story Wins (4 pilares) + score ponderado</div>
+                  </div>
+                </div>
+              </div>
+              <div class="arch-stage">
+                <div class="arch-stage-num">6</div>
+                <div class="arch-stage-content">
+                  <h3>SA5 — Decisor Estratégico</h3>
+                  <p><code>adk_robo.sa5_decidir()</code></p>
+                  <ul><li>Score ≥ 7.0 + risk ≤ 4 → <strong style="color:#22c55e;">GO</strong></li><li>Score < 4.0 ou ≥4 críticos → <strong style="color:#ef4444;">NO_GO</strong></li><li>Demais → <strong style="color:#f59e0b;">GO_CONDICIONADO</strong> + condições</li><li>Gera: farois, BSW, dimensionamento, riscos, next_steps</li></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANIMATED FLOW VIEW -->
+        <div class="arch-panel" id="arch-flow" style="display:none;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+              <h2 style="color:var(--cyan);">Fluxo Animado — Simulação do Pipeline</h2>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-primary" id="btn-sim-start" onclick="startFlowSim()">▶ Simular Fluxo RFP</button>
+                <button class="btn btn-secondary" onclick="resetFlowSim()">↺ Reset</button>
+              </div>
+            </div>
+            <div class="flow-canvas" id="flow-canvas">
+              <!-- Nodes -->
+              <div class="flow-node" id="fn-user" style="left:2%;top:40%;"><div class="flow-node-icon">👤</div><div class="flow-node-label">Usuário<br>BizDev</div></div>
+              <div class="flow-node" id="fn-frontend" style="left:12%;top:40%;"><div class="flow-node-icon">🌐</div><div class="flow-node-label">Frontend<br>HTML</div></div>
+              <div class="flow-node" id="fn-server" style="left:22%;top:40%;"><div class="flow-node-icon">⚡</div><div class="flow-node-label">Server<br>Flask API</div></div>
+              <div class="flow-node" id="fn-extrator" style="left:32%;top:20%;"><div class="flow-node-icon">📄</div><div class="flow-node-label">Extrator<br>Documental</div></div>
+              <div class="flow-node" id="fn-validador" style="left:32%;top:60%;"><div class="flow-node-icon">✅</div><div class="flow-node-label">Validador<br>Input</div></div>
+              <div class="flow-node" id="fn-maestro" style="left:48%;top:40%;"><div class="flow-node-icon maestro-icon">🎯</div><div class="flow-node-label">Maestro<br>DS</div></div>
+              <div class="flow-node" id="fn-acervo" style="left:48%;top:75%;"><div class="flow-node-icon">🧠</div><div class="flow-node-label">Acervo DS<br>2.042 docs</div></div>
+              <div class="flow-node" id="fn-sa1" style="left:62%;top:10%;"><div class="flow-node-icon">🔍</div><div class="flow-node-label">SA1<br>Extrator</div></div>
+              <div class="flow-node" id="fn-sa2" style="left:72%;top:20%;"><div class="flow-node-icon">🔧</div><div class="flow-node-label">SA2<br>Técnico</div></div>
+              <div class="flow-node" id="fn-sa3" style="left:72%;top:45%;"><div class="flow-node-icon">⚠️</div><div class="flow-node-label">SA3<br>Riscos</div></div>
+              <div class="flow-node" id="fn-sa4" style="left:72%;top:70%;"><div class="flow-node-icon">💰</div><div class="flow-node-label">SA4<br>Comercial</div></div>
+              <div class="flow-node" id="fn-sa5" style="left:86%;top:40%;"><div class="flow-node-icon">🏆</div><div class="flow-node-label">SA5<br>Decisor</div></div>
+              <div class="flow-node" id="fn-result" style="left:86%;top:75%;"><div class="flow-node-icon">📊</div><div class="flow-node-label">Resultado<br>GO/NO-GO</div></div>
+              <!-- Phase indicator -->
+              <div class="flow-phase-badge" id="flow-phase">Clique em "Simular" para iniciar</div>
+            </div>
+            <!-- Log panel -->
+            <div style="margin-top:16px;background:rgba(0,0,0,0.3);border-radius:12px;padding:16px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:12px;" id="flow-log">
+              <div style="color:var(--text-muted);">// Log do pipeline — aguardando simulação...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture Images from reference -->
+        <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
+          <h3 style="color:var(--cyan);margin-bottom:16px;">📷 Referência Visual — Arquitetura de Referência AWS</h3>
+          <p style="color:var(--text-secondary);margin-bottom:16px;">Diagramas do fluxo de qualificação em ambiente produção (CloudFront + API Gateway + Lambda + DynamoDB).</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;">
+            <img src="/Arquitetura/Captura de tela 2026-06-08 195455.png" alt="Fase 2 - Upload RFP" style="width:100%;border-radius:12px;border:1px solid var(--border);cursor:pointer;" onclick="this.style.transform=this.style.transform?'':'scale(1.5)';this.style.zIndex=this.style.zIndex?'':'999';this.style.position=this.style.position?'':'relative';">
+            <img src="/Arquitetura/Captura de tela 2026-06-08 195642.png" alt="Fase 4 - Sub-agentes" style="width:100%;border-radius:12px;border:1px solid var(--border);cursor:pointer;" onclick="this.style.transform=this.style.transform?'':'scale(1.5)';this.style.zIndex=this.style.zIndex?'':'999';this.style.position=this.style.position?'':'relative';">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Actions -->
+  <div class="floating-actions">
+    <button class="floating-btn alt" onclick="exportDataJSON()"><span>📥</span> JSON</button>
+    <button class="floating-btn" onclick="window.print()"><span>⬇</span> PDF</button>
+  </div>
+
+  <script>
+    /* ═══ THEME ═══ */
+    function getTheme() { try { return localStorage.getItem('indra_theme') || 'dark'; } catch { return 'dark'; } }
+    function setTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      try { localStorage.setItem('indra_theme', t); } catch {}
+      document.getElementById('themeIconDark').style.display = t === 'dark' ? '' : 'none';
+      document.getElementById('themeIconLight').style.display = t === 'light' ? '' : 'none';
+    }
+    function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+    setTheme(getTheme());
+
+    /* ═══ SIDEBAR TOGGLE ═══ */
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    /* ═══ NAVIGATION ═══ */
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page-${pageId}`).classList.add('active');
+      document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.page === pageId) item.classList.add('active');
+      });
+      // Close sidebar on mobile
+      if (window.innerWidth <= 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+      }
+    }
+
+    /* ═══ AGENT STATE ═══ */
+    const agentResults = { 1: null, 2: null, 3: null };
+
+    /* ═══ FILE HANDLING ═══ */
+    /* ═══ FILE HANDLING ═══ */
+    function handleFile(input, dropId) {
+      const drop = document.getElementById(dropId);
+      if (!drop) return;
+      
+      if (input.files.length > 0) {
+        const f = input.files[0];
+        const name = f.name;
+        const sizeFormatted = (f.size / (1024 * 1024)).toFixed(2) + " MB";
+        
+        const fileInput = drop.querySelector('input[type="file"]') || input;
+        
+        drop.innerHTML = `
+          <div class="upload-success-card">
+            <div class="upload-success-icon">✓</div>
+            <div class="upload-success-details">
+              <div class="upload-success-name">${name}</div>
+              <div class="upload-success-meta">${sizeFormatted} · <span class="upload-status-lbl">Documento carregado</span></div>
+              <div class="upload-local-bar"><div class="upload-local-fill"></div></div>
+            </div>
+          </div>
+        `;
+        
+        drop.appendChild(fileInput);
+        
+        setTimeout(() => {
+          const fill = drop.querySelector('.upload-local-fill');
+          if (fill) fill.style.width = '100%';
+        }, 50);
+
+        // ═══ AUTO-FILL: Sugerir preenchimento automático ═══
+        if (dropId === 'drop-rfp') {
+          setTimeout(() => suggestAutoFill(name), 300);
+        }
+      }
+    }
+
+    function suggestAutoFill(filename) {
+      // Só sugere se campos estiverem vazios
+      const nome = document.getElementById('opp-name');
+      const hasData = nome && nome.value.trim().length > 0;
+      if (hasData) return;
+
+      // Mostrar toast de sugestão
+      const toast = document.createElement('div');
+      toast.id = 'autofill-toast';
+      toast.style.cssText = `
+        position:fixed; bottom:24px; right:24px; z-index:9999;
+        background:linear-gradient(135deg,#0a2540,#0d3b66); color:#fff;
+        border:1px solid rgba(0,255,200,0.3); border-radius:16px;
+        padding:20px 24px; max-width:420px; box-shadow:0 12px 40px rgba(0,0,0,0.5);
+        animation: slideInUp 0.4s ease;
+      `;
+      toast.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <span style="font-size:28px">🤖</span>
+          <div>
+            <div style="font-weight:700;font-size:14px">Preenchimento Automático</div>
+            <div style="font-size:12px;opacity:0.7">Preencher campos obrigatórios com base no documento?</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button onclick="dismissAutoFill()" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px">Não, obrigado</button>
+          <button onclick="executeAutoFill('${filename.replace(/'/g,'')}')" style="padding:8px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,#00ffc8,#00b894);color:#0a2540;cursor:pointer;font-weight:700;font-size:13px">✨ Preencher</button>
+        </div>
+      `;
+      document.body.appendChild(toast);
+
+      // Auto-dismiss after 10s
+      setTimeout(dismissAutoFill, 10000);
+    }
+
+    function dismissAutoFill() {
+      const t = document.getElementById('autofill-toast');
+      if (t) { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }
+    }
+
+    function executeAutoFill(filename) {
+      dismissAutoFill();
+      const fn = filename.toLowerCase();
+
+      // ── Nome da Oportunidade (do filename) ──
+      let oppName = filename
+        .replace(/\.[^.]+$/, '')       // remove extension
+        .replace(/^ENC_/, '')           // remove ENC_ prefix
+        .replace(/^RE_/i, '')           // remove RE_ prefix
+        .replace(/^FW_/i, '')           // remove FW_ prefix
+        .replace(/\[.*?\]/g, '')        // remove [brackets]
+        .replace(/_/g, ' ')             // underscores to spaces
+        .replace(/\s+/g, ' ')           // normalize spaces
+        .trim();
+      if (oppName.length > 3) {
+        document.getElementById('opp-name').value = oppName;
+      }
+
+      // ── Cliente (extract from filename patterns) ──
+      const clientPatterns = [
+        /(?:CPFL|Energisa|Enel|CEMIG|Copel|Light|Equatorial|Neoenergia|Sabesp|Comg[aá]s)/i,
+        /(?:Santander|Bradesco|Ita[uú]|Nubank|Inter|Porto\s*Seguro)/i,
+        /(?:Volkswagen|VW|Motiva|Ambev|Natura|Vale|Gerdau|Petrobras)/i,
+        /(?:Magazine\s*Luiza|Mercado\s*Livre)/i,
+      ];
+      for (const pat of clientPatterns) {
+        const m = filename.match(pat);
+        if (m) { document.getElementById('opp-client').value = m[0]; break; }
+      }
+      // If no client found, use a placeholder from ID if present
+      if (!document.getElementById('opp-client').value) {
+        const idMatch = filename.match(/ID\s*(\d+)/i);
+        if (idMatch) {
+          document.getElementById('opp-client').value = 'Cliente ID ' + idMatch[1];
+        }
+      }
+
+      // ── Segmento (detect from filename) ──
+      const seg = document.getElementById('opp-segment');
+      if (fn.match(/energ|cpfl|enel|cemig|copel|light|equatorial|neoenergia|comg[aá]s|sabesp/)) seg.value = 'Energia & Utilities';
+      else if (fn.match(/banco|santander|bradesco|ita[uú]|nubank|financ/)) seg.value = 'Serviços Financeiros';
+      else if (fn.match(/telecom|telecomunica/)) seg.value = 'Telecomunicações';
+      else if (fn.match(/governo|p[uú]blic|licita/)) seg.value = 'Administração Pública';
+      else if (fn.match(/sa[uú]de|hospital/)) seg.value = 'Saúde';
+      else if (fn.match(/varejo|retail/)) seg.value = 'Varejo';
+      else if (fn.match(/ind[uú]stria|manufat|volkswagen|vw|gerdau|vale|ambev/)) seg.value = 'Indústria & Consumo';
+      else if (fn.match(/transporte|log[ií]stica/)) seg.value = 'Logística & Transporte';
+      else if (fn.match(/[oó]leo|g[aá]s|petrobras/)) seg.value = 'Oil & Gas';
+      else if (fn.match(/seguro|porto/)) seg.value = 'Seguros';
+      else seg.value = 'Outros';
+
+      // ── Tipo de Serviço (detect from filename) ──
+      const svc = document.getElementById('opp-service');
+      if (fn.match(/sustenta[cç][aã]o|ams|manuten[cç][aã]o|suporte/)) svc.value = 'Sustentação / AMS (Application Management Services)';
+      else if (fn.match(/outsourc|squad|[aá]gil/)) svc.value = 'Squad Dedicado (Outsourcing Ágil)';
+      else if (fn.match(/body.?shop|aloca[cç][aã]o/)) svc.value = 'Body Shop (Alocação de Profissionais)';
+      else if (fn.match(/consultoria|assessment|diagn[oó]stico/)) svc.value = 'Consultoria Técnica / Assessment';
+      else if (fn.match(/moderniza|migra[cç][aã]o|legacy|legado/)) svc.value = 'Modernização / Migração de Legado';
+      else if (fn.match(/f[aá]brica/)) svc.value = 'Fábrica de Software (Demanda Contínua)';
+      else if (fn.match(/multi|combina/)) svc.value = 'Multi-serviço (combinação)';
+      else svc.value = 'Desenvolvimento de Software (Projeto/Escopo Fechado)';
+
+      // ── Prazo: 30 dias a partir de hoje ──
+      const deadline = document.getElementById('opp-deadline');
+      const d = new Date(); d.setDate(d.getDate() + 30);
+      deadline.value = d.toISOString().split('T')[0];
+
+      // ── LGPD: auto-check ──
+      const lgpd = document.getElementById('lgpd-consent-1');
+      if (lgpd) lgpd.checked = true;
+
+      // ── Feedback visual ──
+      const fields = ['opp-name','opp-client','opp-segment','opp-service','opp-deadline'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value) {
+          el.style.transition = 'box-shadow 0.3s';
+          el.style.boxShadow = '0 0 0 2px rgba(0,255,200,0.5)';
+          setTimeout(() => { el.style.boxShadow = ''; }, 2000);
+        }
+      });
+
+      // Success notification
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position:fixed; top:24px; right:24px; z-index:9999;
+        background:linear-gradient(135deg,#00ffc8,#00b894); color:#0a2540;
+        border-radius:12px; padding:14px 20px; font-weight:700; font-size:14px;
+        box-shadow:0 8px 24px rgba(0,0,0,0.3); animation: slideInUp 0.3s ease;
+      `;
+      notif.textContent = '✅ Campos preenchidos automaticamente';
+      document.body.appendChild(notif);
+      setTimeout(() => { notif.style.opacity = '0'; setTimeout(() => notif.remove(), 300); }, 3000);
+    }
+    function handleFileMulti(input, dropId, listId) {
+      const list = document.getElementById(listId);
+      list.innerHTML = '';
+      for (const f of input.files) {
+        list.innerHTML += `<div class="file-list-item">📄 ${f.name}</div>`;
+      }
+      if (input.files.length > 0) {
+        document.getElementById(dropId).querySelector('p').textContent = `${input.files.length} arquivo(s) selecionado(s)`;
+      }
+    }
+
+    /* ═══ AGENT RUNNER CONSTANTS ═══ */
+    const PASSOS = {
+      inicio:        { icon: "🟢", txt: d => `Iniciando análise — ${d.cliente||''} (${d.setor||''}) · modelo ${d.modelo}` },
+      rag_inicio:    { icon: "🔎", txt: d => `Consultando o Acervo (RAG) — setor "${d.consulta_setor||'-'}", top-k ${d.top_k}` },
+      rag_fim:       { icon: "📚", txt: d => `Acervo recuperado: ${(d.docs||[]).join(", ")} · cobertura setor: ${d.cobertura_setor} doc(s)${d.alerta_baixa_cobertura ? " ⚠️ baixa" : ""}` },
+      prompt_pronto: { icon: "🧩", txt: d => `Prompt montado (${d.chars} caracteres) — form + RFP + evidências` },
+      llm_inicio:    { icon: "🤖", txt: d => `Enviando ao modelo (endpoint: ${d.endpoint})… aguardando raciocínio` },
+      llm_retry:     { icon: "⏳", txt: d => `Rate limit transitório — nova tentativa ${d.tentativa} em ${d.espera_s}s` },
+      llm_fim:       { icon: "⏱️", txt: d => `Resposta recebida em ${d.latencia_s}s` },
+      json_reparo:   { icon: "🧰", txt: () => `Ajustando a resposta para JSON válido` },
+      parse_ok:      { icon: "✅", txt: d => `JSON interpretado — decisão preliminar: ${d.decisao||'-'}` },
+      documento_ok:  { icon: "📄", txt: d => `Documento lido: "${d.nome_oportunidade}" (${d.chars} caracteres extraídos)` },
+      resultado:     { icon: "🏁", txt: () => `Validação e score concluídos` },
+      erro:          { icon: "❌", txt: d => `Erro: ${d.msg||''}` }
+    };
+
+    const PROGRESS = {
+      preparando:    { pct: 5,  title: "Preparando documento", detail: "Validando os campos e o documento selecionado." },
+      lendo:         { pct: 12, title: "Extraindo texto", detail: "Convertendo o arquivo local para envio seguro ao servidor." },
+      lido:          { pct: 24, title: "Extraindo texto", detail: "Arquivo lido com sucesso. Preparando o payload." },
+      enviando:      { pct: 30, title: "Extraindo texto", detail: "Transferindo o documento e os dados da oportunidade." },
+      documento_ok:  { pct: 40, title: "Extraindo texto", detail: "Texto extraído. A análise de qualificação já começou." },
+      inicio:        { pct: 48, title: "Recuperando acervo", detail: "O agente recebeu a oportunidade e carregou o modelo." },
+      rag_inicio:    { pct: 58, title: "Recuperando acervo", detail: "Buscando evidências no repositório de conhecimento." },
+      rag_fim:       { pct: 68, title: "Recuperando acervo", detail: "Evidências selecionadas para compor o raciocínio." },
+      prompt_pronto: { pct: 76, title: "Montando contexto", detail: "Formulário, documento e evidências foram consolidados." },
+      llm_inicio:    { pct: 86, title: "Analisando com Claude", detail: "Aguardando resposta da IA. Esta etapa pode levar alguns instantes." },
+      llm_retry:     { pct: 88, title: "Analisando com Claude", detail: "O provedor pediu uma pausa curta. O agente tentará novamente automaticamente." },
+      llm_fim:       { pct: 94, title: "Validando saída", detail: "Interpretando e validando a resposta estruturada." },
+      json_reparo:   { pct: 96, title: "Normalizando saída estruturada", detail: "A resposta veio fora do formato estrito. O agente está corrigindo a estrutura." },
+      parse_ok:      { pct: 98, title: "Validando saída", detail: "Conferindo score, faróis e recomendação." },
+      resultado:     { pct: 100, title: "Concluído", detail: "Resultado pronto para revisão e exportação." },
+      erro:          { pct: 100, title: "Análise interrompida", detail: "Revise a mensagem abaixo para corrigir o problema." }
+    };
+
+    function pipelineHTML() {
+      return `
+        <div class="exec-report-panel">
+          <!-- Header -->
+          <div class="report-header">
+            <div>
+              <span class="report-type-badge">RFP Qualification</span>
+              <h1 class="report-title" style="letter-spacing: -0.02em;">Qualificação Minsait BizDev &amp; Recomendação</h1>
+              <p class="report-subtitle">Best Story Wins + Critérios Cliente × Minsait | Decisão Go / No-Go</p>
+            </div>
+            <div class="report-header-actions">
+              <button class="toggle-params-btn" onclick="window.toggleParameters()" style="margin-right: 8px;">
+                <span>⚙️</span> Mostrar Entradas
+              </button>
+              <button class="report-btn" disabled>
+                <span>⚙️ Exportar JSON</span>
+              </button>
+              <button class="report-btn primary" disabled>
+                <span>🖨️ Imprimir PDF</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recomendação Final Card (Placeholder/Running) -->
+          <div class="rec-card rec-running" id="report-rec-card-placeholder" style="border-color: var(--cyan); background: rgba(0, 80, 100, 0.1); box-shadow: 0 8px 32px rgba(0, 176, 189, 0.1); display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <!-- Glowing spinner -->
+              <div class="spinner" style="width: 28px; height: 28px; border-width: 3px; border-top-color: var(--cyan); display: inline-block; flex-shrink: 0;"></div>
+              <div>
+                <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--cyan); margin-bottom: 4px;">Análise de Qualificação Inteligente em Progresso...</h3>
+                <p style="font-size: 0.76rem; color: var(--text-secondary);" id="exec-progress-detail-text">Aguardando o raciocínio profundo da IA Claude Sonnet e validação estrutural do metamodelo.</p>
+              </div>
+            </div>
+            <!-- Premium linear progress bar -->
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; position: relative;">
+              <div id="exec-linear-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--success)); border-radius: 3px; transition: width 0.3s ease; box-shadow: 0 0 8px var(--cyan);"></div>
+            </div>
+          </div>
+
+          <!-- Critérios Ponderados (Placeholder) -->
+          <div style="margin-top: 32px; opacity: 0.6;">
+            <h2 style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.05em; color: var(--cyan); text-transform: uppercase;">
+              CRITÉRIOS PONDERADOS DE QUALIFICAÇÃO
+            </h2>
+            <p style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 12px;">
+              Faróis alimentam a recomendação final
+            </p>
+            <div class="crit-cols">
+              <div class="crit-col">
+                <div class="crit-col-header">👤 Critérios do Cliente</div>
+                <div style="display:flex; flex-direction:column; gap:10px; padding: 10px 0;">
+                  <div style="font-size:0.72rem; color:var(--text-muted); font-style:italic;">Aguardando processamento dos critérios do cliente...</div>
+                </div>
+              </div>
+              <div class="crit-col">
+                <div class="crit-col-header">🏢 Critérios Minsait</div>
+                <div style="display:flex; flex-direction:column; gap:10px; padding: 10px 0;">
+                  <div style="font-size:0.72rem; color:var(--text-muted); font-style:italic;">Aguardando processamento dos critérios Minsait...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Best Story Wins (Placeholder) -->
+          <div style="margin-top: 32px; opacity: 0.6; margin-bottom: 24px;">
+            <h2 style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.05em; color: var(--cyan); text-transform: uppercase;">
+              Best Story Wins — Aplicação à Oportunidade
+            </h2>
+            <div class="bsw-grid">
+              <div class="bsw-card" style="min-height: 80px; justify-content: center; align-items: center; border-style: dashed;">
+                <span style="font-size:0.72rem; color:var(--text-muted);">Aguardando "Por que mudar?"</span>
+              </div>
+              <div class="bsw-card" style="min-height: 80px; justify-content: center; align-items: center; border-style: dashed;">
+                <span style="font-size:0.72rem; color:var(--text-muted);">Aguardando "Por que agora?"</span>
+              </div>
+              <div class="bsw-card" style="min-height: 80px; justify-content: center; align-items: center; border-style: dashed;">
+                <span style="font-size:0.72rem; color:var(--text-muted);">Aguardando "Por que Minsait?"</span>
+              </div>
+              <div class="bsw-card" style="min-height: 80px; justify-content: center; align-items: center; border-style: dashed;">
+                <span style="font-size:0.72rem; color:var(--text-muted);">Aguardando "Por que confiar?"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapsible Technical Details (Accordion) -->
+        <details class="tech-details-accordion" id="ag1-pipeline-details" style="margin-top: 24px;">
+          <summary class="tech-details-trigger">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>⚙️</span>
+              <span>Pipeline de Qualificação Inteligente</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="tech-details-status" id="exec-progress-summary">0% - Preparando</span>
+              <span class="tech-details-arrow">▼</span>
+            </div>
+          </summary>
+          <div class="tech-details-content-inner" style="padding: 20px; background: rgba(0, 0, 0, 0.15);">
+            <div class="progress-dashboard">
+              <div class="progress-gauge-wrapper">
+                <svg class="progress-gauge-svg" viewBox="0 0 120 120">
+                  <defs>
+                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00B0BD" />
+                      <stop offset="100%" stop-color="#27AE60" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="progress-gauge-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="progress-gauge-fill" id="exec-progress-ring" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"></circle>
+                </svg>
+                <div class="progress-gauge-text">
+                  <span class="progress-gauge-pct" id="exec-progress-pct">0%</span>
+                  <span class="progress-gauge-status" id="exec-progress-status">Preparando</span>
+                </div>
+              </div>
+              
+              <div class="progress-steps-list">
+                <div class="progress-step-item" id="step-preparando">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">1. Preparação dos Dados</div>
+                    <div class="step-desc">Validação dos parâmetros e do documento anexado</div>
+                  </div>
+                </div>
+                <div class="progress-step-item" id="step-lendo">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">2. Extração de Texto</div>
+                    <div class="step-desc">Processamento local do documento e conversão segura</div>
+                  </div>
+                </div>
+                <div class="progress-step-item" id="step-recuperando">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">3. RAG &amp; Acervo Intelectual</div>
+                    <div class="step-desc">Buscando inteligência e evidências na base histórica</div>
+                  </div>
+                </div>
+                <div class="progress-step-item" id="step-montando">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">4. Consolidação do Contexto</div>
+                    <div class="step-desc">Montagem do prompt final com base no metamodelo</div>
+                  </div>
+                </div>
+                <div class="progress-step-item" id="step-analisando">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">5. Raciocínio com Claude Sonnet</div>
+                    <div class="step-desc">IA Moonshot processando através de NVIDIA API</div>
+                  </div>
+                </div>
+                <div class="progress-step-item" id="step-validando">
+                  <div class="step-indicator"><div class="step-dot"></div></div>
+                  <div class="step-text">
+                    <div class="step-title">6. Validação e Scoring</div>
+                    <div class="step-desc">Checagem de consistência, justificativas e score final</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+              <div id="pl-steps-1" style="display:flex;flex-direction:column;gap:6px;"></div>
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    window.toggleParameters = function() {
+      const split = document.querySelector(".agent-split");
+      if (!split) return;
+      const willBeExpanded = !split.classList.contains("expanded");
+      split.classList.toggle("expanded");
+      
+      const btns = document.querySelectorAll(".toggle-params-btn");
+      btns.forEach(btn => {
+        btn.innerHTML = willBeExpanded 
+          ? `<span>⚙️</span> Mostrar Entradas`
+          : `<span>⚙️</span> Ocultar Entradas`;
+      });
+    };
+
+    function transitionStep(stage) {
+      const steps = [
+        { id: "step-preparando", stages: ["preparando"] },
+        { id: "step-lendo", stages: ["lendo", "lido", "enviando", "documento_ok"] },
+        { id: "step-recuperando", stages: ["inicio", "rag_inicio", "rag_fim"] },
+        { id: "step-montando", stages: ["prompt_pronto"] },
+        { id: "step-analisando", stages: ["llm_inicio", "llm_retry"] },
+        { id: "step-validando", stages: ["llm_fim", "json_reparo", "parse_ok"] }
+      ];
+
+      let currentIdx = -1;
+      for (let i = 0; i < steps.length; i++) {
+        if (steps[i].stages.includes(stage)) {
+          currentIdx = i;
+          break;
+        }
+      }
+
+      if (currentIdx === -1 && stage === "resultado") {
+        currentIdx = steps.length;
+      }
+
+      steps.forEach((step, idx) => {
+        const el = document.getElementById(step.id);
+        if (!el) return;
+        if (idx < currentIdx) {
+          el.className = "progress-step-item completed";
+        } else if (idx === currentIdx) {
+          el.className = "progress-step-item active";
+        } else {
+          el.className = "progress-step-item";
+        }
+      });
+
+      const statusTextEl = document.getElementById("exec-progress-status");
+      if (statusTextEl) {
+        if (stage === "resultado") {
+          statusTextEl.textContent = "Concluído";
+        } else if (stage === "erro") {
+          statusTextEl.textContent = "Erro";
+        } else {
+          const cfg = PROGRESS[stage] || PROGRESS.preparando;
+          statusTextEl.textContent = cfg.title;
+        }
+      }
+    }
+
+    function updateProgress(stage, detailOverride) {
+      const cfg = PROGRESS[stage] || PROGRESS.preparando;
+      const ring = document.getElementById("exec-progress-ring");
+      const pctText = document.getElementById("exec-progress-pct");
+      const summaryText = document.getElementById("exec-progress-summary");
+      const linearFill = document.getElementById("exec-linear-progress-fill");
+      const detailTextEl = document.getElementById("exec-progress-detail-text");
+
+      if (ring && pctText) {
+        ring.style.strokeDashoffset = 314 - (cfg.pct / 100) * 314;
+        pctText.textContent = `${cfg.pct}%`;
+      }
+      if (summaryText) {
+        summaryText.textContent = `${cfg.pct}% - ${cfg.title}`;
+      }
+      if (linearFill) {
+        linearFill.style.width = `${cfg.pct}%`;
+      }
+      if (detailTextEl) {
+        detailTextEl.textContent = detailOverride || cfg.detail;
+      }
+      
+      transitionStep(stage);
+    }
+
+    /* ═══ AGENT EXECUTION — REAL BACKEND WITH SSE STREAMING ═══ */
+    const API_BASE = window.location.origin; // http://127.0.0.1:8006
+
+    async function runAgent(step) {
+      const placeholder = document.getElementById(`placeholder-${step}`);
+      const processing  = document.getElementById(`processing-${step}`);
+      const content     = document.getElementById(`content-${step}`);
+
+      if (step === 1) {
+        // ── Coletar dados (sem validação obrigatória) ──
+        const fileInput = document.getElementById('file-rfp');
+        const nome     = document.getElementById('opp-name')?.value?.trim() || 'Análise RFP';
+        const cliente  = document.getElementById('opp-client')?.value?.trim() || 'N/A';
+        const setor    = document.getElementById('opp-segment')?.value || 'Outros';
+        const servico  = document.getElementById('opp-service')?.value || 'Multi-serviço (combinação)';
+        const prazo    = document.getElementById('opp-deadline')?.value || '';
+        const valor    = document.getElementById('opp-estimated-value')?.value?.trim() || '0';
+        const idioma   = document.getElementById('opp-language')?.value || 'pt-BR';
+        const conf     = document.getElementById('opp-confidentiality')?.value || '';
+        const obs      = document.getElementById('opp-notes')?.value?.trim() || '';
+
+        // Só o arquivo é obrigatório
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+          if (placeholder) placeholder.style.display = 'none';
+          if (content) {
+            content.classList.add('show');
+            content.innerHTML = `
+              <div class="output-item" style="border-color:var(--error);">
+                <div class="output-item-icon">📄</div>
+                <div>
+                  <div class="output-item-label">Documento RFP não selecionado</div>
+                  <div class="output-item-value">Faça upload do documento da oportunidade (RFP/RFI/Edital) para iniciar a análise.</div>
+                </div>
+              </div>`;
+          }
+          return;
+        }
+
+        // ── Montar FormData ──
+        const formData = new FormData();
+        formData.append('rfp', fileInput.files[0]);
+        formData.append('dados', JSON.stringify({
+          nome_oportunidade: nome,
+          cliente: cliente,
+          setor: setor,
+          tipo_servico: servico,
+          prazo_resposta: prazo,
+          acv_estimado: valor || '0',
+          idioma: idioma,
+          confidencialidade: conf,
+          observacoes: obs,
+          cenario: '2'
+        }));
+
+        // ── Mostrar Mission Control ──
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.classList.remove('show');
+
+        // Injetar Mission Control UI
+        if (processing) {
+          processing.innerHTML = buildMissionControlHTML();
+          processing.classList.add('show');
+        }
+        const startTime = Date.now();
+        const timerInterval = setInterval(() => {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          const timerEl = document.getElementById('mc-timer');
+          if (timerEl) timerEl.textContent = elapsed + 's';
+        }, 100);
+
+        try {
+          // ── 1. Iniciar job assíncrono ──
+          const startResp = await fetch(`${API_BASE}/api/qualificar/start`, {
+            method: 'POST',
+            body: formData
+          });
+          const startData = await startResp.json();
+
+          if (!startData.job_id) {
+            throw new Error(startData.mensagem || 'Falha ao iniciar análise');
+          }
+
+          addTerminalLine('Job iniciado: ' + startData.job_id, 'highlight');
+
+          // ── 2. Abrir SSE stream ──
+          const evtSource = new EventSource(`${API_BASE}/api/progress/${startData.job_id}`);
+          
+          evtSource.onmessage = function(e) {
+            const evt = JSON.parse(e.data);
+            if (evt.event === 'heartbeat') return;
+
+            // Atualizar barra de progresso
+            if (evt.pct >= 0) {
+              updateMCProgress(evt.pct, evt.detail, evt.event);
+            }
+
+            // Adicionar linha ao terminal
+            addTerminalLine(evt.detail, evt.event);
+
+            // Resultado final
+            if (evt.event === 'result') {
+              evtSource.close();
+              clearInterval(timerInterval);
+              const result = evt.result;
+              if (processing) processing.classList.remove('show');
+              if (content) content.classList.add('show');
+
+              if (result.status === 'erro_validacao') {
+                content.innerHTML = renderErro('Erro de Validação', result.erros.join(', '));
+              } else if (result.status === 'erro_extracao') {
+                content.innerHTML = renderErro('Erro na Extração', result.erro || 'Falha ao processar');
+              } else if (result.status === 'erro_interno') {
+                content.innerHTML = renderErro('Erro Interno', result.mensagem);
+              } else {
+                agentResults[1] = result;
+                content.innerHTML = renderQualificacaoResult(result);
+                document.getElementById('export-1').disabled = false;
+              }
+            }
+
+            // Erro
+            if (evt.event === 'error') {
+              evtSource.close();
+              clearInterval(timerInterval);
+              if (processing) processing.classList.remove('show');
+              if (content) {
+                content.classList.add('show');
+                content.innerHTML = renderErro('Erro na Análise', evt.detail);
+              }
+            }
+          };
+
+          evtSource.onerror = function() {
+            evtSource.close();
+            // Fallback: polling
+            pollForResult(startData.job_id, processing, content, timerInterval);
+          };
+
+        } catch (err) {
+          clearInterval(timerInterval);
+          if (processing) processing.classList.remove('show');
+          if (content) {
+            content.classList.add('show');
+            content.innerHTML = renderErro('Erro de Conexão', `Não foi possível conectar: ${err.message}. Server em ${API_BASE}`);
+          }
+        }
+      }
+    }
+
+    /* ═══ POLLING FALLBACK ═══ */
+    async function pollForResult(jobId, processing, content, timerInterval) {
+      for (let i = 0; i < 300; i++) {
+        await new Promise(r => setTimeout(r, 1000));
+        try {
+          const resp = await fetch(`${API_BASE}/api/job/${jobId}`);
+          const data = await resp.json();
+          if (data.last_event) updateMCProgress(data.last_event.pct || 0, data.last_event.detail || '', data.last_event.event || '');
+          if (data.status === 'done') {
+            clearInterval(timerInterval);
+            if (processing) processing.classList.remove('show');
+            if (content) content.classList.add('show');
+            agentResults[1] = data.result;
+            content.innerHTML = renderQualificacaoResult(data.result);
+            document.getElementById('export-1').disabled = false;
+            return;
+          }
+          if (data.status === 'error') {
+            clearInterval(timerInterval);
+            if (processing) processing.classList.remove('show');
+            if (content) { content.classList.add('show'); content.innerHTML = renderErro('Erro', data.result?.mensagem || 'Erro'); }
+            return;
+          }
+        } catch(e) { /* retry */ }
+      }
+    }
+
+    /* ═══ MISSION CONTROL UI ═══ */
+    function buildMissionControlHTML() {
+      const steps = [
+        { id: 'mc-step-upload',      icon: '📄', label: 'Upload & Extração' },
+        { id: 'mc-step-tokenizacao', icon: '🔤', label: 'Tokenização' },
+        { id: 'mc-step-sa1',         icon: '🔍', label: 'SA1 — Extração Estruturada' },
+        { id: 'mc-step-acervo',      icon: '📚', label: 'Acervo DS (2.042 docs)' },
+        { id: 'mc-step-sa2',         icon: '⚙️', label: 'SA2 — Análise Técnica' },
+        { id: 'mc-step-sa3',         icon: '⚠️', label: 'SA3 — Análise de Riscos' },
+        { id: 'mc-step-sa4',         icon: '📊', label: 'SA4 — Análise Comercial' },
+        { id: 'mc-step-llm',         icon: '🧠', label: 'LLM — Enriquecimento IA' },
+        { id: 'mc-step-sa5',         icon: '🎯', label: 'SA5 — Decisão Final' },
+      ];
+      const stepsHTML = steps.map(s => `
+        <div class="mc-step" id="${s.id}" data-status="waiting">
+          <div class="mc-step-icon">${s.icon}</div>
+          <div class="mc-step-label">${s.label}</div>
+          <div class="mc-step-status">⏳</div>
+        </div>`).join('');
+
+      return `<div class="mission-control">
+        <div class="mc-header">
+          <div class="mc-header-left"><span class="mc-pulse"></span><span class="mc-title">🛰 MISSION CONTROL</span></div>
+          <div class="mc-header-right"><span class="mc-badge" id="mc-provider">Iniciando...</span><span class="mc-timer">⏱ <span id="mc-timer">0.0</span>s</span></div>
+        </div>
+        <div class="mc-progress-bar"><div class="mc-progress-fill" id="mc-progress-fill" style="width:0%"></div><span class="mc-progress-text" id="mc-progress-text">0%</span></div>
+        <div class="mc-body">
+          <div class="mc-steps">${stepsHTML}</div>
+          <div class="mc-terminal">
+            <div class="mc-terminal-header"><span>● ● ●</span><span>Live Terminal</span></div>
+            <div class="mc-terminal-body" id="mc-terminal-body">
+              <div class="mc-line"><span class="mc-ts">${new Date().toLocaleTimeString()}</span> <span class="mc-msg">Iniciando análise da RFP...</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="mc-detail" id="mc-detail">Preparando pipeline...</div>
+      </div>
+      <style>
+        .mission-control{background:linear-gradient(135deg,#0a1628,#0d1f3c);border:1px solid rgba(0,176,189,.3);border-radius:12px;overflow:hidden;animation:mcFadeIn .5s ease}
+        @keyframes mcFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .mc-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(0,176,189,.08);border-bottom:1px solid rgba(0,176,189,.2)}
+        .mc-header-left{display:flex;align-items:center;gap:10px}
+        .mc-pulse{width:10px;height:10px;border-radius:50%;background:#00ff88;animation:pulse 1.5s infinite;box-shadow:0 0 8px #00ff88}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .mc-title{font-size:.85rem;font-weight:800;color:#00b0bd;letter-spacing:2px;text-transform:uppercase}
+        .mc-header-right{display:flex;gap:12px;align-items:center}
+        .mc-badge{font-size:.65rem;padding:3px 8px;border-radius:4px;background:rgba(0,176,189,.15);color:#00b0bd;font-weight:600;border:1px solid rgba(0,176,189,.3)}
+        .mc-timer{font-size:.75rem;color:var(--text-secondary);font-family:monospace}
+        .mc-progress-bar{height:6px;background:rgba(255,255,255,.05);position:relative;overflow:hidden}
+        .mc-progress-fill{height:100%;background:linear-gradient(90deg,#00b0bd,#00ff88);transition:width .5s ease;border-radius:0 3px 3px 0;box-shadow:0 0 12px rgba(0,255,136,.4)}
+        .mc-progress-text{position:absolute;right:8px;top:-1px;font-size:.55rem;color:rgba(255,255,255,.6);font-weight:700}
+        .mc-body{display:flex;gap:0;min-height:220px}
+        .mc-steps{flex:0 0 240px;padding:12px;border-right:1px solid rgba(255,255,255,.06);overflow-y:auto;max-height:280px}
+        .mc-step{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:3px;transition:all .3s ease;font-size:.7rem}
+        .mc-step[data-status="waiting"]{opacity:.4}
+        .mc-step[data-status="running"]{opacity:1;background:rgba(0,176,189,.1);border-left:2px solid #00b0bd;animation:stepGlow 1.5s infinite}
+        @keyframes stepGlow{0%,100%{background:rgba(0,176,189,.1)}50%{background:rgba(0,176,189,.2)}}
+        .mc-step[data-status="done"]{opacity:1}
+        .mc-step-icon{font-size:.8rem;width:20px;text-align:center}
+        .mc-step-label{flex:1;color:var(--text-secondary);font-size:.68rem}
+        .mc-step[data-status="running"] .mc-step-label{color:#00b0bd;font-weight:600}
+        .mc-step[data-status="done"] .mc-step-label{color:#00ff88}
+        .mc-step-status{font-size:.7rem}
+        .mc-terminal{flex:1;display:flex;flex-direction:column;min-width:0}
+        .mc-terminal-header{display:flex;justify-content:space-between;padding:6px 12px;background:rgba(0,0,0,.3);font-size:.6rem;color:var(--text-secondary)}
+        .mc-terminal-body{flex:1;padding:8px 12px;overflow-y:auto;max-height:240px;font-family:'Cascadia Code','Fira Code',monospace;font-size:.65rem;background:rgba(0,0,0,.2)}
+        .mc-line{padding:2px 0;opacity:0;animation:lineIn .3s ease forwards;border-bottom:1px solid rgba(255,255,255,.03)}
+        @keyframes lineIn{to{opacity:1}}
+        .mc-ts{color:rgba(255,255,255,.25);margin-right:8px}
+        .mc-msg{color:var(--text-secondary)}.mc-msg.success{color:#00ff88}.mc-msg.error{color:#ff4466}.mc-msg.highlight{color:#00b0bd;font-weight:600}
+        .mc-detail{padding:8px 16px;font-size:.7rem;color:var(--text-secondary);border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.15)}
+        @media(max-width:768px){.mc-body{flex-direction:column}.mc-steps{flex:none;border-right:none;border-bottom:1px solid rgba(255,255,255,.06);max-height:150px}}
+      </style>`;
+    }
+
+    /* ═══ MISSION CONTROL UPDATERS ═══ */
+    const MC_STEP_MAP = {
+      'upload':'mc-step-upload','extracao':'mc-step-upload',
+      'tokenizacao':'mc-step-tokenizacao',
+      'sa1_inicio':'mc-step-sa1','sa1_fim':'mc-step-sa1',
+      'acervo':'mc-step-acervo','acervo_fim':'mc-step-acervo',
+      'sa2_inicio':'mc-step-sa2','sa2_fim':'mc-step-sa2',
+      'sa3_inicio':'mc-step-sa3','sa3_fim':'mc-step-sa3',
+      'sa4_inicio':'mc-step-sa4','sa4_fim':'mc-step-sa4',
+      'llm_inicio':'mc-step-llm','llm_thinking':'mc-step-llm','llm_fim':'mc-step-llm',
+      'sa5_inicio':'mc-step-sa5','farois':'mc-step-sa5','decisao':'mc-step-sa5',
+    };
+
+    function updateMCProgress(pct, detail, event) {
+      const fill = document.getElementById('mc-progress-fill');
+      const text = document.getElementById('mc-progress-text');
+      const detailEl = document.getElementById('mc-detail');
+      if (fill) fill.style.width = Math.min(pct, 100) + '%';
+      if (text) text.textContent = Math.min(pct, 100) + '%';
+      if (detailEl) detailEl.textContent = detail;
+      if (event === 'modo' && detail) {
+        const badge = document.getElementById('mc-provider');
+        if (badge) badge.textContent = detail.replace('Modo: ', '');
+      }
+      const stepId = MC_STEP_MAP[event];
+      if (stepId) {
+        const stepEl = document.getElementById(stepId);
+        if (stepEl) {
+          const isDone = event.endsWith('_fim') || event === 'acervo_fim' || event === 'decisao' || event === 'farois';
+          if (isDone) {
+            stepEl.setAttribute('data-status', 'done');
+            stepEl.querySelector('.mc-step-status').textContent = '✅';
+          } else {
+            stepEl.setAttribute('data-status', 'running');
+            stepEl.querySelector('.mc-step-status').textContent = '🔄';
+            let prev = stepEl.previousElementSibling;
+            while (prev && prev.classList.contains('mc-step')) {
+              if (prev.getAttribute('data-status') !== 'done') {
+                prev.setAttribute('data-status', 'done');
+                prev.querySelector('.mc-step-status').textContent = '✅';
+              }
+              prev = prev.previousElementSibling;
+            }
+          }
+        }
+      }
+    }
+
+    function addTerminalLine(text, event) {
+      const terminal = document.getElementById('mc-terminal-body');
+      if (!terminal) return;
+      let cls = '';
+      if (text && text.startsWith('✅')) cls = 'success';
+      else if (event === 'erro' || event === 'error') cls = 'error';
+      else if (event && (event.includes('inicio') || event === 'acervo' || event === 'modo')) cls = 'highlight';
+      const line = document.createElement('div');
+      line.className = 'mc-line';
+      line.innerHTML = `<span class="mc-ts">${new Date().toLocaleTimeString()}</span> <span class="mc-msg ${cls}">${text}</span>`;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    /* ═══ RENDERIZAÇÃO DO RESULTADO REAL ═══ */
+    function renderQualificacaoResult(result) {
+      const parecer = result.parecer || {};
+      const decisao = parecer.decisao || parecer.raw_response || 'N/A';
+      const score = parecer.score_final || parecer.score_final_ponderado || 0;
+      const justificativa = parecer.justificativa_decisao || '';
+      const farois = parecer.farois_consolidados || parecer.farois || [];
+      const bsw = parecer.best_story_wins || {};
+      const riscos = parecer.riscos_consolidados || {};
+      const dim = parecer.dimensionamento_final || {};
+      const duracao = result.duracao_segundos || 0;
+      const tokens = result.tokens_totais || {};
+
+      // Cor da decisão
+      let decColor = 'var(--warning)';
+      let decIcon = '🟡';
+      if (decisao.includes('NO_GO') || decisao.includes('NO-GO')) { decColor = 'var(--error)'; decIcon = '🔴'; }
+      else if (decisao === 'GO') { decColor = 'var(--success)'; decIcon = '🟢'; }
+
+      return `
+        <div class="exec-report-panel">
+          <div class="report-header">
+            <div>
+              <span class="report-type-badge">RFP Qualification — Multi-Agente</span>
+              <h1 class="report-title">Qualificação Minsait DS — Resultado</h1>
+              <p class="report-subtitle">Cenário 2: Maestro + 5 Sub-Agentes | ${duracao}s | ${tokens.total || 0} tokens</p>
+            </div>
+          </div>
+
+          <!-- DECISÃO -->
+          <div class="rec-card" style="border-color:${decColor};background:rgba(0,43,58,0.4);margin-top:16px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <span style="font-size:2.5rem;">${decIcon}</span>
+              <div>
+                <h3 style="font-size:1.4rem;font-weight:900;color:${decColor};margin:0;">${decisao.replace(/_/g,' ')}</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin:4px 0 0;">Score: <strong style="color:#fff;font-size:1.1rem;">${typeof score === 'number' ? score.toFixed(1) : score}</strong> / 10</p>
+              </div>
+            </div>
+            ${justificativa ? `<p style="font-size:0.75rem;color:var(--text-secondary);margin-top:12px;line-height:1.5;border-top:1px solid var(--border);padding-top:12px;">${justificativa}</p>` : ''}
+          </div>
+
+          <!-- FARÓIS -->
+          ${farois.length > 0 ? `
+          <div style="margin-top:24px;">
+            <h2 style="font-size:0.85rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:0.05em;">8 Faróis de Qualificação</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px;">
+              ${farois.map(f => {
+                const lvl = (f.nivel || f.level || '').toUpperCase();
+                const col = lvl.includes('ALTO') ? 'var(--success)' : lvl.includes('BAIXO') ? 'var(--error)' : 'var(--warning)';
+                return `<div style="background:rgba(0,43,58,0.3);border:1px solid var(--border);border-radius:8px;padding:12px;border-left:3px solid ${col};">
+                  <div style="font-size:0.72rem;font-weight:700;color:#fff;">${f.nome || f.name || ''}</div>
+                  <div style="font-size:1.5rem;font-weight:900;color:${col};margin:4px 0;">${f.score || 0}/10</div>
+                  <div style="font-size:0.6rem;color:var(--text-muted);">Peso: ${f.peso_pct || 0}%</div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>` : ''}
+
+          <!-- BEST STORY WINS -->
+          ${(bsw.por_que_mudar || bsw.por_que_agora) ? `
+          <div style="margin-top:24px;">
+            <h2 style="font-size:0.85rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:0.05em;">Best Story Wins</h2>
+            <div class="bsw-grid" style="margin-top:12px;">
+              ${['por_que_mudar','por_que_agora','por_que_minsait','por_que_confiar'].map((k,i) => {
+                const titles = ['1. POR QUE MUDAR?','2. POR QUE AGORA?','3. POR QUE MINSAIT?','4. POR QUE CONFIAR?'];
+                return bsw[k] ? `<div class="bsw-card"><div class="bsw-card-header"><span class="bsw-card-title">${titles[i]}</span></div><div class="bsw-card-content">${bsw[k]}</div></div>` : '';
+              }).join('')}
+            </div>
+          </div>` : ''}
+
+          <!-- DIMENSIONAMENTO -->
+          ${dim.total_ftes ? `
+          <div style="margin-top:24px;">
+            <h2 style="font-size:0.85rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:0.05em;">Dimensionamento</h2>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px;">
+              <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:900;color:var(--cyan);">${dim.total_ftes}</div><div style="font-size:0.62rem;color:var(--text-muted);">FTEs</div></div>
+              <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:900;color:var(--success);">${dim.total_sprints || '-'}</div><div style="font-size:0.62rem;color:var(--text-muted);">Sprints</div></div>
+              <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:900;color:var(--warning);">${dim.duracao_meses || '-'}m</div><div style="font-size:0.62rem;color:var(--text-muted);">Duração</div></div>
+            </div>
+            ${(dim.perfis_chave || []).length > 0 ? `<div style="margin-top:8px;font-size:0.68rem;color:var(--text-secondary);">Perfis: ${dim.perfis_chave.join(', ')}</div>` : ''}
+          </div>` : ''}
+
+          <!-- RISCOS -->
+          ${riscos.total ? `
+          <div style="margin-top:24px;">
+            <h2 style="font-size:0.85rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:0.05em;">Riscos</h2>
+            <div style="display:flex;gap:16px;margin-top:12px;">
+              <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:800;color:#fff;">${riscos.total}</div><div style="font-size:0.6rem;color:var(--text-muted);">Total</div></div>
+              <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:800;color:var(--error);">${riscos.criticos || 0}</div><div style="font-size:0.6rem;color:var(--text-muted);">Críticos</div></div>
+            </div>
+            ${(riscos.top_3 || []).length > 0 ? `<div style="margin-top:8px;font-size:0.68rem;color:var(--text-secondary);">Top riscos: ${riscos.top_3.join(', ')}</div>` : ''}
+          </div>` : ''}
+
+          <!-- TRACE BUTTON -->
+          ${result.trace_id ? `
+          <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="openTraceViewer('${result.trace_id}')" style="font-size:.75rem;">🔍 Ver Análise Detalhada (Trace)</button>
+            <button class="btn btn-secondary" onclick="openTroubleshoot('${result.trace_id}')" style="font-size:.75rem;">🩺 Troubleshooting Assistido</button>
+          </div>
+          <div id="trace-panel-${result.trace_id}" style="display:none;margin-top:12px;"></div>
+          ` : ''}
+
+          <!-- METADATA -->
+          <div style="margin-top:24px;padding:12px;background:rgba(0,43,58,0.1);border-radius:8px;border:1px solid var(--border);display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-muted);">
+            <span>Cenário 2 — Maestro + 5 Sub-Agentes | DS</span>
+            <span>Tokens: ${tokens.input || 0} in / ${tokens.output || 0} out | ${duracao}s</span>
+          </div>
+
+          <div class="report-footer" style="margin-top:16px;">
+            <span>Minsait Brasil | DSS Agents | Confidencial</span>
+            <span>Gerado em: ${new Date().toLocaleString('pt-BR')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderErro(titulo, mensagem) {
+      return `
+        <div class="output-item" style="border-color:var(--error);">
+          <div class="output-item-icon">❌</div>
+          <div>
+            <div class="output-item-label">${titulo}</div>
+            <div class="output-item-value" style="line-height:1.6;">${mensagem}</div>
+          </div>
+        </div>`;
+    }
+
+    /* ═══ CHAT — REAL ═══ */
+    function sendChatMessage(step) {
+      const input = document.getElementById(`chat-input-${step}`);
+      const msgs = document.getElementById(`chat-messages-${step}`);
+      if (!input || !msgs) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      msgs.innerHTML += `<div class="chat-msg user">${text}</div>`;
+      input.value = '';
+
+      msgs.innerHTML += `<div class="chat-msg agent" style="opacity:0.6;">Funcionalidade de chat em desenvolvimento. Use o formulário para uma nova qualificação.</div>`;
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    /* ═══ EXPORTS — REAL ═══ */
+    function exportAgentResult(step) {
+      const result = agentResults[step];
+      if (!result) {
+        alert('Execute a qualificação antes de exportar.');
+        return;
+      }
+      const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `qualificacao_ds_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    /* ═══ DRAG & DROP ═══ */
+    document.querySelectorAll('.file-drop').forEach(drop => {
+      drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
+      drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+      drop.addEventListener('drop', e => {
+        e.preventDefault();
+        drop.classList.remove('dragover');
+        const input = drop.querySelector('input[type="file"]');
+        if (e.dataTransfer.files.length > 0) { input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+      });
+    });
+
+    /* ═══ CONFIG TOGGLES ═══ */
+    function toggleAgentConfig(id) {
+      const body = document.getElementById(`config-body-${id}`);
+      body.classList.toggle('show');
+      const header = body.previousElementSibling;
+      const toggle = header.querySelector('.config-toggle');
+      toggle.style.transform = body.classList.contains('show') ? 'rotate(0deg)' : 'rotate(-90deg)';
+    }
+
+    document.querySelectorAll('.config-tag').forEach(tag => {
+      tag.addEventListener('click', () => tag.classList.toggle('active'));
+    });
+
+    /* ═══ USER MENU ═══ */
+    function toggleUserMenu() { document.getElementById('user-dropdown').classList.toggle('show'); }
+    function toggleNotifications() {
+      alert('🔔 Notificações:\n\n• Nova RFP recebida: Projeto ERP — Varejo Nacional\n• Oferta "Sustentação SAP" aguardando aprovação\n• Tabela de rates atualizada (01/05/2026)');
+    }
+    document.addEventListener('click', e => {
+      const dd = document.getElementById('user-dropdown');
+      const btn = document.querySelector('.topbar-user');
+      if (dd && btn && !btn.contains(e.target)) dd.classList.remove('show');
+    });
+
+    /* ═══ JSON EXPORT ═══ */
+    function exportDataJSON() {
+      const data = {
+        title: document.title,
+        exportedAt: new Date().toISOString(),
+        sidebarItems: Array.from(document.querySelectorAll('.sidebar-nav-item')).map(item => ({
+          label: item.querySelector('.label')?.textContent.trim() || '',
+          sub: item.querySelector('.sub')?.textContent.trim() || ''
+        })),
+        outputs: Array.from(document.querySelectorAll('.output-item')).map(item => ({
+          label: item.querySelector('.output-item-label')?.textContent.trim() || '',
+          value: item.querySelector('.output-item-value')?.textContent.trim() || ''
+        }))
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `agentificacao-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    /* ═══ ARCHITECTURE PAGE ═══ */
+    function switchArchLevel(level) {
+      document.querySelectorAll('.arch-panel').forEach(p => p.style.display = 'none');
+      document.querySelectorAll('.arch-level-btn').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-secondary'); b.classList.remove('active'); });
+      const panel = document.getElementById('arch-' + level);
+      const btn = document.getElementById('btn-' + level);
+      if (panel) panel.style.display = 'block';
+      if (btn) { btn.classList.add('btn-primary', 'active'); btn.classList.remove('btn-secondary'); }
+    }
+
+    /* ═══ FLOW SIMULATION ═══ */
+    let flowSimRunning = false;
+    const FLOW_PHASES = [
+      { phase: 'FASE 1/6 — Upload RFP', nodes: ['fn-user', 'fn-frontend'], log: '📤 Usuário faz upload do arquivo RFP e preenche formulário' },
+      { phase: 'FASE 2/6 — Validação + Extração', nodes: ['fn-frontend', 'fn-server', 'fn-extrator', 'fn-validador'], log: '✅ Server valida inputs e Extrator processa documento (PDF/DOCX/EML → texto)' },
+      { phase: 'FASE 3/6 — Maestro + Acervo', nodes: ['fn-server', 'fn-maestro', 'fn-acervo', 'fn-sa1'], log: '🎯 Maestro inicia pipeline — SA1 extrai dados estruturados, Acervo busca em 2.042 docs' },
+      { phase: 'FASE 4/6 — Sub-Agentes (paralelo)', nodes: ['fn-maestro', 'fn-sa2', 'fn-sa3', 'fn-sa4', 'fn-acervo'], log: '🔧 SA2 (Técnico) + SA3 (Riscos) + SA4 (Comercial) processam em paralelo contra KB' },
+      { phase: 'FASE 5/6 — Decisão Final', nodes: ['fn-sa2', 'fn-sa3', 'fn-sa4', 'fn-sa5'], log: '🏆 SA5 consolida 8 Faróis + BSW + Riscos → decisão GO/NO-GO/CONDICIONADO' },
+      { phase: 'FASE 6/6 — Resultado', nodes: ['fn-sa5', 'fn-result'], log: '📊 Resultado gerado com trace completo — pronto para exportação' },
+    ];
+
+    async function startFlowSim() {
+      if (flowSimRunning) return;
+      flowSimRunning = true;
+      document.getElementById('btn-sim-start').disabled = true;
+      resetFlowSim();
+      const logEl = document.getElementById('flow-log');
+      logEl.innerHTML = '';
+
+      for (let i = 0; i < FLOW_PHASES.length; i++) {
+        const p = FLOW_PHASES[i];
+        // Deactivate previous
+        document.querySelectorAll('.flow-node.active').forEach(n => { n.classList.remove('active'); n.classList.add('done'); });
+        // Activate current
+        p.nodes.forEach(id => { const el = document.getElementById(id); if (el) { el.classList.remove('done'); el.classList.add('active'); } });
+        document.getElementById('flow-phase').textContent = p.phase;
+        logEl.innerHTML += `<div style="color:var(--cyan);margin:4px 0;"><span style="color:var(--text-muted);">[${new Date().toLocaleTimeString()}]</span> ${p.log}</div>`;
+        logEl.scrollTop = logEl.scrollHeight;
+        await new Promise(r => setTimeout(r, 1800));
+      }
+
+      // Final state
+      document.querySelectorAll('.flow-node.active').forEach(n => { n.classList.remove('active'); n.classList.add('done'); });
+      document.getElementById('fn-result').classList.add('active');
+      document.getElementById('flow-phase').textContent = '✅ PIPELINE CONCLUÍDO';
+      logEl.innerHTML += `<div style="color:var(--success);margin:4px 0;font-weight:700;">[${new Date().toLocaleTimeString()}] ✅ Pipeline completo — resultado disponível</div>`;
+      flowSimRunning = false;
+      document.getElementById('btn-sim-start').disabled = false;
+    }
+
+    function resetFlowSim() {
+      document.querySelectorAll('.flow-node').forEach(n => { n.classList.remove('active', 'done'); });
+      document.getElementById('flow-phase').textContent = 'Clique em "Simular" para iniciar';
+      document.getElementById('flow-log').innerHTML = '<div style="color:var(--text-muted);">// Log do pipeline — aguardando simulação...</div>';
+      flowSimRunning = false;
+      const btn = document.getElementById('btn-sim-start');
+      if (btn) btn.disabled = false;
+    }
+
+    /* ═══ TRACE VIEWER ═══ */
+    async function openTraceViewer(traceId) {
+      const panel = document.getElementById('trace-panel-' + traceId);
+      if (!panel) return;
+      if (panel.style.display !== 'none') { panel.style.display = 'none'; return; }
+      panel.style.display = 'block';
+      panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">⏳ Carregando trace...</div>';
+      try {
+        const r = await fetch(API_BASE + '/api/trace/' + traceId);
+        const data = await r.json();
+        if (data.error) { panel.innerHTML = `<div style="padding:16px;color:var(--error);">${data.error}</div>`; return; }
+        const events = data.events || [];
+        const summary = data.summary || {};
+        let html = `<div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;padding:20px;max-height:500px;overflow-y:auto;">`;
+        html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="color:var(--cyan);margin:0;">🔍 Trace Completo — ${traceId}</h3><span style="font-size:.7rem;color:var(--text-muted);">${events.length} eventos | ${data.duration_ms}ms</span></div>`;
+        html += `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">`;
+        html += `<div style="background:rgba(0,176,189,0.08);border-radius:8px;padding:8px 14px;font-size:.75rem;">📄 KB Matches: <strong>${summary.kb_matches || 0}</strong></div>`;
+        html += `<div style="background:rgba(245,158,11,0.08);border-radius:8px;padding:8px 14px;font-size:.75rem;">⚠️ Warnings: <strong>${summary.warnings || 0}</strong></div>`;
+        html += `<div style="background:rgba(139,92,246,0.08);border-radius:8px;padding:8px 14px;font-size:.75rem;">📊 Scores: <strong>${summary.scores_calculated || 0}</strong></div>`;
+        html += `</div>`;
+        // Events table
+        html += `<div style="font-family:monospace;font-size:.7rem;">`;
+        const levelColors = {INFO:'var(--text-secondary)',DETAIL:'var(--cyan)',MATCH:'var(--purple)',SCORE:'var(--gold)',DECISION:'var(--success)',WARNING:'var(--warning)'};
+        for (const ev of events) {
+          const c = levelColors[ev.level] || 'var(--text-muted)';
+          html += `<div style="padding:3px 0;border-bottom:1px solid var(--border-subtle);display:flex;gap:8px;">`;
+          html += `<span style="color:var(--text-muted);min-width:50px;">${ev.elapsed_ms}ms</span>`;
+          html += `<span style="color:${c};font-weight:600;min-width:55px;">[${ev.level}]</span>`;
+          html += `<span style="color:var(--cyan);min-width:80px;">${ev.component}</span>`;
+          html += `<span style="color:var(--text-secondary);flex:1;">${ev.detail || ev.action}</span>`;
+          html += `</div>`;
+        }
+        html += `</div></div>`;
+        panel.innerHTML = html;
+      } catch (e) {
+        panel.innerHTML = `<div style="padding:16px;color:var(--error);">Erro: ${e.message}</div>`;
+      }
+    }
+
+    async function openTroubleshoot(traceId) {
+      const panel = document.getElementById('trace-panel-' + traceId);
+      if (!panel) return;
+      if (panel.style.display !== 'none' && panel.querySelector('.diag-step')) { panel.style.display = 'none'; return; }
+      panel.style.display = 'block';
+      panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">🩺 Analisando pipeline...</div>';
+      try {
+        const r = await fetch(API_BASE + '/api/trace/diagnose/' + traceId);
+        const data = await r.json();
+        if (data.error) { panel.innerHTML = `<div style="padding:16px;color:var(--error);">${data.error}</div>`; return; }
+        let html = `<div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;padding:20px;">`;
+        html += `<h3 style="color:var(--cyan);margin:0 0 16px;">🩺 Troubleshooting Assistido — ${traceId}</h3>`;
+        html += `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:.75rem;">`;
+        html += `<span style="background:rgba(34,197,94,0.1);padding:6px 12px;border-radius:6px;">✅ ${data.steps.filter(s=>s.status==='ok').length} OK</span>`;
+        html += `<span style="background:rgba(239,68,68,0.1);padding:6px 12px;border-radius:6px;">❌ ${data.steps.filter(s=>s.status==='missing').length} Faltando</span>`;
+        html += `<span style="background:rgba(245,158,11,0.1);padding:6px 12px;border-radius:6px;">⚠️ ${data.warnings.length} Warnings</span>`;
+        html += `<span style="background:rgba(139,92,246,0.1);padding:6px 12px;border-radius:6px;">🔎 ${data.probable_issues.length} Possíveis Problemas</span>`;
+        html += `</div>`;
+        // Steps
+        for (const step of data.steps) {
+          const icon = step.status === 'ok' ? '✅' : '❌';
+          const badgeClass = step.status === 'ok' ? 'ok' : 'missing';
+          html += `<div class="diag-step"><div class="diag-badge ${badgeClass}">${icon}</div><div class="diag-content"><h4>Passo ${step.step}: ${step.name}</h4><p>${step.detail}</p></div></div>`;
+        }
+        // Warnings
+        if (data.warnings.length > 0) {
+          html += `<div style="margin-top:16px;"><h4 style="color:var(--warning);margin-bottom:8px;">⚠️ Alertas</h4>`;
+          for (const w of data.warnings) {
+            html += `<div class="diag-issue ALTO">⚠️ ${w}</div>`;
+          }
+          html += `</div>`;
+        }
+        // Probable issues
+        if (data.probable_issues.length > 0) {
+          html += `<div style="margin-top:16px;"><h4 style="color:var(--error);margin-bottom:8px;">🔎 Possíveis Causas de Problemas</h4>`;
+          for (const issue of data.probable_issues) {
+            html += `<div class="diag-issue ${issue.severity}"><strong>[${issue.area}]</strong> ${issue.issue}</div>`;
+          }
+          html += `</div>`;
+        }
+        if (data.probable_issues.length === 0 && data.warnings.length === 0) {
+          html += `<div style="margin-top:16px;padding:16px;background:rgba(34,197,94,0.08);border-radius:10px;border:1px solid rgba(34,197,94,0.2);color:var(--success);text-align:center;">✅ Nenhum problema detectado — pipeline executou corretamente em todos os passos</div>`;
+        }
+        html += `</div>`;
+        panel.innerHTML = html;
+      } catch (e) {
+        panel.innerHTML = `<div style="padding:16px;color:var(--error);">Erro: ${e.message}</div>`;
+      }
+    }
+
+    /* ═══ TRACE TOGGLE ═══ */
+    let traceEnabled = true;
+    async function toggleTrace() {
+      traceEnabled = !traceEnabled;
+      const sw = document.getElementById('trace-switch');
+      if (sw) sw.classList.toggle('on', traceEnabled);
+      try { await fetch(API_BASE + '/api/trace/toggle', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({enabled: traceEnabled}) }); } catch {}
+    }
+  </script>
+</body>
+</html>

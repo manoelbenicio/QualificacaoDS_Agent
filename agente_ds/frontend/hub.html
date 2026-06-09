@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Hub — Indra Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --f: 'Inter', 'Segoe UI', sans-serif;
+      --fm: 'JetBrains Mono', monospace;
+      --eo: cubic-bezier(.16,1,.3,1);
+    }
+    [data-theme="dark"] {
+      --bg: #001B26; --bg2: #002B3A; --bg3: rgba(0,62,80,0.4);
+      --bd: rgba(255,255,255,0.08); --bs: rgba(255,255,255,0.04);
+      --t1: #FFF; --t2: #B3C1DA; --tm: #7A9CAE;
+      --cy: #00B0BD; --tl: #3F96AE; --ok: #27AE60; --wr: #FF9800; --pu: #8B5CF6;
+      --row-hover: rgba(0,176,189,0.06); --row-stripe: rgba(0,0,0,0.15);
+      --glow: 0 0 60px rgba(0,176,189,0.08);
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg: #F4F7F9; --bg2: #FFF; --bg3: rgba(255,255,255,0.9);
+      --bd: rgba(0,0,0,0.1); --bs: rgba(0,0,0,0.04);
+      --t1: #1A2B3C; --t2: #4A5B6C; --tm: #7A8B9C;
+      --cy: #0097A3; --tl: #2D7A8E; --ok: #1E8449; --wr: #E68900; --pu: #7C3AED;
+      --row-hover: rgba(0,176,189,0.04); --row-stripe: rgba(0,0,0,0.02);
+      --glow: 0 0 60px rgba(0,176,189,0.04);
+      color-scheme: light;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--f);
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      transition: background .4s, color .3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(0,176,189,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(63,150,174,0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      padding: 48px 32px 80px;
+    }
+    .hub-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hub-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hub-logo {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--tl), var(--cy));
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0,176,189,0.3);
+    }
+    .hub-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .hub-subtitle {
+      font-size: 0.78rem;
+      color: var(--tm);
+      margin-top: 4px;
+    }
+    .hub-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .theme-btn {
+      background: var(--bg3);
+      border: 1px solid var(--bd);
+      color: var(--t2);
+      width: 38px; height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .theme-btn:hover {
+      border-color: var(--cy);
+      color: var(--cy);
+      background: rgba(0,176,189,0.06);
+    }
+    .theme-btn svg { width: 18px; height: 18px; }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, border-color .2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,176,189,0.3);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--cy);
+      border-radius: 0 2px 2px 0;
+    }
+    .stat-label {
+      font-family: var(--fm);
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tm);
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cy);
+      font-feature-settings: 'tnum';
+    }
+    .stat-card.ok::before { background: var(--ok); }
+    .stat-card.ok .stat-value { color: var(--ok); }
+
+    .section-eyebrow {
+      font-family: var(--fm);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cy);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 20px;
+      background: linear-gradient(180deg, var(--cy), rgba(0,176,189,0.3));
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+
+    .table-wrap {
+      background: var(--bg3);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--glow);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 14px 20px;
+      font-family: var(--fm);
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tm);
+      border-bottom: 1px solid var(--bd);
+      background: rgba(0,176,189,0.03);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    tbody tr {
+      transition: background .15s;
+      cursor: pointer;
+    }
+    tbody tr:nth-child(even) {
+      background: var(--row-stripe);
+    }
+    tbody tr:hover {
+      background: var(--row-hover);
+    }
+    tbody td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--bs);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .file-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .file-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .file-name {
+      font-weight: 600;
+      color: var(--t1);
+      line-height: 1.3;
+    }
+    .file-path {
+      font-family: var(--fm);
+      font-size: 0.6rem;
+      color: var(--tm);
+      margin-top: 2px;
+    }
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .type-app { background: rgba(0,176,189,0.1); color: var(--cy); }
+    .type-doc { background: rgba(139,92,246,0.1); color: var(--pu); }
+    .type-cockpit { background: rgba(39,174,96,0.1); color: var(--ok); }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.66rem;
+      font-weight: 600;
+      background: rgba(39,174,96,0.1);
+      color: var(--ok);
+    }
+    .status-pill::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+    }
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, var(--tl), var(--cy));
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(0,176,189,0.2);
+      white-space: nowrap;
+    }
+    .open-link:hover {
+      box-shadow: 0 4px 16px rgba(0,176,189,0.35);
+      transform: translateY(-1px);
+    }
+    .open-link svg {
+      width: 12px; height: 12px;
+    }
+
+    /* Info banner */
+    .info-banner {
+      background: rgba(0,176,189,0.06);
+      border: 1px solid rgba(0,176,189,0.2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.76rem;
+      color: var(--t2);
+      line-height: 1.6;
+    }
+    .info-banner .info-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .info-banner strong { color: var(--cy); }
+
+    .hub-footer {
+      text-align: center;
+      padding: 32px 0 0;
+      font-size: 0.68rem;
+      color: var(--tm);
+    }
+
+    @media (max-width: 768px) {
+      .wrapper { padding: 24px 16px 60px; }
+      .hub-header { flex-direction: column; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      table { font-size: 0.74rem; }
+      thead th, tbody td { padding: 10px 12px; }
+      .file-icon { display: none; }
+      .open-link span { display: none; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeUp .5s var(--eo) both;
+    }
+    .animate-in:nth-child(1) { animation-delay: 0s; }
+    .animate-in:nth-child(2) { animation-delay: .05s; }
+    .animate-in:nth-child(3) { animation-delay: .1s; }
+    .animate-in:nth-child(4) { animation-delay: .15s; }
+    .animate-in:nth-child(5) { animation-delay: .2s; }
+    .animate-in:nth-child(6) { animation-delay: .25s; }
+    @media print {
+      body::before { display: none; }
+      .theme-btn, .open-link { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="hub-header">
+      <div class="hub-brand">
+        <div class="hub-logo">🏗️</div>
+        <div>
+          <div class="hub-title">Project Hub</div>
+          <div class="hub-subtitle">Refresh Design · Agentificação DN · All Modernized Files</div>
+        </div>
+      </div>
+      <div class="hub-actions">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+          <svg id="iconDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg id="iconLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="info-banner">
+      <span class="info-icon">💡</span>
+      <div>
+        <strong>All files in this folder are self-contained</strong> — each HTML file has all CSS and JavaScript inline.
+        Just click any row to open it. No server needed, no external dependencies.
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-strip">
+      <div class="stat-card ok">
+        <div class="stat-label">Files Modernized</div>
+        <div class="stat-value">6</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Files</div>
+        <div class="stat-value">6</div>
+      </div>
+      <div class="stat-card ok">
+        <div class="stat-label">Completion</div>
+        <div class="stat-value">100%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Design System</div>
+        <div class="stat-value">Indra DSS</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="section-eyebrow">Deliverables</div>
+    <div class="section-title">All Modernized Files</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:5%">#</th>
+            <th style="width:38%">File</th>
+            <th style="width:13%">Type</th>
+            <th style="width:14%">Status</th>
+            <th style="width:15%;text-align:right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="animate-in" onclick="window.open('index.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">01</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(0,176,189,0.1);">🏠</div>
+                <div>
+                  <div class="file-name">AI Engine — Portal Landing</div>
+                  <div class="file-path">index.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-app">🚀 Portal</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="index.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+
+          <tr class="animate-in" onclick="window.open('arquitetura-alto-nivel.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">02</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(139,92,246,0.1);">🏗️</div>
+                <div>
+                  <div class="file-name">Arquitetura de Alto Nível</div>
+                  <div class="file-path">arquitetura-alto-nivel.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-doc">📄 Document</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="arquitetura-alto-nivel.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+
+          <tr class="animate-in" onclick="window.open('especificacao-funcional.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">03</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(245,158,11,0.1);">📋</div>
+                <div>
+                  <div class="file-name">Especificação Funcional</div>
+                  <div class="file-path">especificacao-funcional.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-doc">📄 Document</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="especificacao-funcional.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+
+          <tr class="animate-in" onclick="window.open('estrategia-implementacao.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">04</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(22,163,74,0.1);">🎯</div>
+                <div>
+                  <div class="file-name">Estratégia de Implementação</div>
+                  <div class="file-path">estrategia-implementacao.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-doc">📄 Document</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="estrategia-implementacao.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+
+          <tr class="animate-in" onclick="window.open('qualificacao-rfp-neoenergia-desenvolvimento-whatsapp.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">05</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(220,38,38,0.08);">⚡</div>
+                <div>
+                  <div class="file-name">Qualificação RFP — Neoenergia</div>
+                  <div class="file-path">qualificacao-rfp-neoenergia-desenvolvimento-whatsapp.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-doc">📄 Document</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="qualificacao-rfp-neoenergia-desenvolvimento-whatsapp.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+
+          <tr class="animate-in" onclick="window.open('agentificacaoDeOfertas.html','_blank')">
+            <td style="color:var(--tm);font-family:var(--fm);font-weight:600;">06</td>
+            <td>
+              <div class="file-cell">
+                <div class="file-icon" style="background:rgba(0,176,189,0.12);">🤖</div>
+                <div>
+                  <div class="file-name">Agentificação de Ofertas — App Cockpit</div>
+                  <div class="file-path">agentificacaoDeOfertas.html</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="type-badge type-app">🚀 Web App</span></td>
+            <td><span class="status-pill">Modernized</span></td>
+            <td style="text-align:right;">
+              <a href="agentificacaoDeOfertas.html" target="_blank" class="open-link" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open</span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hub-footer">
+      Built with the <strong>Indra Intelligence Design System</strong> · Last updated: May 22, 2026
+    </div>
+  </div>
+
+  <script>
+    function getTheme() { try { return localStorage.getItem('indra_theme') || 'dark'; } catch { return 'dark'; } }
+    function setTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      try { localStorage.setItem('indra_theme', t); } catch {}
+      document.getElementById('iconDark').style.display = t === 'dark' ? '' : 'none';
+      document.getElementById('iconLight').style.display = t === 'light' ? '' : 'none';
+    }
+    function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+    setTheme(getTheme());
+  </script>
+</body>
+</html>

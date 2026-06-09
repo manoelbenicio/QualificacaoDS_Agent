@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Agent runtime
+agente_ds/traces/
+agente_ds/uploads/
+agente_ds/out/
+agente_ds/audit_results.json
+agente_ds/qa_results.json
+agente_ds/sev0_results.json
+
+# Knowledge Base (copied manually, too large for Git)
+kb/
+
+# Large data files
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+*.zip
+*.rar
+*.7z
+
+# Screenshots (optional — remove this line if you want to track them)
+# agente_ds/Arquitetura/*.png

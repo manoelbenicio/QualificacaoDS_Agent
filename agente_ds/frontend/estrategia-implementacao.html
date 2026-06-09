@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estratégia de Implementação Core First — MVP em 6 semanas com 3 agentes de IA | Indra Minsait">
+  <title>Estratégia de Implementação — Agentificação de Ofertas | Indra Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>if(window.self!==window.top){document.documentElement.classList.add('in-iframe');document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('in-iframe'));}</script>
+  <style>
+    :root{--f:'Inter','Segoe UI',sans-serif;--fm:'JetBrains Mono',monospace;--sw:260px;--th:52px;--eo:cubic-bezier(0.16,1,0.3,1);--r:12px;--rs:8px;}
+    [data-theme="dark"]{--bg:#001B26;--bg2:#002B3A;--cd:rgba(0,62,80,0.4);--bd:rgba(255,255,255,0.08);--bs:rgba(255,255,255,0.04);--ba:rgba(0,176,189,0.25);--t1:#FFF;--t2:#B3C1DA;--tm:#7A9CAE;--cy:#00B0BD;--tl:#3F96AE;--ok:#27AE60;--wr:#FF9800;--er:#E91E63;--go:#FFC107;--pu:#8B5CF6;--gl:rgba(0,176,189,0.12);--sh:0 8px 32px rgba(0,0,0,0.4);color-scheme:dark;}
+    [data-theme="light"]{--bg:#F4F7F9;--bg2:#FFF;--cd:rgba(255,255,255,0.9);--bd:rgba(0,0,0,0.1);--bs:rgba(0,0,0,0.05);--ba:rgba(0,176,189,0.3);--t1:#1A2B3C;--t2:#4A5B6C;--tm:#7A8B9C;--cy:#0097A3;--tl:#2D7A8E;--ok:#1E8449;--wr:#E68900;--er:#C2185B;--go:#D4A000;--pu:#7C3AED;--gl:rgba(0,176,189,0.06);--sh:0 8px 32px rgba(0,0,0,0.06);color-scheme:light;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+    body{font-family:var(--f);background:var(--bg);color:var(--t1);line-height:1.6;transition:background .4s,color .3s;}
+    body.in-iframe .topbar,body.in-iframe .sidebar,body.in-iframe .so,body.in-iframe .rp{display:none!important;}body.in-iframe .main{margin-left:0!important;}
+    .app{display:flex;min-height:100vh;}
+    .sidebar{width:var(--sw);background:var(--bg);border-right:1px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:200;display:flex;flex-direction:column;overflow-y:auto;transition:transform .4s var(--eo);}.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
+    .sbr{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}.sbr svg{width:28px;height:28px;color:var(--cy);}.sbn{font-size:14px;font-weight:800;letter-spacing:.08em;}.sbs{font-size:8px;font-weight:600;letter-spacing:.14em;color:var(--cy);}
+    .toc{flex:1;padding:12px 10px;}.tl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cy);padding:8px 10px 6px;font-family:var(--fm);}
+    .ti{display:block;padding:7px 12px;border-radius:6px;cursor:pointer;text-decoration:none;color:var(--tm);font-size:12px;font-weight:500;transition:all .2s;border-left:2px solid transparent;margin-bottom:1px;}.ti:hover{color:var(--t1);background:var(--gl);}.ti.active{color:var(--cy);border-left-color:var(--cy);background:var(--gl);font-weight:600;}
+    .sf{padding:12px 16px;border-top:1px solid var(--bd);font-size:10px;color:var(--tm);text-align:center;}.sf strong{color:var(--cy);}
+    .so{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;}.so.active{display:block;}
+    .main{margin-left:var(--sw);flex:1;transition:margin-left .4s var(--eo);}
+    .topbar{position:sticky;top:0;z-index:100;height:var(--th);background:rgba(0,27,38,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;}[data-theme="light"] .topbar{background:rgba(255,255,255,.9);}
+    .tbl,.tbr{display:flex;align-items:center;gap:10px;}.tbt{font-size:14px;font-weight:600;}.tbb{padding:2px 10px;border-radius:999px;font-size:9px;font-weight:700;letter-spacing:.06em;background:var(--gl);color:var(--cy);border:1px solid var(--ba);}
+    .btn{background:none;border:1px solid var(--bd);color:var(--tm);width:32px;height:32px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}.btn:hover{color:var(--t1);border-color:var(--ba);background:var(--gl);}.btn svg{width:15px;height:15px;}
+    .rp{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;}.rpf{height:100%;width:0%;background:linear-gradient(90deg,var(--cy),var(--tl));transition:width .15s;}
+    .ct{padding:28px 36px 80px;max-width:1300px;margin:0 auto;}
+    .hero{background:linear-gradient(135deg,rgba(0,66,84,.5),rgba(0,37,50,.7));backdrop-filter:blur(20px);border:1px solid var(--ba);border-radius:var(--r);padding:36px;margin-bottom:28px;position:relative;overflow:hidden;}[data-theme="light"] .hero{background:linear-gradient(135deg,rgba(0,176,189,.08),rgba(63,150,174,.04));}.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:160px;height:160px;background:var(--gl);filter:blur(60px);border-radius:50%;pointer-events:none;}
+    .he{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);font-family:var(--fm);margin-bottom:10px;}.ht{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px;}.hd{font-size:13px;color:var(--t2);max-width:700px;line-height:1.7;}.hm{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;}.hp{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;background:var(--cd);border:1px solid var(--bd);color:var(--t2);}.hpk{color:var(--tm);font-weight:500;}
+    .kr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px;}.kp{background:var(--cd);border:1px solid var(--bd);border-radius:var(--rs);padding:18px;position:relative;overflow:hidden;transition:all .25s var(--eo);}.kp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ka,var(--cy));}.kp:hover{transform:translateY(-2px);box-shadow:var(--sh);}.kpl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tm);margin-bottom:4px;}.kpv{font-size:22px;font-weight:700;font-family:var(--fm);line-height:1;}.kps{font-size:10px;color:var(--tm);margin-top:4px;}
+    .sec{margin-bottom:28px;}.sh{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:2px solid var(--cy);margin-bottom:18px;cursor:pointer;user-select:none;}.sh:hover .st{color:var(--cy);}.si{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;flex-shrink:0;background:linear-gradient(135deg,var(--tl),var(--cy));color:#fff;}.sh h2{font-size:1.1rem;font-weight:700;}.sh p{font-size:.75rem;color:var(--tm);margin-top:2px;}.st{margin-left:auto;font-size:18px;color:var(--tm);transition:transform .3s,color .2s;}.sec.collapsed .st{transform:rotate(-90deg);}.sb2{transition:all .4s var(--eo);overflow:hidden;}.sec.collapsed .sb2{max-height:0!important;opacity:0;padding:0;}
+    /* Strategy intro */
+    .si2{background:var(--cd);border:1px solid var(--bs);border-radius:var(--r);padding:28px;margin-bottom:24px;position:relative;overflow:hidden;}.si2::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--tl),var(--cy));}.si2 h3{font-size:.95rem;font-weight:700;margin-bottom:10px;}.si2 p{font-size:.78rem;color:var(--tm);line-height:1.7;}.hl{display:inline-flex;align-items:center;gap:6px;background:var(--gl);padding:4px 12px;border-radius:6px;font-weight:600;color:var(--cy);font-size:.75rem;margin-top:12px;}
+    /* Phase card */
+    .pc{background:var(--cd);border:1.5px solid var(--bs);border-radius:var(--r);overflow:hidden;margin-bottom:18px;}.pch{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--bs);}.pn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0;}.pn.core{background:linear-gradient(135deg,var(--tl),var(--cy));}.pn.enh{background:linear-gradient(135deg,#f59e0b,#fbbf24);}.pn.scl{background:linear-gradient(135deg,#16a34a,#4ade80);}.pch h3{font-size:.9rem;font-weight:700;}.pm{margin-left:auto;display:flex;align-items:center;gap:10px;}.pb{padding:3px 10px;border-radius:6px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}.pb.cb{background:rgba(0,176,189,.12);color:var(--cy);}.pb.eb{background:rgba(245,158,11,.12);color:var(--wr);}.pd{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;color:var(--cy);background:rgba(0,176,189,.06);padding:3px 10px;border-radius:6px;}
+    .pcb{padding:20px 22px;}.pde{font-size:.76rem;color:var(--tm);margin-bottom:16px;line-height:1.6;}
+    /* Sprint table */
+    .spt{width:100%;border-collapse:collapse;font-size:.72rem;background:var(--cd);border-radius:6px;overflow:hidden;border:1px solid var(--bs);}.spt th{background:var(--tl);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}.spt td{padding:8px 12px;border-bottom:1px solid var(--bs);vertical-align:top;}.spt tr:hover td{background:rgba(0,176,189,.06);}.spn{font-weight:700;color:var(--cy);white-space:nowrap;}
+    .spt .tl2{list-style:none;padding:0;}.spt .tl2 li{padding:2px 0 2px 12px;position:relative;}.spt .tl2 li::before{content:'•';position:absolute;left:0;color:var(--cy);font-weight:700;}
+    /* Deliverables */
+    .dv{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}.dt{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:6px;font-size:.66rem;font-weight:600;background:var(--gl);color:var(--t2);border:1px solid var(--ba);}.dt.cr{background:rgba(233,30,99,.08);border-color:rgba(233,30,99,.2);color:var(--er);}
+    /* Scope table */
+    .sct{width:100%;border-collapse:collapse;font-size:.72rem;background:var(--cd);border-radius:6px;overflow:hidden;border:1px solid var(--bs);}.sct th{background:var(--tl);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}.sct td{padding:8px 12px;border-bottom:1px solid var(--bs);vertical-align:top;}.sct tr:hover td{background:rgba(0,176,189,.06);}
+    .sin{display:inline-flex;align-items:center;gap:4px;color:var(--ok);font-weight:600;}.sou{display:inline-flex;align-items:center;gap:4px;color:var(--tm);font-weight:500;}
+    /* Timeline */
+    .tlv{background:var(--cd);border:1px solid var(--bs);border-radius:var(--r);padding:28px;margin-bottom:24px;overflow-x:auto;}.tlt{text-align:center;font-size:.9rem;font-weight:700;color:var(--cy);margin-bottom:20px;}
+    .tlr{display:flex;align-items:center;margin-bottom:10px;gap:10px;}.tll{width:140px;font-size:.68rem;font-weight:600;text-align:right;flex-shrink:0;}.tlk{flex:1;height:28px;background:rgba(255,255,255,.03);border-radius:6px;position:relative;border:1px solid var(--bd);}.tlb{position:absolute;top:3px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:#fff;letter-spacing:.3px;min-width:50px;}.tlb.infra{background:linear-gradient(to right,#6366f1,#818cf8);}.tlb.core{background:linear-gradient(to right,var(--tl),var(--cy));}.tlb.test{background:linear-gradient(to right,#16a34a,#4ade80);}
+    .tlw{display:flex;margin-left:150px;margin-top:6px;font-size:.56rem;color:var(--tm);font-weight:500;}.tlw span{flex:1;text-align:center;padding:3px 0;border-left:1px dashed var(--bd);}.tlw span:first-child{border-left:none;}
+    /* Team */
+    .tgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:14px;}.tc{background:var(--cd);border:1.5px solid var(--bs);border-radius:var(--rs);padding:18px;text-align:center;}.tci{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;margin:0 auto 10px;background:linear-gradient(135deg,var(--tl),var(--cy));color:#fff;}.tcv{font-size:.85rem;font-weight:800;color:var(--cy);margin-bottom:4px;}.tc h4{font-size:.78rem;font-weight:700;margin-bottom:4px;}.tc p{font-size:.66rem;color:var(--tm);line-height:1.5;}.tcc{margin-top:8px;padding-top:8px;border-top:1px solid var(--bs);font-size:.66rem;color:var(--tl);font-weight:600;}
+    /* Summary */
+    .smb{background:linear-gradient(135deg,var(--tl),var(--cy));border-radius:var(--r);padding:28px;color:#fff;margin-top:24px;}.smb h3{font-size:.95rem;font-weight:700;margin-bottom:16px;}.smg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}.smi{background:rgba(255,255,255,.1);border-radius:8px;padding:14px;text-align:center;}.smi .v{font-size:1.4rem;font-weight:800;margin-bottom:3px;}.smi .l{font-size:.64rem;opacity:.8;text-transform:uppercase;letter-spacing:.4px;}
+    /* Notes */
+    .an{background:rgba(0,176,189,.04);border:1.5px solid rgba(0,176,189,.15);border-radius:6px;padding:16px 18px;margin-top:16px;}.an h4{font-size:.75rem;font-weight:700;color:var(--cy);margin-bottom:8px;}.an ul{list-style:none;}.an li{font-size:.7rem;padding:3px 0 3px 14px;position:relative;color:var(--tm);}.an li::before{content:'→';position:absolute;left:0;color:var(--cy);font-weight:700;}
+    /* Footer/utilities */
+    .ft{background:var(--bg2);border-top:1px solid var(--bd);padding:16px 36px;text-align:center;font-size:10px;color:var(--tm);}.ft strong{color:var(--cy);}
+    .edit-mode [contenteditable="true"]{outline:2px dashed var(--cy);outline-offset:3px;background:rgba(0,176,189,.04);cursor:text;border-radius:4px;}.edit-mode [contenteditable="true"]:focus{outline-style:solid;background:rgba(0,176,189,.08);}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);color:var(--cy);border:1px solid var(--ba);padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;box-shadow:var(--sh);z-index:10000;transition:all .3s;}.toast.out{opacity:0;transform:translateY(10px);}
+    [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .5s var(--eo),transform .5s var(--eo);}[data-reveal].revealed{opacity:1;transform:translateY(0);}
+    @media print{body{background:#fff!important;color:#000!important;}.sidebar,.topbar,.so,.rp,.toast{display:none!important;}.main{margin-left:0!important;}.ct{max-width:100%;padding:16px;}.pc,.si2,.sec{break-inside:avoid;}.smb,.pch{print-color-adjust:exact;-webkit-print-color-adjust:exact;}@page{margin:1.5cm;}}
+    @media(max-width:1024px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.ct{padding:20px 16px 60px;}}
+    @media(max-width:768px){.kr{grid-template-columns:repeat(2,1fr);}.tgr{grid-template-columns:1fr;}.smg{grid-template-columns:repeat(2,1fr);}.tlr{flex-wrap:wrap;}.tll{width:100%;text-align:left;}}
+  </style>
+</head>
+<body>
+  <div class="rp"><div class="rpf" id="rpf"></div></div>
+  <div class="app">
+    <nav class="sidebar" id="sidebar">
+      <div class="sbr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg><div><div class="sbn">INDRA</div><div class="sbs">INTELLIGENCE</div></div></div>
+      <div class="toc" id="tocNav">
+        <div class="tl">Table of Contents</div>
+        <a class="ti active" href="#s1">1. Abordagem Core First</a>
+        <a class="ti" href="#s2">2. Escopo — Core vs. Futuras</a>
+        <a class="ti" href="#s3">3. Cronograma</a>
+        <a class="ti" href="#s4">4. Fase 1 — MVP Core</a>
+        <a class="ti" href="#s5">5. Fase 2 — Enhancements</a>
+        <a class="ti" href="#s6">6. Equipe Necessária</a>
+        <a class="ti" href="#s7">7. Critérios de Aceitação</a>
+        <a class="ti" href="#s8">8. Riscos & Mitigações</a>
+        <a class="ti" href="#s9">9. Resumo Executivo</a>
+      </div>
+      <div class="sf"><strong>Indra Minsait</strong> · Maio 2026</div>
+    </nav>
+    <div class="so" id="so" onclick="toggleSidebar()"></div>
+    <div class="main" id="mainArea">
+      <header class="topbar">
+        <div class="tbl"><button class="btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><span class="tbt">Estratégia de Implementação</span><span class="tbb">STRATEGY</span></div>
+        <div class="tbr">
+          <button class="btn" onclick="toggleTheme()" title="Theme"><svg id="tD" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="tL" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+          <button class="btn" onclick="toggleEdit()" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn" onclick="exportJSON()" title="Export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+          <button class="btn" onclick="window.print()" title="Print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+        </div>
+      </header>
+      <div class="ct">
+        <section class="hero" data-reveal>
+          <div class="he">Implementation Strategy · Core First Approach</div>
+          <h1 class="ht">Agentificação de Ofertas</h1>
+          <p class="hd">Estratégia Core First — Implementação incremental com validação contínua. MVP Core funcional em 6 semanas com pipeline de 3 agentes de IA.</p>
+          <div class="hm"><span class="hp"><span class="hpk">Version:</span> 1.0 — Maio 2026</span><span class="hp"><span class="hpk">Author:</span> Transformação Digital</span><span class="hp"><span class="hpk">Status:</span> Em Elaboração</span></div>
+        </section>
+        <section class="kr" data-reveal>
+          <div class="kp" style="--ka:var(--cy);"><div class="kpl">MVP Core</div><div class="kpv">6 sem</div><div class="kps">Login + Pipeline 3 Agentes</div></div>
+          <div class="kp" style="--ka:var(--ok);"><div class="kpl">Team</div><div class="kpv">2 FTEs</div><div class="kps">Fullstack Sr + Tech Lead</div></div>
+          <div class="kp" style="--ka:var(--wr);"><div class="kpl">Effort</div><div class="kpv">12 p/s</div><div class="kps">Pessoas-semana (Phase 1)</div></div>
+          <div class="kp" style="--ka:var(--pu);"><div class="kpl">Team Cost</div><div class="kpv">R$62K</div><div class="kps">Fase 1 all-in</div></div>
+          <div class="kp" style="--ka:var(--go);"><div class="kpl">Ops Cost</div><div class="kpv">~$187</div><div class="kps">/mês all-in (50 ofertas)</div></div>
+          <div class="kp" style="--ka:var(--er);"><div class="kpl">Per Offer</div><div class="kpv">$3.73</div><div class="kps">Pipeline completo all-in</div></div>
+        </section>
+        <!-- 1. CORE FIRST -->
+        <div class="sec" id="s1" data-reveal>
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🎯</div><div><h2>1. Abordagem: Core First</h2><p>Filosofia de implementação — entregar valor funcional rapidamente</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="si2"><h3>Princípio: Implementar o pipeline de agentes funcional antes de features secundárias</h3><p>A estratégia <strong>Core First</strong> prioriza as funcionalidades essenciais: <strong>Login + Pipeline de 3 Agentes (Qualificação → Kickoff S2S → Ballpark)</strong>. Features complementares (gestão de KBs, dashboard, configurações avançadas) são postergadas para fases posteriores.</p><p style="margin-top:10px;">Essa abordagem reduz riscos técnicos (valida ADK + LLM + SharePoint cedo), permite feedback dos pilotos, e evita retrabalho em features que podem mudar após validação do core.</p><div class="hl">⚡ Objetivo: MVP Core funcional em 6 semanas</div></div>
+          </div>
+        </div>
+        <!-- 2. ESCOPO -->
+        <div class="sec" id="s2">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📋</div><div><h2>2. Escopo — Core vs. Fases Futuras</h2><p>O que entra no MVP e o que fica para depois</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <table class="sct"><thead><tr><th>Funcionalidade</th><th>MVP Core</th><th>Fase 2</th><th>Justificativa</th></tr></thead><tbody>
+              <tr><td><strong>Login / Auth</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Pré-requisito de segurança</td></tr>
+              <tr><td><strong>Agente 1 — Qualificação</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Core do pipeline</td></tr>
+              <tr><td><strong>Agente 2 — Kickoff S2S</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Core do pipeline</td></tr>
+              <tr><td><strong>Agente 3 — Ballpark</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Core do pipeline</td></tr>
+              <tr><td><strong>Chat de Refinamento</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Essencial para UX</td></tr>
+              <tr><td><strong>CRUD Ofertas</strong> (básico)</td><td><span class="sin">✓ Incluso</span></td><td></td><td>Mínimo para operar</td></tr>
+              <tr><td><strong>Upload de Documentos</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Input obrigatório</td></tr>
+              <tr><td><strong>KBs</strong> (pré-carregadas)</td><td><span class="sin">✓ Incluso</span></td><td></td><td>Sem UI de gestão</td></tr>
+              <tr><td><strong>Download Artefatos</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>PPTX/PDF gerados</td></tr>
+              <tr><td><strong>Frontend Wizard</strong></td><td><span class="sin">✓ Incluso</span></td><td></td><td>Interface do pipeline</td></tr>
+              <tr><td><strong>Gestão de KBs</strong> (UI)</td><td></td><td><span class="sou">○ Fase 2</span></td><td>KBs pré-carregadas; UI é conveniência</td></tr>
+              <tr><td><strong>Config de Agentes</strong></td><td></td><td><span class="sou">○ Fase 2</span></td><td>Configs hardcoded no Core</td></tr>
+              <tr><td><strong>Dashboard Analítico</strong></td><td></td><td><span class="sou">○ Fase 2</span></td><td>Não bloqueia operação</td></tr>
+              <tr><td><strong>Gestão Usuários</strong></td><td></td><td><span class="sou">○ Fase 2</span></td><td>Role fixo no Core</td></tr>
+              <tr><td><strong>Export Multi-formato</strong></td><td></td><td><span class="sou">○ Fase 2</span></td><td>PPTX padrão suficiente</td></tr>
+              <tr><td><strong>Histórico / Versioning</strong></td><td></td><td><span class="sou">○ Fase 2</span></td><td>Dados persistidos; UI depois</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <!-- 3. CRONOGRAMA -->
+        <div class="sec" id="s3">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📅</div><div><h2>3. Cronograma — Visão Geral</h2><p>Timeline de implementação MVP Core (6 semanas)</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="tlv"><div class="tlt">Timeline — Fase 1: MVP Core (6 semanas)</div>
+              <div class="tlr"><div class="tll">Infra & Setup</div><div class="tlk"><div class="tlb infra" style="left:0%;width:33%;">S1-S2</div></div></div>
+              <div class="tlr"><div class="tll">Backend — Agentes</div><div class="tlk"><div class="tlb core" style="left:16%;width:50%;">S2-S4</div></div></div>
+              <div class="tlr"><div class="tll">Frontend — Wizard</div><div class="tlk"><div class="tlb core" style="left:16%;width:60%;">S2-S5</div></div></div>
+              <div class="tlr"><div class="tll">Integração & Testes</div><div class="tlk"><div class="tlb test" style="left:66%;width:18%;">S5</div></div></div>
+              <div class="tlr"><div class="tll">Validação & Ajustes</div><div class="tlk"><div class="tlb test" style="left:83%;width:17%;">S6 ✅</div></div></div>
+              <div class="tlw"><span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 4. FASE 1 — SPRINTS -->
+        <div class="sec" id="s4">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🔵</div><div><h2>4. Fase 1 — MVP Core (6 Sprints)</h2><p>Detalhamento sprint-a-sprint</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <!-- S1 -->
+            <div class="pc"><div class="pch"><div class="pn core">S1</div><div><h3>Sprint 1 — Infraestrutura & Fundação</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 1</span></div></div><div class="pcb"><p class="pde">Setup completo da infra AWS, repos, CI/CD e auth. Ao final: esqueleto da aplicação no ar.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">IaC / Terraform</td><td><ul class="tl2"><li>Módulos Terraform: VPC, S3, CloudFront, API GW, DynamoDB, ECR, Cognito</li><li>Secrets Manager (API keys)</li><li>Pipeline CI/CD (GitHub Actions)</li></ul></td><td>3 dias</td></tr><tr><td class="spn">Auth</td><td><ul class="tl2"><li>Cognito User Pool + App Client</li><li>Integração Azure AD (SAML/OIDC)</li><li>Lambda fn-auth-users</li></ul></td><td>2 dias</td></tr><tr><td class="spn">Frontend Base</td><td><ul class="tl2"><li>Scaffold React + Vite + TypeScript</li><li>Tela de Login + Layout base</li><li>Deploy automático S3 + CloudFront</li></ul></td><td>2 dias</td></tr><tr><td class="spn">SharePoint</td><td><ul class="tl2"><li>Criar Site + Libraries (Uploads, Outputs, 6 KBs)</li><li>App no Azure AD (Graph API)</li><li>Testar Lambda → SharePoint</li></ul></td><td>1 dia</td></tr></tbody></table><div class="dv"><span class="dt cr">✓ Login funcional (Cognito + Azure AD)</span><span class="dt">✓ Infra provisionada</span><span class="dt">✓ CI/CD operacional</span><span class="dt">✓ Frontend base no ar</span></div></div></div>
+            <!-- S2 -->
+            <div class="pc"><div class="pch"><div class="pn core">S2</div><div><h3>Sprint 2 — Agente 1: Qualificação</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 2</span></div></div><div class="pcb"><p class="pde">Primeiro agente end-to-end com Google ADK, integração SharePoint, sessão DynamoDB, e resultado no frontend.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">Backend — ADK</td><td><ul class="tl2"><li>Container image (Python 3.12 + google-adk + anthropic)</li><li>Agent 1 (Qualificação) com Google ADK</li><li>System prompt, tools (RAG, scoring), output schema</li><li>Session management DynamoDB</li></ul></td><td>3 dias</td></tr><tr><td class="spn">Backend — API</td><td><ul class="tl2"><li>fn-agent-qualificacao (POST /ofertas/{id}/qualificacao)</li><li>fn-ofertas-crud (POST /ofertas)</li><li>fn-file-handler (POST /files)</li></ul></td><td>2 dias</td></tr><tr><td class="spn">Frontend</td><td><ul class="tl2"><li>"Nova Oferta" com upload de RFP</li><li>Step 1 Wizard: executar, loading, score + análise</li><li>Chat de refinamento (Agent 1)</li></ul></td><td>2 dias</td></tr><tr><td class="spn">KB</td><td><ul class="tl2"><li>Carregar 10-20 docs KB1, KB4, KB5</li><li>Pipeline de embedding</li></ul></td><td>1 dia</td></tr></tbody></table><div class="dv"><span class="dt cr">✓ Agente 1 funcional e2e</span><span class="dt">✓ Upload RFP → SharePoint</span><span class="dt">✓ Chat refinamento (Ag.1)</span><span class="dt">✓ Score na UI</span></div></div></div>
+            <!-- S3 -->
+            <div class="pc"><div class="pch"><div class="pn core">S3</div><div><h3>Sprint 3 — Agente 2: Kickoff S2S</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 3</span></div></div><div class="pcb"><p class="pde">Segundo agente — geração PPTX de Kickoff. Recebe outputs do Agent 1, consulta KBs templates/portfólio.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">Backend — ADK</td><td><ul class="tl2"><li>Agent 2 (Kickoff) com ADK + GPT-4o</li><li>Tools: template KB, PPTX gen, formatting</li><li>Herança de contexto (Agent 1 → 2)</li><li>PPTX → SharePoint/Outputs</li></ul></td><td>3 dias</td></tr><tr><td class="spn">Backend — API</td><td><ul class="tl2"><li>fn-agent-kickoff-s2s</li><li>Endpoint download artefatos</li></ul></td><td>1 dia</td></tr><tr><td class="spn">Frontend</td><td><ul class="tl2"><li>Step 2 Wizard + preview resultado</li><li>Botão "Baixar PPTX"</li><li>Chat refinamento (Agent 2)</li></ul></td><td>2 dias</td></tr></tbody></table><div class="dv"><span class="dt cr">✓ Agente 2 funcional e2e</span><span class="dt">✓ Geração PPTX</span><span class="dt">✓ Download artefatos</span></div></div></div>
+            <!-- S4 -->
+            <div class="pc"><div class="pch"><div class="pn core">S4</div><div><h3>Sprint 4 — Agente 3: Ballpark + Listagem</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 4</span></div></div><div class="pcb"><p class="pde">Terceiro agente — dimensionamento e custo ballpark. Complementa com listagem de ofertas.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">Backend — ADK</td><td><ul class="tl2"><li>Agent 3 (Ballpark) com ADK + Claude 3.5</li><li>Tools: rates lookup, cálculo FTE, custos</li><li>Herança Agents 1+2 como input</li><li>Output: tabela dimensionamento + valor</li></ul></td><td>3 dias</td></tr><tr><td class="spn">Backend — API</td><td><ul class="tl2"><li>fn-agent-ballpark</li><li>fn-ofertas-crud: GET /ofertas (listagem)</li></ul></td><td>1 dia</td></tr><tr><td class="spn">Frontend</td><td><ul class="tl2"><li>Step 3 Wizard: tabela + valor</li><li>Chat refinamento (Agent 3)</li><li>Página listagem ofertas</li></ul></td><td>2 dias</td></tr></tbody></table><div class="dv"><span class="dt cr">✓ Agente 3 funcional e2e</span><span class="dt cr">✓ Pipeline completo (3 agentes)</span><span class="dt">✓ Listagem ofertas</span></div></div></div>
+            <!-- S5 -->
+            <div class="pc"><div class="pch"><div class="pn core">S5</div><div><h3>Sprint 5 — Integração, Polimento & Testes</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 5</span></div></div><div class="pcb"><p class="pde">Integração end-to-end do pipeline completo, error handling, UX polishing e testes manuais com dados reais.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">Integração</td><td><ul class="tl2"><li>Pipeline completo e2e (Login → Upload → 3 Agentes → Download)</li><li>Validar herança entre agentes</li><li>Testar multi-turn chat (sessão persiste)</li><li>Timeout e retry handling</li></ul></td><td>2 dias</td></tr><tr><td class="spn">Error Handling</td><td><ul class="tl2"><li>Erros LLM (timeout, rate limit, token exceeded)</li><li>Feedback visual (loading, errors, retry)</li><li>CloudWatch structured logs</li></ul></td><td>1.5 dias</td></tr><tr><td class="spn">UX Polish</td><td><ul class="tl2"><li>Responsive, animações, transições wizard</li><li>Empty states, success feedbacks, tooltips</li><li>Review de copy</li></ul></td><td>1.5 dias</td></tr></tbody></table><div class="dv"><span class="dt cr">✓ Pipeline 100% funcional e2e</span><span class="dt">✓ Error handling robusto</span><span class="dt">✓ UX polida para demo</span></div></div></div>
+            <!-- S6 -->
+            <div class="pc"><div class="pch"><div class="pn core">S6</div><div><h3>Sprint 6 — Testes com Usuários & Validação</h3></div><div class="pm"><span class="pb cb">CORE</span><span class="pd">📅 Semana 6</span></div></div><div class="pcb"><p class="pde">Validação com 3-5 usuários-piloto usando RFPs reais em ambiente DEV. Coleta feedback, ajustes de prompts/outputs.</p><table class="spt"><thead><tr><th style="width:120px;">Área</th><th>Atividades</th><th style="width:70px;">Esforço</th></tr></thead><tbody><tr><td class="spn">User Testing</td><td><ul class="tl2"><li>Onboarding 3-5 pilotos (equipe de ofertas)</li><li>Pipeline com 3-5 RFPs reais</li><li>Feedback estruturado (qualidade, UX, performance)</li></ul></td><td>2 dias</td></tr><tr><td class="spn">Ajustes</td><td><ul class="tl2"><li>Tuning de prompts baseado em feedback</li><li>Ajustes UX baseados em observação</li><li>Bug fixes</li></ul></td><td>2 dias</td></tr><tr><td class="spn">Validação</td><td><ul class="tl2"><li>Validação funcional completa (DEV)</li><li>Documentação cenários testados</li><li>Sign-off para Fase 2</li></ul></td><td>1 dia</td></tr></tbody></table><div class="dv"><span class="dt cr">✅ MVP Core validado em testes</span><span class="dt">✓ Validado com usuários reais</span><span class="dt">✓ Prompts ajustados</span><span class="dt">✓ Sign-off Fase 2</span></div></div></div>
+          </div>
+        </div>
+        <!-- 5. FASE 2 -->
+        <div class="sec" id="s5">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🟡</div><div><h2>5. Fase 2 — Ambientes & Enhancements</h2><p>Config HML/PRD e features complementares após validação do Core</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="pc"><div class="pch"><div class="pn enh">F2</div><div><h3>Fase 2 — Ambientes + Features Complementares</h3></div><div class="pm"><span class="pb eb">ENHANCE</span><span class="pd">📅 A definir pós-validação</span></div></div><div class="pcb"><p class="pde">Com o Core validado, a Fase 2 contempla promoção para HML e PRD e implementação de features complementares.</p>
+              <h4 style="font-size:.78rem;font-weight:700;color:var(--tl);margin:12px 0 8px;">🔧 Infraestrutura & Ambientes</h4>
+              <table class="spt"><thead><tr><th>Item</th><th>Descrição</th></tr></thead><tbody><tr><td><strong>HML</strong></td><td>Réplica do DEV via Terraform, domínio, testes de aceitação</td></tr><tr><td><strong>PRD</strong></td><td>Domínio customizado, SSL, segurança, monitoramento</td></tr><tr><td><strong>CI/CD Multi-amb</strong></td><td>Pipeline DEV → HML → PRD com aprovações manuais</td></tr></tbody></table>
+              <h4 style="font-size:.78rem;font-weight:700;color:var(--tl);margin:18px 0 8px;">✨ Features Complementares</h4>
+              <table class="spt"><thead><tr><th>Feature</th><th>Descrição</th></tr></thead><tbody><tr><td><strong>UI Gestão KBs</strong></td><td>Upload, listagem, exclusão docs + re-indexação automática</td></tr><tr><td><strong>Config Agentes (UI)</strong></td><td>Editar prompts, modelo, temperatura, KBs sem deploy</td></tr><tr><td><strong>Gestão Usuários & Roles</strong></td><td>CRUD usuários, roles (admin/user), controle de acesso</td></tr><tr><td><strong>Dashboard Analítico</strong></td><td>Ofertas processadas, custo tokens/mês, tempo médio</td></tr><tr><td><strong>Histórico & Versioning</strong></td><td>Versões anteriores, comparação, timeline de execução</td></tr><tr><td><strong>Export Multi-formato</strong></td><td>DOCX, PDF custom, Excel para dimensionamento</td></tr><tr><td><strong>Notificações</strong></td><td>Email/Teams quando pipeline conclui, webhooks, CRM</td></tr><tr><td><strong>Performance</strong></td><td>Cache RAG, streaming, prompt optimization, lazy loading</td></tr></tbody></table>
+              <div class="an"><h4>Nota sobre Fase 2</h4><ul><li>Prazos definidos após validação do MVP Core</li><li>Priorização baseada em feedback dos pilotos</li><li>Escopo ajustável conforme aprendizados</li></ul></div>
+            </div></div>
+          </div>
+        </div>
+        <!-- 6. EQUIPE -->
+        <div class="sec" id="s6">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">👥</div><div><h2>6. Equipe Necessária</h2><p>Composição do time para Fase 1</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="tgr">
+              <div class="tc"><div class="tci">💻</div><div class="tcv">1</div><h4>Desenvolvedor Fullstack Sênior</h4><p>Backend Python (ADK, Lambdas, SharePoint, DynamoDB) + Frontend React. Experiência em IA/LLMs.</p><div class="tcc">R$ 80/hora</div></div>
+              <div class="tc"><div class="tci">🎯</div><div class="tcv">1</div><h4>Tech Lead / DevOps</h4><p>Arquitetura, Terraform, CI/CD, Cognito, prompt engineering, revisão de outputs, interface com stakeholders.</p><div class="tcc">R$ 180/hora</div></div>
+            </div>
+            <div class="an" style="margin-top:16px;"><h4>Total: 2 FTEs dedicados</h4><ul><li><strong>Esforço Fase 1:</strong> 12 pessoas-semana (2 FTEs × 6 semanas)</li><li><strong>Fase 2:</strong> A definir após validação do MVP</li></ul></div>
+            <div class="an"><h4>Estimativa de Custos — Equipe (Fase 1: 6 sem × 40h)</h4><ul><li><strong>Fullstack Sr:</strong> R$ 80/h × 240h = <strong>R$ 19.200</strong></li><li><strong>Tech Lead:</strong> R$ 180/h × 240h = <strong>R$ 43.200</strong></li><li><strong>Total Fase 1:</strong> <strong>R$ 62.400</strong></li></ul></div>
+          </div>
+        </div>
+        <!-- 7. CRITÉRIOS -->
+        <div class="sec" id="s7">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">✅</div><div><h2>7. Critérios de Aceitação — MVP Core</h2><p>Condições para considerar o MVP entregue</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <table class="sct"><thead><tr><th style="width:30px;">#</th><th>Critério</th><th>Validação</th></tr></thead><tbody>
+              <tr><td><strong>1</strong></td><td>Login com credenciais corporativas (Azure AD)</td><td>3+ usuários reais</td></tr>
+              <tr><td><strong>2</strong></td><td>Criar oferta + upload de RFP (PDF/DOCX)</td><td>5 docs diferentes</td></tr>
+              <tr><td><strong>3</strong></td><td>Agent 1 processa RFP → score + análise em &lt;30s</td><td>5 RFPs reais</td></tr>
+              <tr><td><strong>4</strong></td><td>Agent 2 gera PPTX baseado no contexto do Agent 1</td><td>Download e review</td></tr>
+              <tr><td><strong>5</strong></td><td>Agent 3 gera tabela de dimensionamento + preço</td><td>Validação por gestor</td></tr>
+              <tr><td><strong>6</strong></td><td>Chat refinamento funciona (3 agentes, ≥5 turns)</td><td>Multi-turn com ajustes</td></tr>
+              <tr><td><strong>7</strong></td><td>Outputs persistem entre sessões</td><td>Logout/login check</td></tr>
+              <tr><td><strong>8</strong></td><td>Pipeline completo sem erros em 90%+ dos casos</td><td>Batch 10 RFPs</td></tr>
+              <tr><td><strong>9</strong></td><td>Erros tratados graciosamente</td><td>Edge cases</td></tr>
+              <tr><td><strong>10</strong></td><td>Feedback pilotos: NPS ≥ 7</td><td>Survey 3-5 usuários</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <!-- 8. RISCOS -->
+        <div class="sec" id="s8">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">⚠️</div><div><h2>8. Riscos & Mitigações</h2><p>Principais riscos e estratégias de mitigação</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <table class="sct"><thead><tr><th>Risco</th><th>Prob.</th><th>Impacto</th><th>Mitigação</th></tr></thead><tbody>
+              <tr><td><strong>Qualidade outputs abaixo do esperado</strong></td><td style="color:var(--wr);font-weight:600;">Média</td><td style="color:var(--er);font-weight:600;">Alto</td><td>Sprint 6 dedicada a tuning; pilotos desde S6; iteração rápida nos prompts</td></tr>
+              <tr><td><strong>Latência alta (&gt;30s)</strong></td><td style="color:var(--wr);font-weight:600;">Média</td><td style="color:var(--wr);font-weight:600;">Médio</td><td>Prompt optimization, streaming parcial, feedback visual</td></tr>
+              <tr><td><strong>SharePoint Graph API — permissões</strong></td><td style="color:var(--wr);font-weight:600;">Média</td><td style="color:var(--wr);font-weight:600;">Médio</td><td>Validação S1; fallback S3 temporário</td></tr>
+              <tr><td><strong>Google ADK limitações</strong></td><td style="color:var(--ok);font-weight:600;">Baixa</td><td style="color:var(--er);font-weight:600;">Alto</td><td>POC viabilidade S2; fallback LangGraph</td></tr>
+              <tr><td><strong>Custo tokens acima do estimado</strong></td><td style="color:var(--wr);font-weight:600;">Média</td><td style="color:var(--ok);font-weight:600;">Baixo</td><td>Monitoramento desde S2; alertas CloudWatch</td></tr>
+              <tr><td><strong>Atraso Azure AD SSO</strong></td><td style="color:var(--wr);font-weight:600;">Média</td><td style="color:var(--ok);font-weight:600;">Baixo</td><td>Login local Cognito como fallback</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <!-- 9. RESUMO EXECUTIVO -->
+        <div class="sec" id="s9">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📊</div><div><h2>9. Resumo Executivo</h2><p>Números consolidados</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="smb"><h3>Indicadores do Projeto — Core First</h3><div class="smg"><div class="smi"><div class="v">6 sem.</div><div class="l">MVP Core Validado</div></div><div class="smi"><div class="v">2 FTEs</div><div class="l">Equipe Dedicada</div></div><div class="smi"><div class="v">12 p/s</div><div class="l">Esforço Fase 1</div></div><div class="smi"><div class="v">R$ 62.400</div><div class="l">Custo Equipe Fase 1</div></div><div class="smi"><div class="v">~$187</div><div class="l">Custo Ops/Mês (all-in)</div></div><div class="smi"><div class="v">~$3.73</div><div class="l">Custo por Oferta</div></div></div></div>
+            <div class="an"><h4>Marcos Principais — Fase 1</h4><ul><li><strong>Semana 1:</strong> Infra + Login funcional + CI/CD operacional</li><li><strong>Semana 2:</strong> Primeiro agente funcional e2e (Qualificação)</li><li><strong>Semana 4:</strong> Pipeline completo (3 agentes) funcionando</li><li><strong>Semana 5:</strong> Integração testada + error handling + UX polida</li><li><strong>Semana 6:</strong> ✅ <strong>MVP Core validado em testes</strong> — aprovado por pilotos</li></ul></div>
+            <div class="an"><h4>Por que Core First?</h4><ul><li><strong>Reduz risco técnico:</strong> Valida ADK + LLM + SharePoint nas primeiras semanas</li><li><strong>Feedback antecipado:</strong> Pilotos testam qualidade dos agentes em 6 semanas</li><li><strong>Evita retrabalho:</strong> Features construídas com base em necessidades validadas</li><li><strong>Simplifica deploy:</strong> MVP validado em testes; HML/PRD somente Fase 2</li><li><strong>Custo controlado:</strong> Fase 2 dimensionada com base nos aprendizados reais</li></ul></div>
+          </div>
+        </div>
+      </div>
+      <footer class="ft"><strong>Indra Minsait</strong> · Transformação Digital Brasil · Estratégia de Implementação · Maio 2026 · v2.0</footer>
+    </div>
+  </div>
+  <script>
+    function getTheme(){try{return localStorage.getItem('indra_theme')||'dark'}catch{return'dark'}}
+    function setTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('indra_theme',t)}catch{}document.getElementById('tD').style.display=t==='dark'?'':'none';document.getElementById('tL').style.display=t==='light'?'':'none';}
+    function toggleTheme(){setTheme(getTheme()==='dark'?'light':'dark')}
+    setTheme(getTheme());
+    function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('so').classList.toggle('active');}
+    let editMode=false;
+    function toggleEdit(){editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);document.querySelectorAll('h1,h2,h3,h4,p,li,td,th,.hl,.pde').forEach(el=>{if(!el.closest('footer')&&!el.closest('.topbar'))el.contentEditable=editMode;});toast(editMode?'Edit mode ON':'Edit mode OFF');}
+    function toggleSection(h){h.closest('.sec').classList.toggle('collapsed');}
+    function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),300);},3000);}
+    window.addEventListener('scroll',()=>{const s=window.pageYOffset,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('rpf').style.width=h>0?Math.min(s/h*100,100)+'%':'0%';},{passive:true});
+    const tis=document.querySelectorAll('.ti'),secs=document.querySelectorAll('.sec[id]');
+    const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){tis.forEach(t=>t.classList.remove('active'));const a=document.querySelector(`.ti[href="#${e.target.id}"]`);if(a)a.classList.add('active');}});},{threshold:0.2,rootMargin:'-60px 0px -40% 0px'});
+    secs.forEach(s=>obs.observe(s));
+    const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.1});
+    document.querySelectorAll('[data-reveal]').forEach(el=>ro.observe(el));
+    tis.forEach(i=>{i.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(i.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});if(window.innerWidth<=1024){document.getElementById('sidebar').classList.remove('open');document.getElementById('so').classList.remove('active');}});});
+    function exportJSON(){const d={title:document.title,exportedAt:new Date().toISOString(),sections:[]};document.querySelectorAll('.sec').forEach(sec=>{const title=sec.querySelector('h2')?.textContent.trim()||'';const items=[];sec.querySelectorAll('ul li, p').forEach(el=>items.push(el.textContent.trim()));const tables=[];sec.querySelectorAll('table').forEach(t=>{const h=[...t.querySelectorAll('th')].map(th=>th.textContent.trim());const r=[...t.querySelectorAll('tbody tr')].map(tr=>[...tr.querySelectorAll('td')].map(td=>td.textContent.trim()));tables.push({headers:h,rows:r});});d.sections.push({title,items,tables});});const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`estrategia-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);}
+  </script>
+</body>
+</html>

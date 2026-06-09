@@ -1,0 +1,187 @@
+{
+  "mercados": {
+    "energia_e_utilities": {
+      "dn": "E&U",
+      "label": "Energia e Utilities",
+      "descricao": "DN Energia & Utilities — distribuidoras, geradoras, utilities, oil & gas",
+      "total_arquivos_ofertas": 671
+    },
+    "telco": {
+      "dn": "T&M",
+      "label": "Telco",
+      "descricao": "DN Telecomunicações & Mídia — operadoras, ISPs, broadcasters",
+      "total_arquivos_ofertas": 0
+    },
+    "industria_e_consumo": {
+      "dn": "I&C",
+      "label": "Indústria e Consumo",
+      "descricao": "DN Indústria & Bens de Consumo — manufatura, varejo, travel",
+      "total_arquivos_ofertas": 656
+    },
+    "sge": {
+      "dn": "SAP",
+      "label": "SGE",
+      "descricao": "DN SAP / Salesforce / Dynamics — ERP, CRM, plataformas enterprise",
+      "total_arquivos_ofertas": 0
+    },
+    "administracao_publica": {
+      "dn": "AAPP",
+      "label": "Administração Pública",
+      "descricao": "DN Administração Pública — gov federal, estadual, municipal, autarquias",
+      "total_arquivos_ofertas": 0
+    },
+    "saude": {
+      "dn": "Sanidad",
+      "label": "Saúde",
+      "descricao": "DN Sanidad — hospitais, operadoras de saúde, healthtech",
+      "total_arquivos_ofertas": 8
+    },
+    "multi_setor": {
+      "dn": "Cross",
+      "label": "Multi-setor",
+      "descricao": "Oportunidades cross-DN que não se encaixam em um único mercado",
+      "total_arquivos_ofertas": 0
+    },
+    "outros": {
+      "dn": null,
+      "label": "Outros",
+      "descricao": "Mercados não categorizados — campo livre",
+      "total_arquivos_ofertas": 0
+    }
+  },
+  "praticas": {
+    "desenvolvimento_solucoes": {
+      "cod": "DES",
+      "label": "Desenvolvimento de Soluções",
+      "descricao": "Prática DES — fábricas de software, low-code, portais, QA",
+      "total_arquivos_ofertas": 310
+    },
+    "dados_ia_rpa": {
+      "cod": "Dados",
+      "label": "Dados/IA/RPA",
+      "descricao": "Prática Dados — analytics, BI, machine learning, RPA, agentes IA",
+      "total_arquivos_ofertas": 238
+    },
+    "hiperautomacao": {
+      "cod": "Hiper",
+      "label": "Hiperautomação",
+      "descricao": "Prática Dados (2) — RPA avançado, process mining, automação inteligente",
+      "total_arquivos_ofertas": 1
+    },
+    "ciberseguranca": {
+      "cod": "Ciber",
+      "label": "Cibersegurança",
+      "descricao": "Prática Ciber — SOC, MSS, pentest, SIMOC, gestão de crise",
+      "total_arquivos_ofertas": 28
+    },
+    "consultoria_td": {
+      "cod": "CTD",
+      "label": "Consultoria & Transformação Digital",
+      "descricao": "Prática DES (2) — consultoria estratégica, roadmaps de transformação",
+      "total_arquivos_ofertas": 5
+    },
+    "infraestrutura_cloud_redes": {
+      "cod": "DIC",
+      "label": "Infraestrutura/Cloud/Redes",
+      "descricao": "Prática DIC — ITO, cloud computing, FinOps, data center, observabilidade",
+      "total_arquivos_ofertas": 224
+    },
+    "bpo": {
+      "cod": "BPO",
+      "label": "BPO",
+      "descricao": "Prática BPO — business process outsourcing, service desk, backoffice",
+      "total_arquivos_ofertas": 85
+    },
+    "workspace_digital": {
+      "cod": "GU",
+      "label": "WorkSpace / Digital Workplace",
+      "descricao": "Prática GU — gestão de ativos, smart workplace, DEX, IT Corner",
+      "total_arquivos_ofertas": 8
+    },
+    "outsourcing_multitorres": {
+      "cod": "EMB",
+      "label": "Outsourcing Multi-torres",
+      "descricao": "Modelo Embraer — múltiplas torres de serviço integradas",
+      "total_arquivos_ofertas": 11
+    },
+    "multi_praticas": {
+      "cod": "Multi",
+      "label": "Multi-Práticas",
+      "descricao": "Combinação de múltiplas práticas em uma mesma oportunidade",
+      "total_arquivos_ofertas": 0
+    },
+    "outros": {
+      "cod": null,
+      "label": "Outros",
+      "descricao": "Práticas não categorizadas — campo livre",
+      "total_arquivos_ofertas": 0
+    }
+  },
+  "categorias_acervo": {
+    "A": {
+      "label": "Atestados de Capacidade Técnica",
+      "total": 49,
+      "pasta": "A_Atestados"
+    },
+    "B": {
+      "label": "Cases de Sucesso",
+      "total": 23,
+      "pasta": "B_Cases"
+    },
+    "C": {
+      "label": "Capacidades por Prática (Portfólio)",
+      "total": 39,
+      "pasta": "C_Capacidades_Portfolio"
+    },
+    "D": {
+      "label": "Defesas Técnicas",
+      "total": 5,
+      "pasta": "D_Defesas_Tecnicas"
+    },
+    "I": {
+      "label": "Material Institucional",
+      "total": 8,
+      "pasta": "I_Institucional"
+    },
+    "M": {
+      "label": "Metodologias e Frameworks",
+      "total": 3,
+      "pasta": "M_Metodologias"
+    },
+    "O": {
+      "label": "Outros",
+      "total": 4,
+      "pasta": "O_Outros"
+    },
+    "P": {
+      "label": "Planejamento Comercial 2026 (OpTech)",
+      "total": 9,
+      "pasta": "P_Planejamento_OpTech"
+    },
+    "PT": {
+      "label": "Propostas Técnicas Anteriores",
+      "total": 15,
+      "pasta": "PT_Propostas_Tecnicas"
+    },
+    "S": {
+      "label": "Soluções Verticais (E&U / Phygital)",
+      "total": 28,
+      "pasta": "S_Solucoes_Verticais"
+    },
+    "T": {
+      "label": "Templates / Modelos de Proposta",
+      "total": 11,
+      "pasta": "T_Templates_Proposta"
+    },
+    "Z": {
+      "label": "Documento Normativo (Regras de Ofertas)",
+      "total": 1,
+      "pasta": "Z_Normativo"
+    }
+  },
+  "_meta": {
+    "ultima_atualizacao": "2026-06-09",
+    "fonte": "_meta/catalog_ofertas_v2.json",
+    "total_arquivos_ofertas": 1656
+  }
+}

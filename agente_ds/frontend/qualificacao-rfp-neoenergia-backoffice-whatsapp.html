@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Qualificação de Oferta DS — Energisa Portal & App Mobile | Análise de RFP e Parecer Go/No-Go">
+  <title>Qualificação RFP — Energisa Portal & App Mobile | Indra Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>if(window.self!==window.top){document.documentElement.classList.add('in-iframe');document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('in-iframe'));}</script>
+  <style>
+    :root{--f:'Inter','Segoe UI',sans-serif;--fm:'JetBrains Mono',monospace;--sw:260px;--th:52px;--eo:cubic-bezier(0.16,1,0.3,1);--r:12px;--rs:8px;}
+    [data-theme="dark"]{--bg:#001B26;--bg2:#002B3A;--cd:rgba(0,62,80,0.4);--bd:rgba(255,255,255,0.08);--bs:rgba(255,255,255,0.04);--ba:rgba(0,176,189,0.25);--t1:#FFF;--t2:#B3C1DA;--tm:#7A9CAE;--cy:#00B0BD;--tl:#3F96AE;--ok:#27AE60;--wr:#FF9800;--er:#E91E63;--go:#FFC107;--pu:#8B5CF6;--gl:rgba(0,176,189,0.12);--sh:0 8px 32px rgba(0,0,0,0.4);color-scheme:dark;}
+    [data-theme="light"]{--bg:#F4F7F9;--bg2:#FFF;--cd:rgba(255,255,255,0.9);--bd:rgba(0,0,0,0.1);--bs:rgba(0,0,0,0.05);--ba:rgba(0,176,189,0.3);--t1:#1A2B3C;--t2:#4A5B6C;--tm:#7A8B9C;--cy:#0097A3;--tl:#2D7A8E;--ok:#1E8449;--wr:#E68900;--er:#C2185B;--go:#D4A000;--pu:#7C3AED;--gl:rgba(0,176,189,0.06);--sh:0 8px 32px rgba(0,0,0,0.06);color-scheme:light;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+    body{font-family:var(--f);background:var(--bg);color:var(--t1);line-height:1.6;transition:background .4s,color .3s;}
+    body.in-iframe .topbar,body.in-iframe .sidebar,body.in-iframe .so,body.in-iframe .rp{display:none!important;}body.in-iframe .main{margin-left:0!important;}
+    .app{display:flex;min-height:100vh;}
+    .sidebar{width:var(--sw);background:var(--bg);border-right:1px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:200;display:flex;flex-direction:column;overflow-y:auto;transition:transform .4s var(--eo);}.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
+    .sbr{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}.sbr svg{width:28px;height:28px;color:var(--cy);}.sbn{font-size:14px;font-weight:800;letter-spacing:.08em;}.sbs{font-size:8px;font-weight:600;letter-spacing:.14em;color:var(--cy);}
+    .toc{flex:1;padding:12px 10px;}.tl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cy);padding:8px 10px 6px;font-family:var(--fm);}
+    .ti{display:block;padding:7px 12px;border-radius:6px;cursor:pointer;text-decoration:none;color:var(--tm);font-size:12px;font-weight:500;transition:all .2s;border-left:2px solid transparent;margin-bottom:1px;}.ti:hover{color:var(--t1);background:var(--gl);}.ti.active{color:var(--cy);border-left-color:var(--cy);background:var(--gl);font-weight:600;}
+    .sf{padding:12px 16px;border-top:1px solid var(--bd);font-size:10px;color:var(--tm);text-align:center;}.sf strong{color:var(--cy);}
+    .so{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;}.so.active{display:block;}
+    .main{margin-left:var(--sw);flex:1;transition:margin-left .4s var(--eo);}
+    .topbar{position:sticky;top:0;z-index:100;height:var(--th);background:rgba(0,27,38,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;}[data-theme="light"] .topbar{background:rgba(255,255,255,.9);}
+    .tbl,.tbr{display:flex;align-items:center;gap:10px;}.tbt{font-size:14px;font-weight:600;}.tbb{padding:2px 10px;border-radius:999px;font-size:9px;font-weight:700;letter-spacing:.06em;background:var(--gl);color:var(--cy);border:1px solid var(--ba);}
+    .btn{background:none;border:1px solid var(--bd);color:var(--tm);width:32px;height:32px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}.btn:hover{color:var(--t1);border-color:var(--ba);background:var(--gl);}.btn svg{width:15px;height:15px;}
+    .rp{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;}.rpf{height:100%;width:0%;background:linear-gradient(90deg,var(--cy),var(--tl));transition:width .15s;}
+    .ct{padding:28px 36px 80px;max-width:1300px;margin:0 auto;}
+    .hero{background:linear-gradient(135deg,rgba(0,66,84,.5),rgba(0,37,50,.7));backdrop-filter:blur(20px);border:1px solid var(--ba);border-radius:var(--r);padding:36px;margin-bottom:28px;position:relative;overflow:hidden;}[data-theme="light"] .hero{background:linear-gradient(135deg,rgba(0,176,189,.08),rgba(63,150,174,.04));}.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:160px;height:160px;background:var(--gl);filter:blur(60px);border-radius:50%;pointer-events:none;}
+    .he{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);font-family:var(--fm);margin-bottom:10px;}.ht{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px;}.hd{font-size:13px;color:var(--t2);max-width:700px;line-height:1.7;}.hm{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;}.hp{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;background:var(--cd);border:1px solid var(--bd);color:var(--t2);}.hpk{color:var(--tm);font-weight:500;}
+    .kr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px;}.kp{background:var(--cd);border:1px solid var(--bd);border-radius:var(--rs);padding:18px;position:relative;overflow:hidden;transition:all .25s var(--eo);}.kp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ka,var(--cy));}.kp:hover{transform:translateY(-2px);box-shadow:var(--sh);}.kpl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tm);margin-bottom:4px;}.kpv{font-size:22px;font-weight:700;font-family:var(--fm);line-height:1;}.kps{font-size:10px;color:var(--tm);margin-top:4px;}
+    .sec{margin-bottom:28px;}.sh{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:2px solid var(--cy);margin-bottom:18px;cursor:pointer;user-select:none;}.si{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;flex-shrink:0;background:linear-gradient(135deg,var(--tl),var(--cy));color:#fff;}.sh h2{font-size:1.1rem;font-weight:700;}.sh p{font-size:.75rem;color:var(--tm);margin-top:2px;}.st{margin-left:auto;font-size:18px;color:var(--tm);transition:transform .3s,color .2s;}.sec.collapsed .st{transform:rotate(-90deg);}.sb2{transition:all .4s var(--eo);overflow:hidden;}.sec.collapsed .sb2{max-height:0!important;opacity:0;padding:0;}
+    /* Cards */
+    .cd2{background:var(--cd);border:1px solid var(--bs);border-radius:var(--rs);padding:18px;margin-bottom:12px;}.cd2 h4{color:var(--cy);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}.cd2 p{font-size:.74rem;color:var(--t2);line-height:1.6;margin-bottom:6px;}.cd2 ul{list-style:none;padding:0;}.cd2 li{font-size:.72rem;padding:3px 0 3px 14px;position:relative;color:var(--t2);}.cd2 li::before{content:'•';position:absolute;left:0;color:var(--cy);font-weight:700;}
+    /* Tables */
+    .tb{width:100%;border-collapse:collapse;font-size:.72rem;background:var(--cd);border-radius:6px;overflow:hidden;border:1px solid var(--bs);margin-bottom:14px;}.tb th{background:var(--tl);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}.tb td{padding:8px 12px;border-bottom:1px solid var(--bs);vertical-align:top;}.tb tr:hover td{background:rgba(0,176,189,.06);}
+    /* Two-column */
+    .tc2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}@media(max-width:900px){.tc2{grid-template-columns:1fr;}}
+    /* Risk item */
+    .ri{display:flex;align-items:start;gap:12px;padding:14px;margin-bottom:10px;background:var(--cd);border:1px solid var(--bs);border-radius:var(--rs);}.ri .bg{flex-shrink:0;}.ri strong{font-size:.76rem;display:block;margin-bottom:4px;}.ri p{font-size:.72rem;color:var(--tm);line-height:1.5;margin:0;}
+    /* Automation */
+    .ai{padding:14px;margin-bottom:10px;background:var(--cd);border:1px solid var(--bs);border-radius:var(--rs);border-left:3px solid var(--bs);}.ai.ok{border-left-color:var(--ok);}.ai.wr{border-left-color:var(--wr);}.ai h4{color:var(--cy);font-size:.76rem;font-weight:700;margin-bottom:6px;}.ai p{font-size:.72rem;color:var(--t2);line-height:1.5;margin-bottom:4px;}
+    /* Badges */
+    .bg{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}.bg.cy{background:rgba(0,176,189,.15);color:var(--cy);border:1px solid var(--ba);}.bg.wr{background:rgba(255,152,0,.15);color:var(--wr);border:1px solid rgba(255,152,0,.25);}.bg.er{background:rgba(233,30,99,.15);color:var(--er);border:1px solid rgba(233,30,99,.25);}.bg.go{background:rgba(255,193,7,.15);color:var(--go);border:1px solid rgba(255,193,7,.25);}.bg.ok{background:rgba(39,174,96,.15);color:var(--ok);border:1px solid rgba(39,174,96,.25);}
+    /* Parecer */
+    .pr{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:32px;text-align:center;margin-bottom:16px;}.prl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tm);margin-bottom:10px;}.prb{font-size:.85rem;padding:6px 22px;}.prs{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px;}.prsn{font-size:3rem;font-weight:800;color:var(--go);font-family:var(--fm);}.prsl{text-align:left;font-size:.7rem;color:var(--tm);line-height:1.4;}
+    /* Footer/utilities */
+    .ft{background:var(--bg2);border-top:1px solid var(--bd);padding:16px 36px;text-align:center;font-size:10px;color:var(--tm);}.ft strong{color:var(--cy);}
+    .edit-mode [contenteditable="true"]{outline:2px dashed var(--cy);outline-offset:3px;background:rgba(0,176,189,.04);cursor:text;border-radius:4px;}.edit-mode [contenteditable="true"]:focus{outline-style:solid;background:rgba(0,176,189,.08);}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);color:var(--cy);border:1px solid var(--ba);padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;box-shadow:var(--sh);z-index:10000;transition:all .3s;}.toast.out{opacity:0;transform:translateY(10px);}
+    [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .5s var(--eo),transform .5s var(--eo);}[data-reveal].revealed{opacity:1;transform:translateY(0);}
+    @media print{body{background:#fff!important;color:#000!important;}.sidebar,.topbar,.so,.rp,.toast{display:none!important;}.main{margin-left:0!important;}.ct{max-width:100%;padding:16px;}.sec,.cd2,.ri,.ai{break-inside:avoid;}@page{margin:1.5cm;}}
+    @media(max-width:1024px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.ct{padding:20px 16px 60px;}}
+    @media(max-width:768px){.kr{grid-template-columns:repeat(2,1fr);}.tc2{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="rp"><div class="rpf" id="rpf"></div></div>
+  <div class="app">
+    <nav class="sidebar" id="sidebar">
+      <div class="sbr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg><div><div class="sbn">INDRA</div><div class="sbs">INTELLIGENCE</div></div></div>
+      <div class="toc" id="tocNav">
+        <div class="tl">Qualificação RFP</div>
+        <a class="ti active" href="#s1">1. Resumo Executivo</a>
+        <a class="ti" href="#s2">2. Documentos Analisados</a>
+        <a class="ti" href="#s3">3. Escopo do Serviço</a>
+        <a class="ti" href="#s4">4. Dimensionamento</a>
+        <a class="ti" href="#s5">5. Riscos e Penalidades</a>
+        <a class="ti" href="#s6">6. Restrições de Automação</a>
+        <a class="ti" href="#s7">7. Oportunidades</a>
+        <a class="ti" href="#s8">8. Parecer Go/No-Go</a>
+        <a class="ti" href="#s9">9. Anexos</a>
+      </div>
+      <div class="sf"><strong>Energisa DS</strong> · Maio 2026</div>
+    </nav>
+    <div class="so" id="so" onclick="toggleSidebar()"></div>
+    <div class="main" id="mainArea">
+      <header class="topbar">
+        <div class="tbl"><button class="btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button><span class="tbt">Qualificação RFP</span><span class="tbb">QUALIFICATION</span></div>
+        <div class="tbr">
+          <button class="btn" onclick="toggleTheme()" title="Theme"><svg id="tD" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="tL" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+          <button class="btn" onclick="toggleEdit()" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn" onclick="exportJSON()" title="Export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+          <button class="btn" onclick="window.print()" title="Print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+        </div>
+      </header>
+      <div class="ct">
+        <section class="hero" data-reveal>
+          <div class="he">RFP Qualification · DS Portal Web & App Mobile</div>
+          <h1 class="ht">Energisa — Portal Autoatendimento & App Mobile</h1>
+          <p class="hd">Qualificação da RFP para prestação de serviços de Portal de Autoatendimento e Atendimento WhatsApp para as 5 distribuidoras do Grupo Neoenergia (Iberdrola), atendendo ~16,6 milhões de unidades consumidoras.</p>
+          <div class="hm"><span class="hp"><span class="hpk">Date:</span> 21 Maio 2026</span><span class="hp"><span class="hpk">Score:</span> 7/10</span><span class="hp" style="background:rgba(255,193,7,.15);color:var(--go);border-color:rgba(255,193,7,.25);"><span class="hpk">Verdict:</span> GO COM RESSALVAS</span></div>
+        </section>
+        <section class="kr" data-reveal>
+          <div class="kp" style="--ka:var(--cy);"><div class="kpl">Distribuidoras</div><div class="kpv">5</div><div class="kps">Coelba · Elektro · PE · Cosern · Brasília</div></div>
+          <div class="kp" style="--ka:var(--ok);"><div class="kpl">Clientes</div><div class="kpv">16,6M</div><div class="kps">Unidades consumidoras</div></div>
+          <div class="kp" style="--ka:var(--wr);"><div class="kpl">Contrato</div><div class="kpv">36-60</div><div class="kps">Meses de vigência</div></div>
+          <div class="kp" style="--ka:var(--pu);"><div class="kpl">Vol. BKO/Mês</div><div class="kpv">~93K</div><div class="kps">Serviços mensais desenvolvimento</div></div>
+          <div class="kp" style="--ka:var(--go);"><div class="kpl">Mobilização</div><div class="kpv">3 meses</div><div class="kps">Período de ramp-up</div></div>
+          <div class="kp" style="--ka:var(--er);"><div class="kpl">Regime</div><div class="kpv">100%</div><div class="kps">Presencial obrigatório</div></div>
+        </section>
+        <!-- 1 -->
+        <div class="sec" id="s1" data-reveal>
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📊</div><div><h2>1. Resumo Executivo</h2><p>Visão geral da oportunidade</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="cd2"><p>A <strong>Neoenergia</strong> (Grupo Iberdrola) lança RFP para contratação de prestador de serviços de <strong>Portal de Autoatendimento</strong> e <strong>Atendimento WhatsApp</strong> para suas 5 distribuidoras (Coelba, Elektro, Pernambuco, Cosern, Brasília), atendendo ~16,6 milhões de unidades consumidoras. Contrato de <strong>36 ou 60 meses</strong> com modelo de competição entre fornecedores (split de até 45% + 10% de bonificação por performance).</p><p><strong>Modelo de Faturamento:</strong> Misto — por serviço/atendimento dentro do prazo (simples e complexos) + PA Fixa Produtiva para atendimento administrativo. WhatsApp por ticket atendido com faixas de INS.</p><p><strong>Localização preferencial:</strong> Natal/RN ou áreas de concessão Neoenergia (SP, BA, PE, DF, RN).</p><p><strong>Modelo de competição:</strong> Possibilidade de 2 fornecedores com distribuição 45%/45% + 10% bonificação por performance trimestral.</p></div>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="sec" id="s2">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📄</div><div><h2>2. Documentos Analisados</h2><p>11 documentos processados</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <table class="tb"><thead><tr><th>Documento</th><th>Tipo</th><th>Conteúdo Principal</th></tr></thead><tbody>
+              <tr><td>ANEXO 0 — Edital BKO WhatsApp</td><td>.docx</td><td>Termos comerciais, condições, prazos, garantias</td></tr>
+              <tr><td>ANEXO 1 — Manual do Fornecedor</td><td>.pdf</td><td>Orientações para cadastro e homologação</td></tr>
+              <tr><td>ANEXO 2 — Especificação Técnica</td><td>.pdf</td><td>Escopo completo, SLAs, penalidades (124 páginas)</td></tr>
+              <tr><td>ANEXO 3 — Tabela de Cotação</td><td>.xlsx</td><td>Precificação: volumes mensais por núcleo (36/60 meses)</td></tr>
+              <tr><td>ANEXO 4 — Minuta Contratual</td><td>.docx</td><td>Minuta padrão de contrato de prestação</td></tr>
+              <tr><td>ANEXO 4.1 — Declaração de Acordo</td><td>.docx</td><td>Aceite integral das condições</td></tr>
+              <tr><td>ANEXO 5 — Proteção de Dados</td><td>.docx</td><td>Cláusulas LGPD</td></tr>
+              <tr><td>ANEXO 5 — Confidencialidade</td><td>.docx</td><td>Termo de confidencialidade</td></tr>
+              <tr><td>ANEXO 5 — Questionário CUVA</td><td>.docx</td><td>Validação de processador de dados</td></tr>
+              <tr><td>ANEXO 5 — Requisitos Segurança</td><td>.docx</td><td>Requisitos de segurança cibernética</td></tr>
+              <tr><td>ANEXO 5 — Histórico Volume</td><td>.xlsx</td><td>Volumetria histórica, TMA, SLAs, curvas horárias</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="sec" id="s3">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📋</div><div><h2>3. Escopo do Serviço</h2><p>Processos incluídos, volumetrias e horários</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="cd2"><p>Prestação de serviços da <strong>Portal de Autoatendimento</strong> e <strong>Atendimento WhatsApp</strong> para as 5 distribuidoras do Grupo Neoenergia, incluindo mão de obra, infraestrutura predial, sistemas e ferramentas.</p></div>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">Stack Tecnológico</h4>
+            <div class="tc2">
+              <div class="cd2"><h4>I. Atendimento Offline</h4><ul><li>Agência Virtual, Formulários Web, Totens</li><li>Portal de Credenciados e Imobiliário</li><li>Ligação Nova, Troca de Titularidade, Tarifa Social</li><li>Projeto particular, Atualização cadastral</li><li>Célere Nordeste, E-mail Elektro, GR Brasília</li></ul></div>
+              <div class="cd2"><h4>II. Atendimento Administrativo</h4><ul><li>Poder Público (municipal, estadual, federal)</li><li>Grandes Clientes e Geração Distribuída</li><li>Faturamento, Leitura, Cadastro, Perdas</li><li>Inadimplência e Cobrança</li><li>Demandas UTD/UTEPS</li></ul></div>
+              <div class="cd2"><h4>III. Instâncias Superiores</h4><ul><li>Reclamações Comerciais 1º Nível (gestão fim a fim)</li><li>Ouvidoria, PROCON, Consumidor.gov</li><li>Causas Judiciais e Subsídios</li><li>Triagem ANEEL e SGO</li><li>Reclame Aqui (licença por conta da contratada)</li></ul></div>
+              <div class="cd2"><h4>IV. Suporte às Áreas</h4><ul><li>Atendimento Prime (colaboradores internos)</li><li>Notas Internas/OS, Notas QT/QS</li><li>Projetos BT, Restituição de Valores</li><li>Suporte Jurídico, Suporte Interno</li><li>Devolução de Pagamentos</li></ul></div>
+            </div>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">WhatsApp</h4>
+            <div class="cd2"><ul><li>Atendimento humano receptivo via transbordo do chatbot (WhatsApp Business API)</li><li>Plataforma atual: M360 (Mutant) — pode ser alterada</li><li>Atendimento simultâneo de 2 a 4 telas (recomendado 3)</li><li>TMA atual: 20 min | Meta TME: 10 ou 20 min</li><li>Comercial e técnico: ligação nova, troca titularidade, falta energia, segunda via, religação</li><li>Grandes Clientes e Geração Distribuída incluídos</li></ul></div>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">Volumetrias Mensais</h4>
+            <table class="tb"><thead><tr><th>Núcleo/Atividade</th><th>Complex.</th><th>Vol/Mês</th><th>TMA</th></tr></thead><tbody>
+              <tr><td>BKO Distribuidoras — Simples</td><td>Simples</td><td>61.167</td><td>Variável</td></tr>
+              <tr><td>BKO Distribuidoras — Complexo</td><td>Complexo</td><td>32.371</td><td>Variável</td></tr>
+              <tr><td>Atend. Prime</td><td>Simples</td><td>895</td><td>10:30</td></tr>
+              <tr><td>Notas Internas/OS</td><td>Simples</td><td>850</td><td>17:00</td></tr>
+              <tr><td>Notas QT/QS</td><td>Simples</td><td>6.289</td><td>13:00</td></tr>
+              <tr><td>Projetos BT</td><td>Simples</td><td>1.127</td><td>15:00</td></tr>
+              <tr><td>Restituição</td><td>Complexo</td><td>700</td><td>18:00</td></tr>
+              <tr><td>Suporte Interno</td><td>Simples</td><td>3.526</td><td>10:30</td></tr>
+              <tr><td>Causas Judiciais</td><td>Complexo</td><td>5.800</td><td>—</td></tr>
+              <tr><td>Agência Virtual</td><td>Simples</td><td>5.049</td><td>—</td></tr>
+              <tr><td>Tarifa Social NE</td><td>Simples</td><td>7.000</td><td>—</td></tr>
+              <tr><td>Célere NE</td><td>Simples</td><td>18.770</td><td>—</td></tr>
+              <tr><td>BSB Parcelamento</td><td>Simples</td><td>3.420</td><td>—</td></tr>
+              <tr><td>BSB GR Formulários</td><td>Simples</td><td>7.310</td><td>—</td></tr>
+              <tr><td>E-mail Elektro</td><td>Simples</td><td>4.518</td><td>—</td></tr>
+              <tr><td>Reclamações (Fim a Fim)</td><td>Complexo</td><td>~8.000</td><td>TMT 4,56d</td></tr>
+              <tr><td>Triagem ANEEL</td><td>Complexo</td><td>2.116</td><td>—</td></tr>
+              <tr><td>PROCON</td><td>Complexo</td><td>961</td><td>—</td></tr>
+              <tr><td>PA ADM</td><td>Complexo</td><td>196 PAs</td><td>—</td></tr>
+            </tbody></table>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">Horários & Regime</h4>
+            <table class="tb"><thead><tr><th>Operação</th><th>Horário</th><th>Dias</th><th>Regime</th></tr></thead><tbody>
+              <tr><td>Desenvolvimento</td><td>08h–20h</td><td>Seg-Sex (+sáb.)</td><td>44h, 100% presencial</td></tr>
+              <tr><td>WhatsApp (Op.1)</td><td>08h–20h</td><td>7 dias</td><td>100% presencial</td></tr>
+              <tr><td>WhatsApp (Op.2)</td><td>24×7</td><td>7 dias</td><td>100% presencial</td></tr>
+              <tr><td>PA ADM</td><td>08h–18h</td><td>Seg-Sex</td><td>44h, 100% presencial</td></tr>
+            </tbody></table>
+            <div class="cd2"><p><strong>Vigência:</strong> 36 ou 60 meses (2 propostas)</p><p><strong>Mobilização:</strong> 3 meses (faseada a partir de 30%)</p><p><strong>Reajuste:</strong> IPCA após 12 meses | <strong>Pagamento:</strong> 30 dias | <strong>Garantia:</strong> Retenção 5% NF (devolvido c/ IPCA)</p></div>
+          </div>
+        </div>
+        <!-- 4 -->
+        <div class="sec" id="s4">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">👥</div><div><h2>4. Dimensionamento de Pessoas</h2><p>Estrutura de liderança e headcount estimado</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <table class="tb"><thead><tr><th>Perfil</th><th>Proporção</th><th>Formação</th></tr></thead><tbody>
+              <tr><td>Gerente de Contrato</td><td>1 por contrato</td><td>Superior</td></tr>
+              <tr><td>Coordenador</td><td>1:10 supervisores</td><td>Superior</td></tr>
+              <tr><td>Supervisor</td><td>1:20 operadores (máx. 25)</td><td>Superior</td></tr>
+              <tr><td>Atendente/Agente BKO</td><td>Conf. dimensionamento</td><td>Ensino Médio</td></tr>
+              <tr><td>Planejamento</td><td>Coordenador + analistas</td><td>—</td></tr>
+              <tr><td>NOC/Monitoramento</td><td>Dedicada tempo real</td><td>—</td></tr>
+              <tr><td>Qualidade/Treinamento</td><td>Instrutores + analistas</td><td>—</td></tr>
+              <tr><td>TI</td><td>Dedicada</td><td>—</td></tr>
+              <tr><td>Devs/Automação</td><td>Equipe RPA/IA</td><td>—</td></tr>
+            </tbody></table>
+            <div class="cd2"><h4>Premissas BKO</h4><ul><li>Volume total: ~93.538 serviços/mês</li><li>Horas produtivas: 7h45min = 465 min/dia</li><li>TMA ponderado: ~12 min</li><li>Capacidade: ~38 serv/dia/atendente</li><li>Buffer absenteísmo: ~15%</li><li><strong>Estimativa BKO:</strong> ~250-300 posições (100% escopo)</li><li><strong>PA ADM:</strong> 196 PAs fixas produtivas</li></ul></div>
+            <section class="kr"><div class="kp" style="--ka:var(--cy);"><div class="kpl">Operadores</div><div class="kpv">~500</div><div class="kps">BKO + ADM</div></div><div class="kp" style="--ka:var(--tl);"><div class="kpl">Supervisores</div><div class="kpv">~25</div><div class="kps">1:20 ratio</div></div><div class="kp" style="--ka:var(--wr);"><div class="kpl">Coordenadores</div><div class="kpv">~3</div><div class="kps">1:10 ratio</div></div><div class="kp" style="--ka:var(--pu);"><div class="kpl">Staff</div><div class="kpv">~40</div><div class="kps">QA, Plan., TI, NOC</div></div><div class="kp" style="--ka:var(--ok);"><div class="kpl">Total Estimado</div><div class="kpv">~570</div><div class="kps">100% escopo</div></div></section>
+            <div class="cd2"><h4>Treinamento Inicial</h4><ul><li><strong>BKO:</strong> 120h (Curso Formação) — 100% presencial</li><li><strong>WhatsApp:</strong> 180h — 100% presencial</li><li>Nota mín.: 8.0 (atendentes), 9.0 (supervisores)</li><li>Reciclagem: 2h/mês por agente | Workshops: 4x/ano</li><li>CLT obrigatório antes do treinamento</li></ul></div>
+          </div>
+        </div>
+        <!-- 5 -->
+        <div class="sec" id="s5">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">⚠️</div><div><h2>5. Riscos e Penalidades</h2><p>Matriz de penalidades e riscos contratuais mapeados</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:0 0 8px;">Penalidades BKO</h4>
+            <table class="tb"><thead><tr><th>Faixa</th><th>Fator</th><th>Crit.</th></tr></thead><tbody>
+              <tr><td>&lt;100% ≥99%</td><td>Fat. × 2%</td><td><span class="bg cy">BAIXO</span></td></tr>
+              <tr><td>&lt;99% ≥98%</td><td>Fat. × 3%</td><td><span class="bg cy">BAIXO</span></td></tr>
+              <tr><td>&lt;98% ≥97%</td><td>Fat. × 4%</td><td><span class="bg wr">MÉDIO</span></td></tr>
+              <tr><td>&lt;97% ≥95%</td><td>Fat. × 5%</td><td><span class="bg wr">MÉDIO</span></td></tr>
+              <tr><td>&lt;95% até 90%</td><td>Fat. × 8%</td><td><span class="bg er">ALTO</span></td></tr>
+              <tr><td>&lt;90% até 80%</td><td>Fat. × 10%</td><td><span class="bg er">ALTO</span></td></tr>
+              <tr><td>Abaixo de 80%</td><td>Fat. × 15%</td><td><span class="bg er">ALTO</span></td></tr>
+            </tbody></table>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">Penalidades WhatsApp — INS e Abandono</h4>
+            <table class="tb"><thead><tr><th>Indicador</th><th>Faixa</th><th>Fator</th></tr></thead><tbody>
+              <tr><td>INS 10 = 100%</td><td>Meta</td><td>100%</td></tr><tr><td>INS 10 = 99%</td><td>Perda</td><td>98%</td></tr><tr><td>INS 10 = 98%</td><td>Perda</td><td>96%</td></tr><tr><td>INS 10 = 97%</td><td>Perda</td><td>94%</td></tr><tr><td>INS 10 = 96%</td><td>Perda</td><td>92%</td></tr><tr><td>INS 10 ≤ 95%</td><td>Máxima</td><td>90%</td></tr><tr><td>IAB ≤ 2%</td><td>Meta</td><td>100%</td></tr><tr><td>IAB > 2%</td><td>Penalidade</td><td>97%</td></tr>
+            </tbody></table>
+            <h4 style="font-size:.78rem;font-weight:700;color:var(--cy);margin:14px 0 8px;">Riscos Contratuais</h4>
+            <div class="ri"><span class="bg er">ALTO</span><div><strong>Multa rescisória assimétrica</strong><p>Contratante: 180 dias s/ penalidade. Contratada: 365 dias. Multa: 20% BKO / 10% WhatsApp.</p></div></div>
+            <div class="ri"><span class="bg er">ALTO</span><div><strong>Repasse integral multas ANEEL</strong><p>Se falha imputável à contratada, multa ANEEL repassada integralmente. Risco potencialmente ilimitado.</p></div></div>
+            <div class="ri"><span class="bg er">ALTO</span><div><strong>Penalização mensal de 10% do faturamento global</strong><p>Cumulativas, extensão para meses subsequentes. Por núcleo: limite 20%.</p></div></div>
+            <div class="ri"><span class="bg er">ALTO</span><div><strong>Modelo de competição — perda de volume</strong><p>Performance baixa → perda até 80% do volume. Redistribuição trimestral.</p></div></div>
+            <div class="ri"><span class="bg wr">MÉDIO</span><div><strong>Garantia contratual — retenção 5% NF</strong><p>Retenção mensal, devolvida ao final. Em 36 meses: ~1,8 meses de faturamento retido.</p></div></div>
+            <div class="ri"><span class="bg wr">MÉDIO</span><div><strong>Absorver picos sem custo adicional</strong><p>Ampliar capacidade em até 4h em crises, s/ ônus para contratante.</p></div></div>
+            <div class="ri"><span class="bg wr">MÉDIO</span><div><strong>PI de automações cedida 100%</strong><p>Todo código/automação é propriedade Neoenergia. Vedada reutilização. Revisão de preços obrigatória.</p></div></div>
+            <div class="ri"><span class="bg wr">MÉDIO</span><div><strong>14 infrações operacionais × 2% cada</strong><p>Penalidade cumulativa. Inclui: e-mails s/ resposta 48h, uso indevido de senha, relatórios incorretos.</p></div></div>
+            <div class="ri"><span class="bg cy">BAIXO</span><div><strong>Baseline 90% garantida</strong><p>Neoenergia garante 90% do forecast, desde capacidade 100% comprovada.</p></div></div>
+            <div class="ri"><span class="bg cy">BAIXO</span><div><strong>SLO de 3 meses (sem penalidades)</strong><p>Primeiros 3 meses para calibração e estabilização.</p></div></div>
+          </div>
+        </div>
+        <!-- 6 -->
+        <div class="sec" id="s6">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🚫</div><div><h2>6. Restrições de Automação</h2><p>Limitações contratuais para automação e tecnologia</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="ai wr"><h4>Operação 100% presencial — vedado home office</h4><p>Veda explicitamente home office para agentes (salvo força maior).</p></div>
+            <div class="ai wr"><h4>Atendimento humano obrigatório em Instâncias Superiores</h4><p>Reclamações, PROCON, Ouvidoria e Causas Judiciais exigem análise humana qualificada.</p></div>
+            <div class="ai wr"><h4>Monitorias mín. 50/mês/agente (BKO) e 3/mês (WhatsApp)</h4><p>Volume alto. Pode ser automatizada com IA, mas parâmetros precisam alinhamento prévio.</p></div>
+            <div class="ai wr"><h4>Treinamento presencial obrigatório (120h BKO / 180h WhatsApp)</h4><p>Sem possibilidade de 100% digital. Impacta custos e ramp-up.</p></div>
+            <div class="ai wr"><h4>Cessão obrigatória de PI</h4><p>Toda automação desenvolvida é propriedade exclusiva da Neoenergia.</p></div>
+            <div class="ai wr"><h4>Revisão de preços com ganho de automação</h4><p>Se reduzir esforço humano, preço revisado para baixo. Ganho de longo prazo limitado.</p></div>
+            <div class="ai wr"><h4>Equipamentos homologados Iberdrola</h4><p>Dell OptiPlex 7000 / Latitude 5440. Switches CISCO C9500. Sem thin clients.</p></div>
+          </div>
+        </div>
+        <!-- 7 -->
+        <div class="sec" id="s7">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🚀</div><div><h2>7. Oportunidades de Automação</h2><p>Potencial de diferenciação tecnológica</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="ai ok"><h4>RPA para Serviços Simples de Alto Volume</h4><p><strong>Alvo:</strong> Célere NE (18.770), Tarifa Social (7.000), GR BSB (7.310), Notas QT/QS (6.289)</p><p><strong>Potencial:</strong> 40-60% automação. Redução estimada: 30-50 posições.</p></div>
+            <div class="ai ok"><h4>OCR/ICR para Extração de Documentos</h4><p><strong>Alvo:</strong> Ligação Nova, Troca Titularidade, Projetos BT, Causas Judiciais</p><p><strong>Potencial:</strong> Redução de TMA em 30-40% nos processos com análise documental.</p></div>
+            <div class="ai ok"><h4>IA para Triagem e Classificação de Reclamações</h4><p><strong>Alvo:</strong> Triagem 1º Nível, classificação de protocolos, roteamento inteligente</p><p><strong>Potencial:</strong> Redução do tempo de triagem (meta D1,3 dias) e roteamento automático.</p></div>
+            <div class="ai ok"><h4>Dashboards e Analytics Automatizados</h4><p><strong>Escopo:</strong> Dashboards tempo real, 60+ tipos de relatório. BI integrado com alertas proativos.</p><p><strong>Diferenciação:</strong> Plataforma proprietária pode ser diferencial decisivo.</p></div>
+            <div class="ai ok"><h4>Monitoria de Qualidade com IA</h4><p><strong>Escopo:</strong> 50 monitorias/mês por agente BKO + 3/mês WhatsApp. IA permitida (cláusula 4.7.f).</p><p><strong>Potencial:</strong> 100% das interações monitoradas vs. amostragem manual.</p></div>
+            <div class="ai ok"><h4>Gamificação e WFM Inteligente</h4><p>Plataforma integrada com predição de demanda, alocação dinâmica de skills e incentivos.</p></div>
+            <div class="ai ok"><h4>Assistente IA para Agentes (Copilot)</h4><p>Suporte a pareceres, Reclame Aqui, subsídios judiciais. Redução TMA 20-30% em complexos.</p></div>
+          </div>
+        </div>
+        <!-- 8 -->
+        <div class="sec" id="s8">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">🎯</div><div><h2>8. Parecer de Qualificação</h2><p>Recomendação Go/No-Go</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="pr"><div class="prl">Recomendação</div><span class="bg go prb">GO COM RESSALVAS</span><div class="prs"><div class="prsn">7</div><div class="prsl">/ 10<br>Score de<br>Atratividade</div></div></div>
+            <div class="tc2">
+              <div class="cd2" style="border-left:3px solid var(--ok);"><h4 style="color:var(--ok);">Pontos Fortes</h4><ul><li>Cliente grande porte (Iberdrola) — alta visibilidade</li><li>Contrato longo (36-60 meses) — receita previsível</li><li>Volume expressivo (~93K BKO/mês) — escala relevante</li><li>Baseline 90% garantida — mitigação ociosidade</li><li>Abertura explícita para RPA, IA, OCR</li><li>Bonificação por eficiência de automação</li><li>SLO 3 meses para estabilização</li><li>Reajuste IPCA anual</li><li>Possibilidade de expansão de escopo</li></ul></div>
+              <div class="cd2" style="border-left:3px solid var(--er);"><h4 style="color:var(--er);">Pontos de Atenção</h4><ul><li>100% presencial — alto custo imobiliário</li><li>Modelo competição — risco de perda de volume</li><li>Penalidades agressivas e cumulativas (até 15%)</li><li>Repasse integral multas ANEEL — risco ilimitado</li><li>Cessão total de PI de automações</li><li>Revisão obrigatória de preço c/ automação</li><li>Buffer 30% 1º mês WhatsApp s/ faturamento</li><li>Equipamentos Dell específicos — CAPEX relevante</li><li>Retenção 5% NF — impacto fluxo de caixa</li><li>Assimetria rescisória (180 vs 365 dias)</li><li>Licença Reclame Aqui por conta da contratada</li></ul></div>
+            </div>
+            <div class="cd2"><h4>Condições para Viabilidade</h4><ul><li><strong>Margem de segurança:</strong> 3-5% de penalidades mensais nos primeiros 6 meses pós-SLO</li><li><strong>Automação como diferencial:</strong> RPA desde o mês 1 nos processos simples</li><li><strong>Negociar cap de multas ANEEL:</strong> Limitação a múltiplo do faturamento mensal</li><li><strong>Site em Natal/RN:</strong> Custo operacional mais baixo</li><li><strong>Proposta competitiva 60 meses:</strong> Diluição de CAPEX</li><li><strong>Equipe qualidade robusta:</strong> SLAs exigentes (100%) — monitoria IA</li><li><strong>Parceria para site físico:</strong> Co-investimento ou espaço existente</li></ul></div>
+            <div class="cd2"><h4>Estimativa de Esforço de Proposta</h4><p><strong>Complexidade:</strong> Alta — proposta técnica + comercial + cronograma + comprovação.</p><p><strong>Prazo:</strong> 3-4 semanas com equipe multidisciplinar.</p><p><strong>Equipe:</strong> Diretor ops, gerente comercial, arquiteto, WFM, jurídico, RH.</p></div>
+          </div>
+        </div>
+        <!-- 9 -->
+        <div class="sec" id="s9">
+          <div class="sh" onclick="toggleSection(this)"><div class="si">📎</div><div><h2>9. Anexos e Observações</h2><p>Requisitos tecnológicos, prazos e CNPJs</p></div><span class="st">▼</span></div>
+          <div class="sb2">
+            <div class="cd2"><h4>Requisitos Tecnológicos Obrigatórios</h4><ul><li>WFM com controle tempo real</li><li>Gestão de escalas e cadastro</li><li>Dashboards tempo real (Power BI — licenças por conta da contratada)</li><li>Gamificação integrada</li><li>LMS com provas e certificação</li><li>Intranet operacional</li><li>Roteamento inteligente</li><li>Monitoria qualidade (mín. 50/agente/mês)</li><li>Servidor em nuvem</li><li>Armazenamento 10 anos</li><li>Links redundantes e switches CISCO C9500</li><li>Firewall e segurança Iberdrola</li></ul></div>
+            <table class="tb"><thead><tr><th>Distribuidora</th><th>CNPJ</th><th>Local</th></tr></thead><tbody>
+              <tr><td>Neoenergia Coelba</td><td>15.139.629/0001-94</td><td>Salvador/BA</td></tr>
+              <tr><td>Neoenergia Elektro</td><td>02.328.280/0001-97</td><td>Campinas/SP</td></tr>
+              <tr><td>Neoenergia Pernambuco</td><td>10.835.932/0001-08</td><td>Recife/PE</td></tr>
+              <tr><td>Neoenergia Cosern</td><td>08.324.196/0001-81</td><td>Natal/RN</td></tr>
+              <tr><td>Neoenergia Brasília</td><td>07.522.669/0001-92</td><td>Brasília/DF</td></tr>
+            </tbody></table>
+            <div class="cd2"><h4>Prazos Críticos</h4><ul><li><strong>Validade proposta:</strong> Mín. 6 meses</li><li><strong>Aceite minuta:</strong> Até data da proposta técnica revisada</li><li><strong>Cadastro IBUY:</strong> Obrigatório para adjudicação</li><li><strong>Mobilização:</strong> 3 meses pós-assinatura</li><li><strong>Infra pronta:</strong> 15 dias antes do início</li><li><strong>Forecast formal:</strong> D90, D60, D45, D30</li></ul></div>
+            <div class="cd2"><h4>Observações Importantes</h4><ul><li>Neoenergia pode cancelar a coleta a qualquer momento</li><li>Adjudicação: aptidão técnica + melhor proposta + compliance</li><li>Fornecedor único ou múltiplos — decisão da Neoenergia</li><li>Subcontratação permitida com anuência prévia escrita</li><li>5 contratos individuais por distribuidora</li><li>Home office vetado — exceção por força maior</li></ul></div>
+          </div>
+        </div>
+      </div>
+      <footer class="ft"><strong>Indra Minsait</strong> · Qualificação RFP — Neoenergia DS Portal Web & App Mobile · Maio 2026 · v2.0</footer>
+    </div>
+  </div>
+  <script>
+    function getTheme(){try{return localStorage.getItem('indra_theme')||'dark'}catch{return'dark'}}
+    function setTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('indra_theme',t)}catch{}document.getElementById('tD').style.display=t==='dark'?'':'none';document.getElementById('tL').style.display=t==='light'?'':'none';}
+    function toggleTheme(){setTheme(getTheme()==='dark'?'light':'dark')}
+    setTheme(getTheme());
+    function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('so').classList.toggle('active');}
+    let editMode=false;
+    function toggleEdit(){editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);document.querySelectorAll('h1,h2,h3,h4,p,li,td,th,strong').forEach(el=>{if(!el.closest('footer')&&!el.closest('.topbar'))el.contentEditable=editMode;});toast(editMode?'Edit mode ON':'Edit mode OFF');}
+    function toggleSection(h){h.closest('.sec').classList.toggle('collapsed');}
+    function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),300);},3000);}
+    window.addEventListener('scroll',()=>{const s=window.pageYOffset,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('rpf').style.width=h>0?Math.min(s/h*100,100)+'%':'0%';},{passive:true});
+    const tis=document.querySelectorAll('.ti'),secs=document.querySelectorAll('.sec[id]');
+    const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){tis.forEach(t=>t.classList.remove('active'));const a=document.querySelector(`.ti[href="#${e.target.id}"]`);if(a)a.classList.add('active');}});},{threshold:0.2,rootMargin:'-60px 0px -40% 0px'});
+    secs.forEach(s=>obs.observe(s));
+    const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.1});
+    document.querySelectorAll('[data-reveal]').forEach(el=>ro.observe(el));
+    tis.forEach(i=>{i.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(i.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});if(window.innerWidth<=1024){document.getElementById('sidebar').classList.remove('open');document.getElementById('so').classList.remove('active');}});});
+    function exportJSON(){const d={title:document.title,exportedAt:new Date().toISOString(),sections:[]};document.querySelectorAll('.sec').forEach(sec=>{const title=sec.querySelector('h2')?.textContent.trim()||'';const items=[];sec.querySelectorAll('ul li, p').forEach(el=>items.push(el.textContent.trim()));const tables=[];sec.querySelectorAll('table').forEach(t=>{const h=[...t.querySelectorAll('th')].map(th=>th.textContent.trim());const r=[...t.querySelectorAll('tbody tr')].map(tr=>[...tr.querySelectorAll('td')].map(td=>td.textContent.trim()));tables.push({headers:h,rows:r});});d.sections.push({title,items,tables});});const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`qualificacao-neoenergia-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);}
+  </script>
+</body>
+</html>

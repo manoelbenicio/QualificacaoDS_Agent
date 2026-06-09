@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arquitetura de Alto Nível — Agentificação de Ofertas | AWS Serverless + Google ADK + Microsoft SharePoint">
+  <title>Arquitetura de Alto Nível — Agentificação de Ofertas | Indra Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('in-iframe');
+      document.addEventListener('DOMContentLoaded', () => document.body.classList.add('in-iframe'));
+    }
+  </script>
+  <style>
+    /* ═══ INDRA INTELLIGENCE — DESIGN SYSTEM v2.0 ═══ */
+    :root {
+      --font-sans: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --sidebar-w: 260px;
+      --topbar-h: 52px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    [data-theme="dark"] {
+      --bg: #001B26; --bg-surface: #002B3A; --bg-card: rgba(0,62,80,0.4);
+      --border: rgba(255,255,255,0.08); --border-subtle: rgba(255,255,255,0.04);
+      --border-accent: rgba(0,176,189,0.25);
+      --text: #FFFFFF; --text-2: #B3C1DA; --text-m: #7A9CAE;
+      --cyan: #00B0BD; --teal: #3F96AE; --success: #27AE60;
+      --warning: #FF9800; --error: #E91E63; --gold: #FFC107; --purple: #8B5CF6;
+      --glow: rgba(0,176,189,0.12);
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --aws: #FF9900; --google: #4285F4; --ms: #0078D4;
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg: #F4F7F9; --bg-surface: #FFFFFF; --bg-card: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.1); --border-subtle: rgba(0,0,0,0.05);
+      --border-accent: rgba(0,176,189,0.3);
+      --text: #1A2B3C; --text-2: #4A5B6C; --text-m: #7A8B9C;
+      --cyan: #0097A3; --teal: #2D7A8E; --success: #1E8449;
+      --warning: #E68900; --error: #C2185B; --gold: #D4A000; --purple: #7C3AED;
+      --glow: rgba(0,176,189,0.06);
+      --shadow: 0 8px 32px rgba(0,0,0,0.06);
+      --aws: #E68A00; --google: #3367D6; --ms: #005A9E;
+      color-scheme: light;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans); background: var(--bg); color: var(--text);
+      line-height: 1.6; transition: background 0.4s, color 0.3s;
+    }
+    body.in-iframe .topbar, body.in-iframe .sidebar, body.in-iframe .sidebar-overlay { display: none !important; }
+    body.in-iframe .main-area { margin-left: 0 !important; }
+    body.in-iframe .reading-progress { display: none !important; }
+
+    /* ─── LAYOUT ─── */
+    .app-shell { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: var(--sidebar-w); background: var(--bg); border-right: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 200;
+      display: flex; flex-direction: column; overflow-y: auto;
+      transition: transform 0.4s var(--ease-out);
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .sidebar-brand {
+      padding: 16px 16px 14px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-brand svg { width: 28px; height: 28px; color: var(--cyan); }
+    .sidebar-brand-name { font-size: 14px; font-weight: 800; letter-spacing: 0.08em; }
+    .sidebar-brand-sub { font-size: 8px; font-weight: 600; letter-spacing: 0.14em; color: var(--cyan); }
+
+    .sidebar-toc { flex: 1; padding: 12px 10px; }
+    .toc-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--cyan); padding: 8px 10px 6px; font-family: var(--font-mono);
+    }
+    .toc-item {
+      display: block; padding: 7px 12px; border-radius: 6px; cursor: pointer;
+      text-decoration: none; color: var(--text-m); font-size: 12px; font-weight: 500;
+      transition: all 0.2s; border-left: 2px solid transparent; margin-bottom: 1px;
+    }
+    .toc-item:hover { color: var(--text); background: var(--glow); }
+    .toc-item.active { color: var(--cyan); border-left-color: var(--cyan); background: var(--glow); font-weight: 600; }
+    .toc-item.sub { padding-left: 24px; font-size: 11px; }
+
+    .sidebar-footer {
+      padding: 12px 16px; border-top: 1px solid var(--border);
+      font-size: 10px; color: var(--text-m); text-align: center;
+    }
+    .sidebar-footer strong { color: var(--cyan); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 190; }
+    .sidebar-overlay.active { display: block; }
+
+    .main-area { margin-left: var(--sidebar-w); flex: 1; transition: margin-left 0.4s var(--ease-out); }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100; height: var(--topbar-h);
+      background: rgba(0,27,38,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+    }
+    [data-theme="light"] .topbar { background: rgba(255,255,255,0.9); }
+    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .topbar-title { font-size: 14px; font-weight: 600; }
+    .topbar-badge {
+      padding: 2px 10px; border-radius: 999px; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.06em; background: var(--glow); color: var(--cyan); border: 1px solid var(--border-accent);
+    }
+    .topbar-btn {
+      background: none; border: 1px solid var(--border); color: var(--text-m);
+      width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .topbar-btn:hover { color: var(--text); border-color: var(--border-accent); background: var(--glow); }
+    .topbar-btn svg { width: 15px; height: 15px; }
+
+    .reading-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 300; }
+    .reading-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--teal)); transition: width 0.15s; }
+
+    /* ─── CONTENT ─── */
+    .content { padding: 28px 36px 80px; max-width: 1300px; margin: 0 auto; }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, rgba(0,66,84,0.5), rgba(0,37,50,0.7));
+      backdrop-filter: blur(20px); border: 1px solid var(--border-accent);
+      border-radius: var(--radius); padding: 36px; margin-bottom: 28px;
+      position: relative; overflow: hidden;
+    }
+    [data-theme="light"] .hero { background: linear-gradient(135deg, rgba(0,176,189,0.08), rgba(63,150,174,0.04)); }
+    .hero::before { content:''; position:absolute; top:-60px; right:-60px; width:160px; height:160px; background:var(--glow); filter:blur(60px); border-radius:50%; pointer-events:none; }
+    .hero-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--cyan); font-family:var(--font-mono); margin-bottom:10px; }
+    .hero-title { font-size:26px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; margin-bottom:8px; }
+    .hero-desc { font-size:13px; color:var(--text-2); max-width:700px; line-height:1.7; }
+    .hero-meta { display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
+    .hero-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; font-size:11px; font-weight:600; background:var(--bg-card); border:1px solid var(--border); color:var(--text-2); }
+    .hero-pill .pk { color:var(--text-m); font-weight:500; }
+
+    /* ─── KPI ─── */
+    .kpi-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:28px; }
+    .kpi { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px; position:relative; overflow:hidden; transition:all 0.25s var(--ease-out); }
+    .kpi::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--ka, var(--cyan)); }
+    .kpi:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+    .kpi-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-m); margin-bottom:4px; }
+    .kpi-value { font-size:22px; font-weight:700; font-family:var(--font-mono); line-height:1; }
+    .kpi-sub { font-size:10px; color:var(--text-m); margin-top:4px; }
+
+    /* ─── SECTIONS ─── */
+    .section { margin-bottom:32px; }
+    .section-header {
+      display:flex; align-items:center; gap:14px; padding:16px 0;
+      border-bottom:2px solid var(--cyan); margin-bottom:20px; cursor:pointer;
+      user-select:none;
+    }
+    .section-header:hover .section-toggle { color:var(--cyan); }
+    .section-icon {
+      width:42px; height:42px; border-radius:10px; display:grid; place-items:center;
+      font-size:1.2rem; flex-shrink:0; background:linear-gradient(135deg, var(--teal), var(--cyan)); color:#fff;
+    }
+    .section-header h2 { font-size:1.15rem; font-weight:700; }
+    .section-header p { font-size:0.78rem; color:var(--text-m); margin-top:2px; }
+    .section-toggle { margin-left:auto; font-size:18px; color:var(--text-m); transition:transform 0.3s, color 0.2s; }
+    .section.collapsed .section-toggle { transform:rotate(-90deg); }
+    .section-body { transition:all 0.4s var(--ease-out); overflow:hidden; }
+    .section.collapsed .section-body { max-height:0 !important; opacity:0; padding:0; }
+
+    /* ─── ARCH CANVAS ─── */
+    .arch-canvas {
+      background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm);
+      padding:32px; margin-bottom:24px; position:relative; overflow:hidden;
+    }
+    .arch-canvas::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(to right, var(--cyan), var(--aws), var(--ms)); }
+    .arch-title { text-align:center; font-size:1rem; font-weight:700; margin-bottom:24px; }
+    .arch-subtitle { text-align:center; font-size:0.75rem; color:var(--text-m); margin-top:-18px; margin-bottom:24px; }
+
+    /* Layers */
+    .layer { border:2px dashed var(--border); border-radius:var(--radius-sm); padding:20px; margin-bottom:16px; position:relative; }
+    .layer-label { position:absolute; top:-10px; left:16px; background:var(--bg); padding:1px 12px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; border-radius:8px; border:1.5px solid; }
+    .layer.aws { border-color:var(--aws); background:rgba(255,153,0,0.02); }
+    .layer.aws .layer-label { color:var(--aws); border-color:var(--aws); }
+    .layer.external { border-color:var(--ms); background:rgba(0,120,212,0.02); }
+    .layer.external .layer-label { color:var(--ms); border-color:var(--ms); }
+    .layer.client { border-color:var(--cyan); background:rgba(0,176,189,0.02); }
+    .layer.client .layer-label { color:var(--cyan); border-color:var(--cyan); }
+
+    /* Nodes */
+    .nodes-row { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin:12px 0; }
+    .node {
+      display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 16px;
+      border-radius:6px; min-width:110px; text-align:center; transition:transform 0.2s, box-shadow 0.2s;
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+    }
+    .node:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,176,189,0.15); border-color:var(--cyan); }
+    .node-icon { width:40px; height:40px; border-radius:8px; display:grid; place-items:center; font-size:1.2rem; }
+    .node-label { font-size:0.68rem; font-weight:600; line-height:1.3; }
+    .node-sub { font-size:0.58rem; color:var(--text-m); line-height:1.3; }
+    .node.s3 .node-icon, .node.lambda .node-icon { background:rgba(255,153,0,0.12); }
+    .node.apigw .node-icon { background:rgba(139,92,246,0.12); }
+    .node.dynamo .node-icon { background:rgba(66,133,244,0.12); }
+    .node.agent .node-icon { background:var(--glow); }
+    .node.sharepoint .node-icon { background:rgba(0,120,212,0.12); }
+    .node.cloudfront .node-icon { background:rgba(139,92,246,0.12); }
+    .node.user .node-icon { background:var(--glow); }
+
+    .flow-down { display:flex; flex-direction:column; align-items:center; padding:4px 0; }
+    .flow-down .arrow-down { font-size:1.1rem; color:var(--cyan); line-height:1; }
+    .flow-down .flow-label { font-size:0.6rem; color:var(--text-m); font-weight:500; }
+
+    /* ─── CARDS GRID ─── */
+    .detail-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
+    .detail-card {
+      background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm);
+      padding:22px; transition:all 0.25s var(--ease-out);
+    }
+    .detail-card:hover { border-color:var(--border-accent); box-shadow:var(--shadow); }
+    .detail-card-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border-subtle); }
+    .detail-card-icon { width:36px; height:36px; border-radius:8px; display:grid; place-items:center; font-size:1.1rem; flex-shrink:0; }
+    .detail-card-header h3 { font-size:0.82rem; font-weight:700; }
+    .detail-card-header .badge { margin-left:auto; padding:2px 8px; border-radius:8px; font-size:0.58rem; font-weight:600; }
+    .badge-aws { background:rgba(255,153,0,0.15); color:var(--aws); }
+    .badge-google { background:rgba(39,174,96,0.15); color:var(--success); }
+    .badge-ms { background:rgba(0,120,212,0.15); color:var(--ms); }
+    .badge-infra { background:var(--glow); color:var(--cyan); }
+    .detail-card ul { list-style:none; }
+    .detail-card li { font-size:0.74rem; padding:5px 0 5px 16px; position:relative; color:var(--text-2); border-bottom:1px solid var(--border-subtle); }
+    .detail-card li:last-child { border-bottom:none; }
+    .detail-card li::before { content:''; position:absolute; left:0; top:11px; width:6px; height:6px; border-radius:2px; background:var(--cyan); }
+
+    /* Lambda grid */
+    .lambda-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px; }
+    .lambda-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:6px; padding:18px; border-top:3px solid var(--aws); }
+    .lambda-card-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .lambda-card-icon { width:28px; height:28px; border-radius:6px; background:rgba(255,153,0,0.1); display:grid; place-items:center; font-size:0.85rem; }
+    .lambda-card-header h4 { font-size:0.78rem; font-weight:700; font-family:var(--font-mono); }
+    .lc-row { display:flex; gap:6px; font-size:0.68rem; padding:3px 0; color:var(--text-2); }
+    .lc-label { font-weight:600; color:var(--cyan); min-width:64px; flex-shrink:0; }
+
+    /* ─── TABLES ─── */
+    .tech-table { width:100%; border-collapse:collapse; font-size:0.74rem; background:var(--bg-card); border-radius:6px; overflow:hidden; border:1px solid var(--border); }
+    .tech-table th { background:var(--teal); color:#fff; padding:10px 14px; text-align:left; font-weight:600; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; position:sticky; top:0; }
+    .tech-table td { padding:10px 14px; border-bottom:1px solid var(--border-subtle); vertical-align:top; }
+    .tech-table tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+    .tech-table tr:hover td { background:rgba(0,176,189,0.06); }
+    .svc-name { font-weight:600; }
+    .svc-badge { display:inline-flex; padding:2px 6px; border-radius:6px; font-size:0.58rem; font-weight:600; margin-right:3px; }
+    .table-wrap { overflow-x:auto; margin-top:12px; border-radius:var(--radius-sm); }
+
+    /* ─── NOTES ─── */
+    .arch-notes { background:rgba(0,176,189,0.04); border:1.5px solid rgba(0,176,189,0.15); border-radius:6px; padding:18px 20px; margin-top:20px; }
+    .arch-notes h4 { font-size:0.78rem; font-weight:700; color:var(--cyan); margin-bottom:8px; }
+    .arch-notes ul { list-style:none; }
+    .arch-notes li { font-size:0.72rem; padding:3px 0 3px 14px; position:relative; color:var(--text-m); }
+    .arch-notes li::before { content:'→'; position:absolute; left:0; color:var(--cyan); font-weight:700; }
+
+    /* Subsection titles */
+    .sub-title { font-size:0.88rem; font-weight:700; color:var(--teal); margin:28px 0 10px; }
+
+    /* ─── FOOTER ─── */
+    .app-footer { background:var(--bg-surface); border-top:1px solid var(--border); padding:16px 36px; text-align:center; font-size:10px; color:var(--text-m); }
+    .app-footer strong { color:var(--cyan); }
+
+    /* ─── EDIT MODE ─── */
+    .edit-mode [contenteditable="true"] { outline:2px dashed var(--cyan); outline-offset:3px; background:rgba(0,176,189,0.04); cursor:text; border-radius:4px; }
+    .edit-mode [contenteditable="true"]:focus { outline-style:solid; background:rgba(0,176,189,0.08); }
+
+    /* ─── TOAST ─── */
+    .toast { position:fixed; bottom:24px; right:24px; background:var(--bg-surface); color:var(--cyan); border:1px solid var(--border-accent); padding:10px 20px; border-radius:8px; font-size:12px; font-weight:600; box-shadow:var(--shadow); z-index:10000; transition:all 0.3s; }
+    .toast.removing { opacity:0; transform:translateY(10px); }
+
+    /* ─── REVEAL ─── */
+    [data-reveal] { opacity:0; transform:translateY(20px); transition:opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out); }
+    [data-reveal].revealed { opacity:1; transform:translateY(0); }
+    [data-reveal-delay="1"] { transition-delay:0.1s; }
+    [data-reveal-delay="2"] { transition-delay:0.2s; }
+
+    /* ─── PRINT ─── */
+    @media print {
+      body { background:#fff !important; color:#000 !important; font-size:11px; }
+      .sidebar, .topbar, .sidebar-overlay, .reading-progress, .toast { display:none !important; }
+      .main-area { margin-left:0 !important; }
+      .content { max-width:100%; padding:16px; }
+      .hero { break-inside:avoid; background:#f0f8ff !important; border:1px solid #ccc !important; }
+      .section { break-inside:avoid; }
+      .detail-card, .lambda-card, .kpi { break-inside:avoid; }
+      .tech-table th { background:#e0f0f5 !important; color:#000 !important; }
+      @page { margin:1.5cm; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width:1024px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main-area { margin-left:0; }
+      .content { padding:20px 16px 60px; }
+    }
+    @media (max-width:768px) {
+      .detail-grid, .lambda-grid { grid-template-columns:1fr; }
+      .kpi-row { grid-template-columns:repeat(2,1fr); }
+      .nodes-row { gap:8px; }
+      .node { min-width:90px; padding:10px; }
+      .hero { padding:24px 20px; }
+      .hero-title { font-size:20px; }
+    }
+    @media (max-width:480px) {
+      .kpi-row { grid-template-columns:1fr; }
+      .hero-title { font-size:18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reading-progress"><div class="reading-progress-fill" id="rpFill"></div></div>
+
+  <div class="app-shell">
+    <!-- ═══ SIDEBAR TOC ═══ -->
+    <nav class="sidebar" id="sidebar" aria-label="Table of Contents">
+      <div class="sidebar-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg>
+        <div>
+          <div class="sidebar-brand-name">INDRA</div>
+          <div class="sidebar-brand-sub">INTELLIGENCE</div>
+        </div>
+      </div>
+      <div class="sidebar-toc" id="tocNav">
+        <div class="toc-label">Table of Contents</div>
+        <a class="toc-item active" href="#sec-1">1. Visão Geral da Arquitetura</a>
+        <a class="toc-item" href="#sec-2">2. Detalhamento dos Componentes</a>
+        <a class="toc-item" href="#sec-3">3. Lambda Functions</a>
+        <a class="toc-item" href="#sec-4">4. Modelagem DynamoDB</a>
+        <a class="toc-item" href="#sec-5">5. Fluxo de Dados</a>
+        <a class="toc-item" href="#sec-6">6. Stack Tecnológico</a>
+        <a class="toc-item" href="#sec-7">7. Decisões de Arquitetura</a>
+        <a class="toc-item" href="#sec-8">8. Estimativa de Custos</a>
+      </div>
+      <div class="sidebar-footer"><strong>Indra Minsait</strong> · Maio 2026</div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-area" id="mainArea">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+          <span class="topbar-title">Arquitetura de Alto Nível</span>
+          <span class="topbar-badge">ARCHITECTURE</span>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()" title="Toggle theme"><svg id="tDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="tLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+          <button class="topbar-btn" onclick="toggleEdit()" title="Edit mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="topbar-btn" onclick="exportJSON()" title="Export JSON"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+          <button class="topbar-btn" onclick="window.print()" title="Print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- HERO -->
+        <section class="hero" data-reveal>
+          <div class="hero-eyebrow">High-Level Architecture · AWS Serverless + Google ADK + SharePoint</div>
+          <h1 class="hero-title" contenteditable="false">Agentificação de Ofertas</h1>
+          <p class="hero-desc" contenteditable="false">Arquitetura de referência — AWS Serverless + Google ADK + Microsoft SharePoint. Pipeline de 3 agentes de IA orquestrados para elaboração automatizada de ofertas técnico-comerciais.</p>
+          <div class="hero-meta">
+            <span class="hero-pill"><span class="pk">Version:</span> 1.0 — Maio 2026</span>
+            <span class="hero-pill"><span class="pk">Author:</span> Transformação Digital — Indra Minsait</span>
+            <span class="hero-pill"><span class="pk">Status:</span> Em Elaboração</span>
+          </div>
+        </section>
+
+        <!-- KPI ROW -->
+        <section class="kpi-row" data-reveal data-reveal-delay="1">
+          <div class="kpi" style="--ka:var(--aws);"><div class="kpi-label">Cloud Provider</div><div class="kpi-value">AWS</div><div class="kpi-sub">Serverless · us-east-1</div></div>
+          <div class="kpi" style="--ka:var(--success);"><div class="kpi-label">AI Agents</div><div class="kpi-value">3</div><div class="kpi-sub">Google ADK Framework</div></div>
+          <div class="kpi" style="--ka:var(--ms);"><div class="kpi-label">Storage</div><div class="kpi-value">SPO</div><div class="kpi-sub">SharePoint + 6 KBs</div></div>
+          <div class="kpi" style="--ka:var(--purple);"><div class="kpi-label">Lambda Functions</div><div class="kpi-value">9</div><div class="kpi-sub">Python 3.12 · Container + ZIP</div></div>
+          <div class="kpi" style="--ka:var(--gold);"><div class="kpi-label">DynamoDB Tables</div><div class="kpi-value">5</div><div class="kpi-sub">On-Demand · PITR enabled</div></div>
+          <div class="kpi" style="--ka:var(--cyan);"><div class="kpi-label">Cost / Offer</div><div class="kpi-value">$3.73</div><div class="kpi-sub">All-in (infra + tokens + tax)</div></div>
+        </section>
+
+        <!-- ═══ 1. VISÃO GERAL ═══ -->
+        <div class="section" id="sec-1" data-reveal data-reveal-delay="2">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">🏗️</div>
+            <div><h2>1. Visão Geral da Arquitetura</h2><p>Diagrama de componentes — fluxo completo da solução</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="arch-canvas">
+              <div class="arch-title">Arquitetura de Alto Nível — Agentificação de Ofertas</div>
+              <div class="arch-subtitle">AWS Serverless • Google ADK (Agents) • Microsoft SharePoint (Files & Knowledge)</div>
+              <!-- CAMADA: CLIENTE -->
+              <div class="layer client">
+                <div class="layer-label">👤 Camada de Apresentação</div>
+                <div class="nodes-row">
+                  <div class="node user"><div class="node-icon">👤</div><div class="node-label">Usuário</div><div class="node-sub">Navegador Web</div></div>
+                  <div style="font-size:1.2rem; color:var(--cyan);">→</div>
+                  <div class="node cloudfront"><div class="node-icon">🌐</div><div class="node-label">CloudFront</div><div class="node-sub">CDN / HTTPS</div></div>
+                  <div style="font-size:1.2rem; color:var(--cyan);">→</div>
+                  <div class="node s3"><div class="node-icon">🪣</div><div class="node-label">S3 Bucket</div><div class="node-sub">Frontend SPA<br>(React/HTML)</div></div>
+                </div>
+              </div>
+              <div class="flow-down"><span class="arrow-down">▼</span><span class="flow-label">HTTPS / REST API</span></div>
+              <!-- CAMADA: AWS SERVERLESS -->
+              <div class="layer aws">
+                <div class="layer-label">☁️ AWS — Serverless Backend</div>
+                <div class="nodes-row" style="margin-bottom:16px;">
+                  <div class="node apigw"><div class="node-icon">🔀</div><div class="node-label">API Gateway</div><div class="node-sub">REST API<br>Auth / Throttling</div></div>
+                </div>
+                <div class="flow-down"><span class="arrow-down">▼</span><span class="flow-label">Roteamento por endpoint</span></div>
+                <div class="nodes-row">
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Qualificação</div><div class="node-sub">Agente 1</div></div>
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Kickoff S2S</div><div class="node-sub">Agente 2</div></div>
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Ballpark</div><div class="node-sub">Agente 3</div></div>
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Ofertas CRUD</div><div class="node-sub">Gestão</div></div>
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Knowledge</div><div class="node-sub">KBs</div></div>
+                  <div class="node lambda"><div class="node-icon">λ</div><div class="node-label">Lambda<br>Auth</div><div class="node-sub">Cognito</div></div>
+                </div>
+                <div class="flow-down" style="margin-top:12px;"><span class="arrow-down">▼</span><span class="flow-label">Invocação</span></div>
+                <!-- Google ADK Agents -->
+                <div style="background:rgba(66,133,244,0.04); border:1.5px solid rgba(66,133,244,0.2); border-radius:6px; padding:16px; margin-bottom:16px;">
+                  <div style="font-size:0.65rem; font-weight:700; color:var(--google); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">🤖 Google ADK — Camada de Agentes</div>
+                  <div class="nodes-row">
+                    <div class="node agent"><div class="node-icon">🤖</div><div class="node-label">Agent 1<br>Qualificação</div><div class="node-sub">Google ADK<br>Claude 3.5 Sonnet</div></div>
+                    <div class="node agent"><div class="node-icon">🤖</div><div class="node-label">Agent 2<br>Kickoff S2S</div><div class="node-sub">Google ADK<br>GPT-4o</div></div>
+                    <div class="node agent"><div class="node-icon">🤖</div><div class="node-label">Agent 3<br>Ballpark</div><div class="node-sub">Google ADK<br>Claude 3.5 Sonnet</div></div>
+                  </div>
+                </div>
+                <div class="flow-down"><span class="arrow-down">▼</span><span class="flow-label">Persistência de Estado & Dados</span></div>
+                <div class="nodes-row">
+                  <div class="node dynamo"><div class="node-icon">🗄️</div><div class="node-label">DynamoDB<br>Sessions</div><div class="node-sub">Sessões ADK<br>(Agent State)</div></div>
+                  <div class="node dynamo"><div class="node-icon">🗄️</div><div class="node-label">DynamoDB<br>Ofertas</div><div class="node-sub">Dados de ofertas<br>status, metadados</div></div>
+                  <div class="node dynamo"><div class="node-icon">🗄️</div><div class="node-label">DynamoDB<br>Config</div><div class="node-sub">Config agentes<br>pesos, prompts</div></div>
+                  <div class="node dynamo"><div class="node-icon">🗄️</div><div class="node-label">DynamoDB<br>Usuários</div><div class="node-sub">Perfis, permissões<br>histórico</div></div>
+                </div>
+              </div>
+              <div class="flow-down"><span class="arrow-down">▼</span><span class="flow-label">Microsoft Graph API</span></div>
+              <!-- CAMADA: SHAREPOINT -->
+              <div class="layer external">
+                <div class="layer-label">📁 Microsoft SharePoint — Files & Knowledge</div>
+                <div class="nodes-row">
+                  <div class="node sharepoint"><div class="node-icon">📄</div><div class="node-label">SP Uploads</div><div class="node-sub">RFPs, Propostas</div></div>
+                  <div class="node sharepoint"><div class="node-icon">📤</div><div class="node-label">SP Outputs</div><div class="node-sub">PPTX, XLSX, PDF</div></div>
+                  <div class="node sharepoint"><div class="node-icon">🧠</div><div class="node-label">KB: RFPs</div><div class="node-sub">KB 1</div></div>
+                  <div class="node sharepoint"><div class="node-icon">📝</div><div class="node-label">KB: Templates</div><div class="node-sub">KB 2</div></div>
+                  <div class="node sharepoint"><div class="node-icon">💰</div><div class="node-label">KB: Rates</div><div class="node-sub">KB 3</div></div>
+                  <div class="node sharepoint"><div class="node-icon">🏢</div><div class="node-label">KB: Portfólio</div><div class="node-sub">KB 4</div></div>
+                  <div class="node sharepoint"><div class="node-icon">🏆</div><div class="node-label">KB: Cases</div><div class="node-sub">KB 5</div></div>
+                  <div class="node sharepoint"><div class="node-icon">📊</div><div class="node-label">KB: Dimens.</div><div class="node-sub">KB 6</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 2. DETALHAMENTO ═══ -->
+        <div class="section" id="sec-2">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">⚙️</div>
+            <div><h2>2. Detalhamento dos Componentes</h2><p>Descrição técnica de cada camada e serviço</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="detail-grid">
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(255,153,0,0.1);">🪣</div><h3>Frontend — S3 + CloudFront</h3><span class="badge badge-aws">AWS</span></div><ul><li><strong>S3 Bucket</strong> — Hospedagem estática da aplicação SPA</li><li><strong>CloudFront</strong> — CDN para distribuição global com HTTPS</li><li><strong>Framework</strong> — React (SPA com roteamento client-side)</li><li><strong>Autenticação</strong> — AWS Cognito (OAuth 2.0 / OIDC)</li><li><strong>Build</strong> — Vite + deploy via CI/CD (GitHub Actions)</li></ul></div>
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(139,92,246,0.1);">🔀</div><h3>API Gateway — REST API</h3><span class="badge badge-aws">AWS</span></div><ul><li><strong>Tipo</strong> — API Gateway REST (regional)</li><li><strong>Autorização</strong> — Cognito Authorizer (JWT tokens)</li><li><strong>Throttling</strong> — Rate limiting por API key / user</li><li><strong>CORS</strong> — Habilitado para domínio do frontend</li><li><strong>Versionamento</strong> — Stages (dev, staging, prod)</li><li><strong>Integração</strong> — Lambda Proxy Integration</li></ul></div>
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(255,153,0,0.1);">λ</div><h3>Lambda Functions</h3><span class="badge badge-aws">AWS</span></div><ul><li><strong>Runtime</strong> — Python 3.12</li><li><strong>Memória</strong> — 512MB–1024MB (agentes)</li><li><strong>Timeout</strong> — 60s (CRUD) / 300s (agentes)</li><li><strong>Packaging</strong> — Container Image (ECR) para agentes, ZIP para CRUD</li><li><strong>Concorrência</strong> — On-Demand (auto-scaling)</li><li><strong>Layers</strong> — Shared: boto3, google-adk, langchain</li></ul></div>
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(66,133,244,0.1);">🤖</div><h3>Google ADK — Agentes de IA</h3><span class="badge badge-google">Google</span></div><ul><li><strong>Framework</strong> — Google Agent Development Kit (ADK)</li><li><strong>Sessão</strong> — Persistida em DynamoDB (session_id → state)</li><li><strong>Multi-turn</strong> — Chat com refinamento via sessão contínua</li><li><strong>Tools</strong> — Custom tools para RAG (SharePoint), cálculos</li><li><strong>Models</strong> — Claude 3.5 Sonnet (Ag. 1/3), GPT-4o (Ag. 2)</li><li><strong>Callbacks</strong> — Logging, métricas e token tracking</li></ul></div>
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(66,133,244,0.1);">🗄️</div><h3>DynamoDB — Persistência</h3><span class="badge badge-aws">AWS</span></div><ul><li><strong>Sessions Table</strong> — PK: session_id | Sessões ADK com TTL</li><li><strong>Ofertas Table</strong> — PK: offer_id, SK: step | Status, outputs</li><li><strong>Config Table</strong> — PK: agent_id | Prompts, pesos, KBs</li><li><strong>Users Table</strong> — PK: user_id | Perfil, permissões</li><li><strong>Modo</strong> — On-Demand Capacity (auto-scaling)</li><li><strong>Backup</strong> — Point-in-Time Recovery habilitado</li></ul></div>
+              <div class="detail-card"><div class="detail-card-header"><div class="detail-card-icon" style="background:rgba(0,120,212,0.1);">📁</div><h3>SharePoint — Files & Knowledge</h3><span class="badge badge-ms">Microsoft</span></div><ul><li><strong>Acesso</strong> — Microsoft Graph API (OAuth 2.0)</li><li><strong>Site</strong> — SharePoint dedicado "AgentificacaoOfertas"</li><li><strong>Libraries</strong> — /Uploads, /Outputs, /KB-* (6 KBs)</li><li><strong>Indexação KB</strong> — Pipeline de embedding (chunking → vetorização)</li><li><strong>Permissões</strong> — RBAC via Azure AD</li><li><strong>Retenção</strong> — Políticas corporativas Indra</li></ul></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 3. LAMBDAS ═══ -->
+        <div class="section" id="sec-3">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">λ</div>
+            <div><h2>3. Detalhamento das Lambda Functions</h2><p>Especificação de cada função Lambda, endpoints e responsabilidades</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="lambda-grid">
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">📋</div><h4>fn-agent-qualificacao</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>POST /ofertas/{id}/qualificacao</div><div class="lc-row"><span class="lc-label">Agente:</span>Google ADK — Agent 1</div><div class="lc-row"><span class="lc-label">LLM:</span>Claude 3.5 Sonnet</div><div class="lc-row"><span class="lc-label">Timeout:</span>300s · 1024 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB, SharePoint (KBs 1/4/5)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">📝</div><h4>fn-agent-kickoff-s2s</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>POST /ofertas/{id}/kickoff</div><div class="lc-row"><span class="lc-label">Agente:</span>Google ADK — Agent 2</div><div class="lc-row"><span class="lc-label">LLM:</span>GPT-4o (OpenAI)</div><div class="lc-row"><span class="lc-label">Timeout:</span>300s · 1024 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB, SharePoint (KBs 2/4/5)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">💰</div><h4>fn-agent-ballpark</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>POST /ofertas/{id}/ballpark</div><div class="lc-row"><span class="lc-label">Agente:</span>Google ADK — Agent 3</div><div class="lc-row"><span class="lc-label">LLM:</span>Claude 3.5 Sonnet</div><div class="lc-row"><span class="lc-label">Timeout:</span>300s · 1024 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB, SharePoint (KBs 3/6)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">💬</div><h4>fn-agent-chat-refine</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>POST /ofertas/{id}/chat/{agentId}</div><div class="lc-row"><span class="lc-label">Agente:</span>Sessão existente (multi-turn)</div><div class="lc-row"><span class="lc-label">LLM:</span>Mesmo do agente ativo</div><div class="lc-row"><span class="lc-label">Timeout:</span>120s · 512 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB (sessions)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">📂</div><h4>fn-ofertas-crud</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>/ofertas (CRUD)</div><div class="lc-row"><span class="lc-label">Função:</span>CRUD ofertas, listagem, filtros</div><div class="lc-row"><span class="lc-label">Timeout:</span>30s · 256 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB, SharePoint (list)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">🧠</div><h4>fn-knowledge-mgmt</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>/knowledge</div><div class="lc-row"><span class="lc-label">Função:</span>Upload, indexação, busca KBs</div><div class="lc-row"><span class="lc-label">Timeout:</span>60s · 512 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>SharePoint, embedding pipeline</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">📤</div><h4>fn-file-handler</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>/files</div><div class="lc-row"><span class="lc-label">Função:</span>Proxy de arquivos para SharePoint</div><div class="lc-row"><span class="lc-label">Timeout:</span>60s · 512 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>SharePoint via Graph API</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">🔐</div><h4>fn-auth-users</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>/auth, /users</div><div class="lc-row"><span class="lc-label">Função:</span>Login, perfis, permissões</div><div class="lc-row"><span class="lc-label">Timeout:</span>30s · 256 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>Cognito, DynamoDB (users)</div></div>
+              <div class="lambda-card"><div class="lambda-card-header"><div class="lambda-card-icon">⚙️</div><h4>fn-config-agents</h4></div><div class="lc-row"><span class="lc-label">Endpoint:</span>/config/agents</div><div class="lc-row"><span class="lc-label">Função:</span>CRUD configurações (prompts, pesos)</div><div class="lc-row"><span class="lc-label">Timeout:</span>30s · 256 MB</div><div class="lc-row"><span class="lc-label">Deps:</span>DynamoDB (config)</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 4. DYNAMODB ═══ -->
+        <div class="section" id="sec-4">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">🗄️</div>
+            <div><h2>4. Modelagem DynamoDB</h2><p>Estrutura das tabelas NoSQL</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="table-wrap">
+              <table class="tech-table"><thead><tr><th>Tabela</th><th>PK</th><th>SK</th><th>Finalidade</th><th>TTL</th><th>GSIs</th></tr></thead><tbody>
+                <tr><td class="svc-name">agent-sessions</td><td>session_id</td><td>—</td><td>Estado das sessões Google ADK (multi-turn, memory, tool results)</td><td>24h</td><td>GSI-user: user_id → session_id</td></tr>
+                <tr><td class="svc-name">ofertas</td><td>offer_id</td><td>step#timestamp</td><td>Dados da oferta em cada step (inputs, outputs, status, score)</td><td>—</td><td>GSI-user, GSI-status</td></tr>
+                <tr><td class="svc-name">agent-config</td><td>agent_id</td><td>version</td><td>Configuração dos agentes (prompt, pesos, modelo, temperatura, KBs)</td><td>—</td><td>—</td></tr>
+                <tr><td class="svc-name">users</td><td>user_id</td><td>—</td><td>Perfil do usuário, role, preferências, última atividade</td><td>—</td><td>GSI-email</td></tr>
+                <tr><td class="svc-name">chat-history</td><td>offer_id#agent_id</td><td>timestamp</td><td>Histórico de mensagens do chat de refinamento</td><td>30 dias</td><td>—</td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 5. FLUXO DE DADOS ═══ -->
+        <div class="section" id="sec-5">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">🔄</div>
+            <div><h2>5. Fluxo de Dados — Execução de um Agente</h2><p>Sequência de chamadas durante a execução</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="arch-canvas">
+              <div class="arch-title">Fluxo de Execução — Agente (Qualificação, Kickoff ou Ballpark)</div>
+              <div class="table-wrap">
+                <table class="tech-table"><thead><tr><th>#</th><th>Passo</th><th>Origem → Destino</th><th>Descrição</th></tr></thead><tbody>
+                  <tr><td><strong>1</strong></td><td>Request</td><td>Frontend → API Gateway</td><td>POST /ofertas/{id}/{step} com JWT token</td></tr>
+                  <tr><td><strong>2</strong></td><td>Auth</td><td>API Gateway → Cognito</td><td>Validação do token JWT e autorização</td></tr>
+                  <tr><td><strong>3</strong></td><td>Invoke</td><td>API Gateway → Lambda Agent</td><td>Invocação da Lambda correspondente ao step</td></tr>
+                  <tr><td><strong>4</strong></td><td>Load Session</td><td>Lambda → DynamoDB (sessions)</td><td>Recupera sessão ADK existente ou cria nova</td></tr>
+                  <tr><td><strong>5</strong></td><td>Load Context</td><td>Lambda → DynamoDB (ofertas)</td><td>Carrega dados dos steps anteriores</td></tr>
+                  <tr><td><strong>6</strong></td><td>Fetch Files</td><td>Lambda → SharePoint (Graph API)</td><td>Busca documentos inputados pelo usuário</td></tr>
+                  <tr><td><strong>7</strong></td><td>RAG Query</td><td>ADK Agent → SharePoint (KBs)</td><td>Consulta KBs via tool customizada</td></tr>
+                  <tr><td><strong>8</strong></td><td>LLM Call</td><td>ADK Agent → LLM Provider</td><td>Chamada ao modelo com contexto completo</td></tr>
+                  <tr><td><strong>9</strong></td><td>Save State</td><td>Lambda → DynamoDB (sessions)</td><td>Persiste estado da sessão ADK</td></tr>
+                  <tr><td><strong>10</strong></td><td>Save Output</td><td>Lambda → DynamoDB (ofertas)</td><td>Salva outputs estruturados do agente</td></tr>
+                  <tr><td><strong>11</strong></td><td>Save Artifacts</td><td>Lambda → SharePoint (outputs)</td><td>Salva artefatos gerados (PPTX, PDF)</td></tr>
+                  <tr><td><strong>12</strong></td><td>Response</td><td>Lambda → Frontend</td><td>Retorna JSON com outputs para renderização</td></tr>
+                </tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 6. STACK ═══ -->
+        <div class="section" id="sec-6">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">🧰</div>
+            <div><h2>6. Stack Tecnológico Consolidado</h2><p>Resumo das tecnologias e serviços</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="table-wrap">
+              <table class="tech-table"><thead><tr><th>Camada</th><th>Tecnologia</th><th>Provedor</th><th>Justificativa</th></tr></thead><tbody>
+                <tr><td class="svc-name">Frontend</td><td>React + Vite + TypeScript</td><td><span class="svc-badge badge-infra">Open Source</span></td><td>SPA moderna, DX, performance</td></tr>
+                <tr><td class="svc-name">Hosting</td><td>S3 + CloudFront</td><td><span class="svc-badge badge-aws">AWS</span></td><td>Serverless, custo zero, CDN global</td></tr>
+                <tr><td class="svc-name">API</td><td>API Gateway (REST)</td><td><span class="svc-badge badge-aws">AWS</span></td><td>Gerenciamento de APIs, throttling, auth</td></tr>
+                <tr><td class="svc-name">Compute</td><td>Lambda (Python 3.12)</td><td><span class="svc-badge badge-aws">AWS</span></td><td>Serverless, pay-per-use, auto-scaling</td></tr>
+                <tr><td class="svc-name">Agentes IA</td><td>Google ADK</td><td><span class="svc-badge badge-google">Google</span></td><td>Framework nativo, multi-model, session mgmt</td></tr>
+                <tr><td class="svc-name">LLMs</td><td>Claude 3.5 + GPT-4o</td><td><span class="svc-badge badge-aws">Multi</span></td><td>Precisão (Claude) + Criatividade (GPT-4o)</td></tr>
+                <tr><td class="svc-name">Database</td><td>DynamoDB</td><td><span class="svc-badge badge-aws">AWS</span></td><td>NoSQL serverless, baixa latência, TTL</td></tr>
+                <tr><td class="svc-name">Auth</td><td>AWS Cognito</td><td><span class="svc-badge badge-aws">AWS</span></td><td>OAuth 2.0/OIDC, integração Azure AD</td></tr>
+                <tr><td class="svc-name">Storage</td><td>SharePoint Online</td><td><span class="svc-badge badge-ms">Microsoft</span></td><td>Integração corporativa, permissões AD</td></tr>
+                <tr><td class="svc-name">Knowledge</td><td>SharePoint + Embeddings</td><td><span class="svc-badge badge-ms">Multi</span></td><td>Docs em SharePoint, embeddings processados</td></tr>
+                <tr><td class="svc-name">IaC</td><td>Terraform / SAM</td><td><span class="svc-badge badge-infra">OSS</span></td><td>Infraestrutura como código</td></tr>
+                <tr><td class="svc-name">CI/CD</td><td>GitHub Actions</td><td><span class="svc-badge badge-infra">GitHub</span></td><td>Pipeline automatizado</td></tr>
+                <tr><td class="svc-name">Observability</td><td>CloudWatch + X-Ray</td><td><span class="svc-badge badge-aws">AWS</span></td><td>Logs, métricas, tracing distribuído</td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ 7. DECISÕES ═══ -->
+        <div class="section" id="sec-7">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">📝</div>
+            <div><h2>7. Decisões de Arquitetura & Notas</h2><p>Premissas, trade-offs e decisões técnicas</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="arch-notes"><h4>Decisões Chave</h4><ul>
+              <li><strong>Google ADK vs. LangChain:</strong> ADK oferece gerenciamento nativo de sessão, multi-turn e integração multi-model sem abstração adicional</li>
+              <li><strong>DynamoDB para sessões ADK:</strong> Session store com TTL automático, baixa latência e serverless</li>
+              <li><strong>SharePoint vs. S3 para arquivos:</strong> SharePoint é o padrão corporativo Indra — mantém governança e permissões</li>
+              <li><strong>Lambda Container vs. ZIP:</strong> Agentes usam Container Image (ECR) para deps pesadas; CRUDs usam ZIP para cold start rápido</li>
+              <li><strong>Multi-model (Claude + GPT-4o):</strong> Cada agente usa o modelo mais adequado</li>
+              <li><strong>Cognito + Azure AD:</strong> SSO federado com Azure AD corporativo via SAML/OIDC</li>
+            </ul></div>
+            <div class="arch-notes" style="margin-top:12px;"><h4>Premissas & Restrições</h4><ul>
+              <li>AWS é o cloud provider padrão para novos workloads de IA da Indra Minsait Brasil</li>
+              <li>SharePoint Online disponível com M365 corporativo para todos os usuários</li>
+              <li>APIs de LLM via API keys em AWS Secrets Manager</li>
+              <li>Volume: ~50 ofertas/mês com picos de até 200 execuções/dia</li>
+              <li>Latência aceitável: até 30 segundos para resposta completa</li>
+              <li>Custo estimado AWS (infra): ~$500-800/mês; LLM tokens: variável</li>
+            </ul></div>
+          </div>
+        </div>
+
+        <!-- ═══ 8. CUSTOS ═══ -->
+        <div class="section" id="sec-8">
+          <div class="section-header" onclick="toggleSection(this)">
+            <div class="section-icon">💲</div>
+            <div><h2>8. Estimativa de Custos — 50 Ofertas/Mês</h2><p>Projeção de custos de infraestrutura AWS e tokens LLM</p></div>
+            <span class="section-toggle">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="arch-notes" style="margin-bottom:20px;"><h4>Premissas do Cenário</h4><ul>
+              <li><strong>Volume:</strong> 50 ofertas/mês, 3 agentes cada → 150 execuções primárias + 600 refinamentos</li>
+              <li><strong>Chat:</strong> Média 4 interações/agente/oferta</li>
+              <li><strong>Usuários ativos:</strong> ~15</li>
+              <li><strong>SharePoint:</strong> Custos absorvidos pela licença M365</li>
+              <li><strong>Região AWS:</strong> us-east-1 (preços maio/2026)</li>
+            </ul></div>
+
+            <h3 class="sub-title">8.1 Infraestrutura AWS (Serverless)</h3>
+            <div class="table-wrap">
+              <table class="tech-table"><thead><tr><th>Serviço</th><th>Métrica</th><th>Uso Estimado</th><th>Custo Unitário</th><th>Custo/Mês (USD)</th></tr></thead><tbody>
+                <tr><td class="svc-name">Lambda — Agentes</td><td>Exec × Dur × Mem</td><td>750 × 20s × 1024 MB</td><td>$0.0000166667/GB-s</td><td><strong>$0.26</strong></td></tr>
+                <tr><td class="svc-name">Lambda — CRUDs</td><td>Exec × Dur × Mem</td><td>~5K × 0.5s × 256 MB</td><td>$0.0000166667/GB-s</td><td><strong>$0.01</strong></td></tr>
+                <tr><td class="svc-name">API Gateway</td><td>Requests REST</td><td>~8K requests</td><td>$3.50/milhão</td><td><strong>$0.03</strong></td></tr>
+                <tr><td class="svc-name">DynamoDB</td><td>On-Demand (WCU+RCU)</td><td>~50K W + ~200K R</td><td>$1.25/M WCU, $0.25/M RCU</td><td><strong>$0.11</strong></td></tr>
+                <tr><td class="svc-name">DynamoDB Storage</td><td>Armazenamento</td><td>~2 GB</td><td>$0.25/GB</td><td><strong>$0.50</strong></td></tr>
+                <tr><td class="svc-name">S3 + CloudFront</td><td>Storage + Transfer</td><td>~500 MB + ~50 GB</td><td>Variável</td><td><strong>$5.50</strong></td></tr>
+                <tr><td class="svc-name">ECR</td><td>Container Images</td><td>3 images × 800 MB</td><td>$0.10/GB</td><td><strong>$0.24</strong></td></tr>
+                <tr><td class="svc-name">Cognito</td><td>MAU</td><td>~15 users</td><td>Free Tier</td><td><strong>$0.00</strong></td></tr>
+                <tr><td class="svc-name">CloudWatch + X-Ray</td><td>Logs + Métricas</td><td>~5 GB + dashboards</td><td>$0.50/GB + $3/dash</td><td><strong>$5.50</strong></td></tr>
+                <tr><td class="svc-name">Secrets Manager</td><td>Secrets</td><td>5 secrets × ~750 calls</td><td>$0.40/secret</td><td><strong>$2.04</strong></td></tr>
+                <tr style="background:rgba(0,176,189,0.06);"><td class="svc-name" style="font-size:0.82rem;">SUBTOTAL AWS</td><td colspan="3" style="font-weight:600; color:var(--teal);">Infraestrutura Serverless Completa</td><td style="font-size:0.95rem; font-weight:700; color:var(--teal);">~$14.19</td></tr>
+              </tbody></table>
+            </div>
+
+            <h3 class="sub-title">8.2 Consumo de Tokens LLM</h3>
+            <div class="table-wrap">
+              <table class="tech-table"><thead><tr><th>Modelo</th><th>Agente(s)</th><th>Cenário/Mês</th><th>Input</th><th>Output</th><th>Custo (USD)</th></tr></thead><tbody>
+                <tr><td class="svc-name">Claude 3.5 Sonnet</td><td>Ag. 1 — Qualificação</td><td>50 exec + 200 chats</td><td>~4.5M ($13.50)</td><td>~1.5M ($22.50)</td><td><strong>$36.00</strong></td></tr>
+                <tr><td class="svc-name">GPT-4o</td><td>Ag. 2 — Kickoff S2S</td><td>50 exec + 200 chats</td><td>~5M ($12.50)</td><td>~3M ($30.00)</td><td><strong>$42.50</strong></td></tr>
+                <tr><td class="svc-name">Claude 3.5 Sonnet</td><td>Ag. 3 — Ballpark</td><td>50 exec + 200 chats</td><td>~3.5M ($10.50)</td><td>~2M ($30.00)</td><td><strong>$40.50</strong></td></tr>
+                <tr><td class="svc-name">Embedding</td><td>RAG (todas KBs)</td><td>~750 queries</td><td>~1.5M ($0.15)</td><td>—</td><td><strong>$0.15</strong></td></tr>
+                <tr style="background:rgba(0,176,189,0.06);"><td class="svc-name" style="font-size:0.82rem;">SUBTOTAL TOKENS</td><td colspan="4" style="font-weight:600; color:var(--teal);">Total LLM (3 agentes + RAG)</td><td style="font-size:0.95rem; font-weight:700; color:var(--teal);">~$119.15</td></tr>
+              </tbody></table>
+            </div>
+
+            <h3 class="sub-title">8.3 Resumo Consolidado</h3>
+            <div class="table-wrap">
+              <table class="tech-table"><thead><tr><th>Categoria</th><th>Componentes</th><th>Custo/Mês (USD)</th><th>%</th></tr></thead><tbody>
+                <tr><td class="svc-name">Infraestrutura AWS</td><td>Lambda, API GW, DynamoDB, S3/CF, ECR, CW, Secrets</td><td><strong>$14.19</strong></td><td>11%</td></tr>
+                <tr><td class="svc-name">Tokens LLM</td><td>Claude 3.5 (Ag.1+3), GPT-4o (Ag.2), Embeddings</td><td><strong>$119.15</strong></td><td>89%</td></tr>
+                <tr style="background:rgba(0,176,189,0.04);"><td class="svc-name">Subtotal Base</td><td>Infra + Tokens</td><td><strong>$133.34</strong></td><td></td></tr>
+                <tr><td class="svc-name">Impostos (10%)</td><td>ISS, PIS/COFINS estimados</td><td><strong>$13.33</strong></td><td>7%</td></tr>
+                <tr><td class="svc-name">Rateio Corporativo (30%)</td><td>DevOps, monitoramento, suporte N2</td><td><strong>$40.00</strong></td><td>21%</td></tr>
+                <tr style="background:linear-gradient(to right, rgba(0,66,84,0.08), rgba(0,176,189,0.08));"><td class="svc-name" style="font-size:0.95rem;">TOTAL MENSAL (ALL-IN)</td><td style="font-weight:600; color:var(--teal);">50 ofertas/mês + impostos + rateio</td><td style="font-size:1.1rem; font-weight:700; color:var(--teal);">~$186.67</td><td style="font-weight:700;">100%</td></tr>
+                <tr><td class="svc-name" style="color:var(--text-m);">CUSTO POR OFERTA</td><td style="color:var(--text-m);">Pipeline completo (3 agentes + chats + impostos + rateio)</td><td style="font-size:1rem; font-weight:700; color:var(--cyan);">~$3.73/oferta</td><td></td></tr>
+              </tbody></table>
+            </div>
+
+            <div class="arch-notes" style="margin-top:20px;"><h4>Observações sobre Custos</h4><ul>
+              <li><strong>Custo dominante = LLM tokens (89%):</strong> Infra serverless tem custo marginal</li>
+              <li><strong>Variabilidade por oferta:</strong> Complexas $5-8; simples ~$1.50</li>
+              <li><strong>Escalabilidade linear:</strong> 100 ofertas ≈ $250; 200 ofertas ≈ $490</li>
+              <li><strong>Otimizações:</strong> Caching de RAG, prompt compression → -20-30% tokens</li>
+              <li><strong>Não incluso:</strong> Licença M365/SharePoint, custos de dev, domínio/SSL</li>
+              <li><strong>Free Tier AWS:</strong> Primeiros 12 meses reduzem custo de infra</li>
+            </ul></div>
+            <div class="arch-notes" style="margin-top:12px;"><h4>Projeção por Cenário</h4><ul>
+              <li><strong>Inicial (Mês 1-3):</strong> 20-30 ofertas → ~$84-126/mês</li>
+              <li><strong>Operacional (Mês 4-12):</strong> 50 ofertas → ~$187/mês</li>
+              <li><strong>Expansão (Ano 2):</strong> 150 ofertas → ~$525/mês</li>
+              <li><strong>Máximo Projetado:</strong> 300 ofertas → ~$1.022/mês (sem alterar arquitetura)</li>
+            </ul></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="app-footer">
+        <strong>Indra Minsait</strong> · Transformação Digital Brasil · Arquitetura de Alto Nível — Agentificação de Ofertas · Maio 2026 · v2.0
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // ─── Theme ───
+    function getTheme(){try{return localStorage.getItem('indra_theme')||'dark'}catch{return'dark'}}
+    function setTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('indra_theme',t)}catch{}document.getElementById('tDark').style.display=t==='dark'?'':'none';document.getElementById('tLight').style.display=t==='light'?'':'none';}
+    function toggleTheme(){setTheme(getTheme()==='dark'?'light':'dark')}
+    setTheme(getTheme());
+
+    // ─── Sidebar ───
+    function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active');}
+
+    // ─── Edit Mode ───
+    let editMode=false;
+    function toggleEdit(){
+      editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);
+      document.querySelectorAll('h1,h2,h3,h4,p,li,td,th,.node-label,.node-sub,.layer-label,.arch-title,.arch-subtitle,.hero-title,.hero-desc').forEach(el=>{if(!el.closest('footer')&&!el.closest('.topbar')&&el.tagName!=='BUTTON')el.contentEditable=editMode;});
+      toast(editMode?'Edit mode ON — click any text to edit':'Edit mode OFF — changes preserved');
+    }
+
+    // ─── Section Collapse ───
+    function toggleSection(header){header.closest('.section').classList.toggle('collapsed');}
+
+    // ─── Toast ───
+    function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300);},3000);}
+
+    // ─── Reading Progress ───
+    window.addEventListener('scroll',()=>{const s=window.pageYOffset;const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('rpFill').style.width=h>0?Math.min(s/h*100,100)+'%':'0%';},{passive:true});
+
+    // ─── ScrollSpy TOC ───
+    const tocItems=document.querySelectorAll('.toc-item');
+    const sectionEls=document.querySelectorAll('.section[id]');
+    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){tocItems.forEach(t=>t.classList.remove('active'));const a=document.querySelector(`.toc-item[href="#${e.target.id}"]`);if(a)a.classList.add('active');}});},{threshold:0.2,rootMargin:'-60px 0px -40% 0px'});
+    sectionEls.forEach(s=>observer.observe(s));
+
+    // ─── Reveal ───
+    const revealObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('[data-reveal]').forEach(el=>revealObs.observe(el));
+
+    // ─── Export JSON ───
+    function exportJSON(){
+      const data={title:document.title,exportedAt:new Date().toISOString(),sections:[]};
+      document.querySelectorAll('.section').forEach(sec=>{const title=sec.querySelector('h2')?.textContent.trim()||'';const notes=[];sec.querySelectorAll('.arch-notes li').forEach(li=>notes.push(li.textContent.trim()));const tables=[];sec.querySelectorAll('table').forEach(t=>{const headers=[...t.querySelectorAll('th')].map(h=>h.textContent.trim());const rows=[...t.querySelectorAll('tbody tr')].map(r=>[...r.querySelectorAll('td')].map(d=>d.textContent.trim()));tables.push({headers,rows});});data.sections.push({title,notes,tables});});
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`arquitetura-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);
+    }
+
+    // ─── TOC smooth scroll ───
+    tocItems.forEach(item=>{item.addEventListener('click',e=>{e.preventDefault();const target=document.querySelector(item.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'});if(window.innerWidth<=1024){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');}});});
+  </script>
+</body>
+</html>
