@@ -557,9 +557,7 @@ if __name__ == "__main__":
 ║  Prática: Desenvolvimento de Soluções               ║
 ║  Versão: 1.0.0 | DSS Agents | Indra Minsait         ║
 ╠══════════════════════════════════════════════════════╣
-║  Cenário 1: Agente Monolítico (AgenteDS)             ║
-║  Cenário 2: Maestro + 5 Sub-Agentes                  ║
-║  Default:   Cenário 2 (Multi-Agente)                 ║
+║  Engine:  Maestro + 5 Sub-Agentes (Multi-Agente)     ║
 ╠══════════════════════════════════════════════════════╣
 ║  Servidor: http://{host}:{port}                       ║
 ║  API:      http://{host}:{port}/api/health            ║
